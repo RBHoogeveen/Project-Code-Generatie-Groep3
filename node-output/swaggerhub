@@ -237,7 +237,7 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "balance" : {
+        "amount" : {
           "type" : "number"
         },
         "date" : {
@@ -245,6 +245,9 @@
         },
         "type" : {
           "type" : "boolean"
+        },
+        "userPerforming" : {
+          "$ref" : "#/definitions/User"
         },
         "fromAccount" : {
           "$ref" : "#/definitions/Account"
