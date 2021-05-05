@@ -1,0 +1,479 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Project Code Generation",
+    "description" : "2.4 project code generation group 3",
+    "version" : "v2-oas3"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/rubeninjehoofd/testProjectApi/v2",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "paths" : {
+    "/login" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Login",
+        "description" : "Login",
+        "operationId" : "login",
+        "requestBody" : {
+          "description" : "User to create",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginUser"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful login",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string"
+                },
+                "example" : "JWT token"
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          }
+        },
+        "security" : [ ]
+      }
+    },
+    "/user/{username}/account" : {
+      "get" : {
+        "tags" : [ "account" ],
+        "summary" : "Get users account",
+        "operationId" : "getUserAccount",
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The account from the user",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Account"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      }
+    },
+    "/account/deposit" : {
+      "post" : {
+        "tags" : [ "account" ],
+        "summary" : "deposit to another account",
+        "operationId" : "deposit",
+        "requestBody" : {
+          "description" : "deposit to create",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Deposit"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "deposit done"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          }
+        }
+      }
+    },
+    "/account/withdrawal" : {
+      "post" : {
+        "tags" : [ "account" ],
+        "summary" : "deposit to another account",
+        "operationId" : "withdrawal",
+        "requestBody" : {
+          "description" : "deposit to create",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Withdrawal"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "withdrawel done"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          }
+        }
+      }
+    },
+    "/user" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Registers a new user",
+        "description" : "Registers a new user",
+        "operationId" : "registerUser",
+        "requestBody" : {
+          "description" : "User to create",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "User created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "This user already exists"
+          }
+        }
+      }
+    },
+    "/users" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Fetches users",
+        "description" : "Fetches users",
+        "operationId" : "getUsers",
+        "parameters" : [ {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "maximum" : 50,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The fetched users",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      }
+    },
+    "/user/logout" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Logs out current logged in user session",
+        "operationId" : "logoutUser",
+        "responses" : {
+          "200" : {
+            "description" : "Logout succesfull"
+          }
+        }
+      }
+    },
+    "/user/{username}" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Fetches a single user",
+        "description" : "Fetches a single user",
+        "operationId" : "getUserByUsername",
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "description" : "The username",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The fetched user",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "user" ],
+        "summary" : "Updated user",
+        "description" : "This can only be done by the logged in user.",
+        "operationId" : "updateUser",
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "description" : "name that need to be updated",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "User to update",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Update succesfull"
+          },
+          "400" : {
+            "description" : "Invalid user supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "user" ],
+        "summary" : "Delete a user",
+        "description" : "deleting a user by his username",
+        "operationId" : "deleteUser",
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "path",
+          "description" : "The username",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates success"
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Account" : {
+        "type" : "object",
+        "properties" : {
+          "iban" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "type" : {
+            "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "balance" : {
+            "type" : "number"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/User"
+          }
+        }
+      },
+      "User" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "uuid"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "firstname" : {
+            "type" : "string"
+          },
+          "lastname" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "phonenumber" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string",
+            "description" : "The password for this user",
+            "format" : "password",
+            "example" : "MySecretPassword"
+          },
+          "isCustomer" : {
+            "type" : "boolean"
+          },
+          "isEmployee" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "LoginUser" : {
+        "type" : "object",
+        "properties" : {
+          "username" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string",
+            "format" : "password"
+          }
+        }
+      },
+      "Transaction" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "uuid"
+          },
+          "amount" : {
+            "type" : "number"
+          },
+          "date" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "boolean"
+          },
+          "userPerforming" : {
+            "$ref" : "#/components/schemas/User"
+          },
+          "fromAccount" : {
+            "$ref" : "#/components/schemas/Account"
+          },
+          "toAccount" : {
+            "$ref" : "#/components/schemas/Account"
+          }
+        }
+      },
+      "Withdrawal" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "uuid"
+          },
+          "amount" : {
+            "type" : "number"
+          },
+          "date" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "boolean"
+          },
+          "userPerforming" : {
+            "$ref" : "#/components/schemas/User"
+          },
+          "fromAccount" : {
+            "$ref" : "#/components/schemas/Account"
+          },
+          "toAccount" : {
+            "$ref" : "#/components/schemas/Account"
+          }
+        }
+      },
+      "Deposit" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "uuid"
+          },
+          "amount" : {
+            "type" : "number"
+          },
+          "date" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "boolean"
+          },
+          "userPerforming" : {
+            "$ref" : "#/components/schemas/User"
+          },
+          "fromAccount" : {
+            "$ref" : "#/components/schemas/Account"
+          },
+          "toAccount" : {
+            "$ref" : "#/components/schemas/Account"
+          }
+        }
+      }
+    }
+  }
+}
