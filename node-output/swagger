@@ -33,7 +33,8 @@
               "text/plain" : {
                 "schema" : {
                   "type" : "string"
-                }
+                },
+                "example" : ""
               }
             }
           },
@@ -107,7 +108,7 @@
     "/user/{username}/account" : {
       "get" : {
         "tags" : [ "account" ],
-        "summary" : "Get users account",
+        "summary" : "Get users accounts",
         "operationId" : "getUserAccount",
         "parameters" : [ {
           "name" : "username",
@@ -142,10 +143,217 @@
         } ]
       }
     },
-    "/account/deposit" : {
+    "/account/{iban}" : {
+      "put" : {
+        "tags" : [ "account" ],
+        "summary" : "Updates an account.",
+        "description" : "Update an account (only doable by employee).",
+        "operationId" : "updateAccount",
+        "parameters" : [ {
+          "name" : "iban",
+          "in" : "path",
+          "description" : "IBAN of account that needs udating.",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Account to update",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Account"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Update succesfull"
+          },
+          "400" : {
+            "description" : "Invalid account supplied"
+          },
+          "404" : {
+            "description" : "Account not found"
+          }
+        },
+        "security" : [ {
+          "oAuthSample" : [ "employee" ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "account" ],
+        "summary" : "Delete an account",
+        "description" : "deleting an account by its iban",
+        "operationId" : "deleteAccount",
+        "parameters" : [ {
+          "name" : "iban",
+          "in" : "path",
+          "description" : "The accounts iban",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates success"
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        },
+        "security" : [ {
+          "oAuthSample" : [ "employee" ]
+        } ]
+      }
+    },
+    "/account/transaction" : {
+      "get" : {
+        "tags" : [ "account" ],
+        "summary" : "Fetches list of transactions",
+        "description" : "Fetches transactions",
+        "operationId" : "getTransactions",
+        "parameters" : [ {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "maximum" : 50,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The fetched transactions",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        },
+        "security" : [ {
+          "oAuthSample" : [ "user", "employee" ]
+        } ]
+      },
       "post" : {
         "tags" : [ "account" ],
-        "summary" : "deposit to another account",
+        "summary" : "A transaction between two current accounts.",
+        "operationId" : "transaction",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Transaction"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          },
+          "400" : {
+            "description" : "Invalid parameters."
+          }
+        },
+        "security" : [ {
+          "oAuthSample" : [ "customer" ]
+        } ]
+      }
+    },
+    "/account/deposit" : {
+      "get" : {
+        "tags" : [ "account" ],
+        "summary" : "Fetches list of deposits",
+        "description" : "Fetches deposists",
+        "operationId" : "getDeposits",
+        "parameters" : [ {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "maximum" : 50,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The fetched deposits",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Deposit"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        },
+        "security" : [ {
+          "oAuthSample" : [ "user", "employee" ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "account" ],
+        "summary" : "Deposit from current to savings account",
         "operationId" : "deposit",
         "requestBody" : {
           "description" : "deposit to create",
@@ -171,9 +379,63 @@
       }
     },
     "/account/withdrawal" : {
+      "get" : {
+        "tags" : [ "account" ],
+        "summary" : "Fetches list of withdrawals",
+        "description" : "Fetches withdrawals",
+        "operationId" : "getWithdrawals",
+        "parameters" : [ {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "maximum" : 50,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The fetched withdrawals.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        },
+        "security" : [ {
+          "oAuthSample" : [ "user", "employee" ]
+        } ]
+      },
       "post" : {
         "tags" : [ "account" ],
-        "summary" : "deposit to another account",
+        "summary" : "Withdraw from savings to current account.",
         "operationId" : "withdrawal",
         "requestBody" : {
           "description" : "deposit to create",
@@ -201,7 +463,7 @@
     "/users" : {
       "get" : {
         "tags" : [ "user" ],
-        "summary" : "Fetches users",
+        "summary" : "Fetches list of users",
         "description" : "Fetches users",
         "operationId" : "getUsers",
         "parameters" : [ {
@@ -254,14 +516,14 @@
         } ]
       }
     },
-    "/user/{username}" : {
+    "/user/{id}" : {
       "get" : {
         "tags" : [ "user" ],
-        "summary" : "Fetches a single user",
+        "summary" : "Fetches a single user by username",
         "description" : "Fetches a single user",
         "operationId" : "getUserByUsername",
         "parameters" : [ {
-          "name" : "username",
+          "name" : "id",
           "in" : "path",
           "description" : "The username",
           "required" : true,
@@ -292,11 +554,11 @@
       },
       "put" : {
         "tags" : [ "user" ],
-        "summary" : "Updated user",
+        "summary" : "Updates a user",
         "description" : "This can only be done by the logged in user.",
         "operationId" : "updateUser",
         "parameters" : [ {
-          "name" : "username",
+          "name" : "id",
           "in" : "path",
           "description" : "name that need to be updated",
           "required" : true,
@@ -337,7 +599,7 @@
         "description" : "deleting a user by his username",
         "operationId" : "deleteUser",
         "parameters" : [ {
-          "name" : "username",
+          "name" : "id",
           "in" : "path",
           "description" : "The username",
           "required" : true,
