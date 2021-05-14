@@ -216,7 +216,7 @@
     },
     "/account/transaction" : {
       "get" : {
-        "tags" : [ "account" ],
+        "tags" : [ "account - transaction" ],
         "summary" : "Fetches list of transactions",
         "description" : "Fetches transactions",
         "operationId" : "getTransactions",
@@ -270,7 +270,7 @@
         } ]
       },
       "post" : {
-        "tags" : [ "account" ],
+        "tags" : [ "account - transaction" ],
         "summary" : "A transaction between two current accounts.",
         "operationId" : "transaction",
         "requestBody" : {
@@ -298,7 +298,7 @@
     },
     "/account/deposit" : {
       "get" : {
-        "tags" : [ "account" ],
+        "tags" : [ "account - deposit" ],
         "summary" : "Fetches list of deposits",
         "description" : "Fetches deposists",
         "operationId" : "getDeposits",
@@ -352,7 +352,7 @@
         } ]
       },
       "post" : {
-        "tags" : [ "account" ],
+        "tags" : [ "account - deposit" ],
         "summary" : "Deposit from current to savings account",
         "operationId" : "deposit",
         "requestBody" : {
@@ -380,7 +380,7 @@
     },
     "/account/withdrawal" : {
       "get" : {
-        "tags" : [ "account" ],
+        "tags" : [ "account - withdrawal" ],
         "summary" : "Fetches list of withdrawals",
         "description" : "Fetches withdrawals",
         "operationId" : "getWithdrawals",
@@ -434,7 +434,7 @@
         } ]
       },
       "post" : {
-        "tags" : [ "account" ],
+        "tags" : [ "account - withdrawal" ],
         "summary" : "Withdraw from savings to current account.",
         "operationId" : "withdrawal",
         "requestBody" : {
@@ -516,16 +516,16 @@
         } ]
       }
     },
-    "/user/{id}" : {
+    "/user/{username}" : {
       "get" : {
         "tags" : [ "user" ],
-        "summary" : "Fetches a single user by username",
-        "description" : "Fetches a single user",
+        "summary" : "Fetches users by (part of) username",
+        "description" : "Fetches users by (part of) username",
         "operationId" : "getUserByUsername",
         "parameters" : [ {
-          "name" : "id",
+          "name" : "username",
           "in" : "path",
-          "description" : "The username",
+          "description" : "the searchterm",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -535,11 +535,54 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "The fetched user",
+            "description" : "The fetched users",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/User"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        },
+        "security" : [ {
+          "oAuthSample" : [ "employee" ]
+        } ]
+      }
+    },
+    "/user/{id}" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Fetches a single user by id",
+        "description" : "Fetches a single user",
+        "operationId" : "getUserById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The fetched users",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/User"
+                  }
                 }
               }
             }
@@ -595,7 +638,7 @@
       },
       "delete" : {
         "tags" : [ "user" ],
-        "summary" : "Delete a user",
+        "summary" : "Deletes a user",
         "description" : "deleting a user by his username",
         "operationId" : "deleteUser",
         "parameters" : [ {
@@ -652,25 +695,42 @@
             "format" : "uuid"
           },
           "username" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "JohnDoe123"
           },
           "firstname" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "John"
           },
           "lastname" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "Doe"
           },
           "email" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "JohnDoe@example.com"
           },
           "phonenumber" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "06-1234567"
           },
           "password" : {
             "type" : "string",
             "description" : "The password for this user",
             "format" : "password",
             "example" : "MySecretPassword"
+          },
+          "dayLimit" : {
+            "type" : "number",
+            "description" : "The limit per day"
+          },
+          "transactionLimit" : {
+            "type" : "number",
+            "description" : "The limit per transaction"
+          },
+          "absoluteLimit" : {
+            "type" : "number",
+            "description" : "The absolute limit of the account (can't be below this)"
           },
           "isCustomer" : {
             "type" : "boolean"
