@@ -188,7 +188,7 @@
       "delete" : {
         "tags" : [ "account" ],
         "summary" : "Delete an account",
-        "description" : "deleting an account by its iban",
+        "description" : "Deletes an account by its iban",
         "operationId" : "deleteAccount",
         "parameters" : [ {
           "name" : "iban",
@@ -769,10 +769,8 @@
             "type" : "number"
           },
           "date" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "boolean"
+            "type" : "string",
+            "example" : "14-05-2021"
           },
           "userPerforming" : {
             "$ref" : "#/components/schemas/User"
@@ -796,10 +794,8 @@
             "type" : "number"
           },
           "date" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "boolean"
+            "type" : "string",
+            "example" : "14-05-2021"
           },
           "userPerforming" : {
             "$ref" : "#/components/schemas/User"
@@ -823,10 +819,8 @@
             "type" : "number"
           },
           "date" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "boolean"
+            "type" : "string",
+            "example" : "14-05-2021"
           },
           "userPerforming" : {
             "$ref" : "#/components/schemas/User"
