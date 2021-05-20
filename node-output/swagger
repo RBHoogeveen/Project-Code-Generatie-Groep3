@@ -6,7 +6,7 @@
     "version" : "v2-oas3"
   },
   "servers" : [ {
-    "url" : "https://virtserver.swaggerhub.com/rubeninjehoofd/testProjectApi/v2",
+    "url" : "https://virtserver.swaggerhub.com/InHollandINFGroup3/ProjectCodeGeneration/v2-oas3",
     "description" : "SwaggerHub API Auto Mocking"
   } ],
   "paths" : {
@@ -45,79 +45,28 @@
         "security" : [ ]
       }
     },
-    "/register" : {
-      "post" : {
-        "tags" : [ "Auth" ],
-        "summary" : "Create new user",
-        "description" : "Making a new user",
-        "operationId" : "registerUser",
-        "requestBody" : {
-          "description" : "Register",
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/User"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Succesfully created the user",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/User"
-                  }
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "invalid input, object invalid"
-          },
-          "401" : {
-            "description" : "Unauthorized acces"
-          },
-          "409" : {
-            "description" : "This user already exists"
-          }
-        },
-        "security" : [ {
-          "oAuthSample" : [ "employee" ]
-        } ]
-      }
-    },
-    "/logout" : {
-      "get" : {
-        "tags" : [ "Auth" ],
-        "summary" : "Logs out current logged in user session",
-        "operationId" : "logoutUser",
-        "responses" : {
-          "200" : {
-            "description" : "Logout succesfull"
-          }
-        },
-        "security" : [ {
-          "oAuthSample" : [ "employee", "customer" ]
-        } ]
-      }
-    },
-    "/user/{username}/account" : {
+    "/accounts" : {
       "get" : {
         "tags" : [ "account" ],
         "summary" : "Get users accounts",
         "operationId" : "getUserAccount",
         "parameters" : [ {
           "name" : "username",
-          "in" : "path",
+          "in" : "query",
           "required" : true,
-          "style" : "simple",
-          "explode" : false,
+          "style" : "form",
+          "explode" : true,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "name" : "include inactive",
+          "in" : "query",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
           }
         } ],
         "responses" : {
@@ -141,9 +90,7 @@
         "security" : [ {
           "oAuthSample" : [ "customer" ]
         } ]
-      }
-    },
-    "/account/{iban}" : {
+      },
       "put" : {
         "tags" : [ "account" ],
         "summary" : "Updates an account.",
@@ -151,11 +98,11 @@
         "operationId" : "updateAccount",
         "parameters" : [ {
           "name" : "iban",
-          "in" : "path",
+          "in" : "query",
           "description" : "IBAN of account that needs udating.",
           "required" : true,
-          "style" : "simple",
-          "explode" : false,
+          "style" : "form",
+          "explode" : true,
           "schema" : {
             "type" : "string"
           }
@@ -192,11 +139,11 @@
         "operationId" : "deleteAccount",
         "parameters" : [ {
           "name" : "iban",
-          "in" : "path",
+          "in" : "query",
           "description" : "The accounts iban",
           "required" : true,
-          "style" : "simple",
-          "explode" : false,
+          "style" : "form",
+          "explode" : true,
           "schema" : {
             "type" : "string"
           }
@@ -214,7 +161,7 @@
         } ]
       }
     },
-    "/account/transaction" : {
+    "/accounts/transaction" : {
       "get" : {
         "tags" : [ "account - transaction" ],
         "summary" : "Fetches list of transactions",
@@ -296,7 +243,7 @@
         } ]
       }
     },
-    "/account/deposit" : {
+    "/accounts/deposit" : {
       "get" : {
         "tags" : [ "account - deposit" ],
         "summary" : "Fetches list of deposits",
@@ -378,7 +325,7 @@
         } ]
       }
     },
-    "/account/withdrawal" : {
+    "/accounts/withdrawal" : {
       "get" : {
         "tags" : [ "account - withdrawal" ],
         "summary" : "Fetches list of withdrawals",
@@ -514,21 +461,64 @@
         "security" : [ {
           "oAuthSample" : [ "employee" ]
         } ]
+      },
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Create new user",
+        "description" : "Making a new user",
+        "operationId" : "registerUser",
+        "requestBody" : {
+          "description" : "Register",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Succesfully created the user",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "401" : {
+            "description" : "Unauthorized acces"
+          },
+          "409" : {
+            "description" : "This user already exists"
+          }
+        },
+        "security" : [ {
+          "oAuthSample" : [ "employee" ]
+        } ]
       }
     },
-    "/user/{username}" : {
+    "/users/searchTerm" : {
       "get" : {
         "tags" : [ "user" ],
         "summary" : "Fetches users by (part of) username",
         "description" : "Fetches users by (part of) username",
         "operationId" : "getUserByUsername",
         "parameters" : [ {
-          "name" : "username",
-          "in" : "path",
+          "name" : "searchTerm",
+          "in" : "query",
           "description" : "the searchterm",
           "required" : true,
-          "style" : "simple",
-          "explode" : false,
+          "style" : "form",
+          "explode" : true,
           "schema" : {
             "type" : "string"
           }
@@ -556,7 +546,7 @@
         } ]
       }
     },
-    "/user/{id}" : {
+    "/users/{id}" : {
       "get" : {
         "tags" : [ "user" ],
         "summary" : "Fetches a single user by id",
@@ -682,8 +672,16 @@
           "balance" : {
             "type" : "number"
           },
-          "user" : {
-            "$ref" : "#/components/schemas/User"
+          "absoluteLimit" : {
+            "type" : "number",
+            "description" : "The absolute limit of the account (can't be below this)"
+          },
+          "userID" : {
+            "type" : "string",
+            "example" : "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "isActive" : {
+            "type" : "boolean"
           }
         }
       },
@@ -728,21 +726,14 @@
             "type" : "number",
             "description" : "The limit per transaction"
           },
-          "absoluteLimit" : {
-            "type" : "number",
-            "description" : "The absolute limit of the account (can't be below this)"
-          },
           "isCustomer" : {
             "type" : "boolean"
           },
           "isEmployee" : {
             "type" : "boolean"
           },
-          "accounts" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Account"
-            }
+          "isActive" : {
+            "type" : "boolean"
           }
         }
       },
