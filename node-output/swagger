@@ -88,7 +88,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "customer" ]
+          "bearerAuth" : [ ]
         } ]
       },
       "put" : {
@@ -129,35 +129,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "employee" ]
-        } ]
-      },
-      "delete" : {
-        "tags" : [ "account" ],
-        "summary" : "Delete an account",
-        "description" : "Deletes an account by its iban",
-        "operationId" : "deleteAccount",
-        "parameters" : [ {
-          "name" : "iban",
-          "in" : "query",
-          "description" : "The accounts iban",
-          "required" : true,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Indicates success"
-          },
-          "400" : {
-            "description" : "bad input parameter"
-          }
-        },
-        "security" : [ {
-          "oAuthSample" : [ "employee" ]
+          "bearerAuth" : [ ]
         } ]
       }
     },
@@ -213,7 +185,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "user", "employee" ]
+          "bearerAuth" : [ ]
         } ]
       },
       "post" : {
@@ -239,7 +211,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "customer" ]
+          "bearerAuth" : [ ]
         } ]
       }
     },
@@ -295,7 +267,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "user", "employee" ]
+          "bearerAuth" : [ ]
         } ]
       },
       "post" : {
@@ -321,7 +293,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "customer" ]
+          "bearerAuth" : [ ]
         } ]
       }
     },
@@ -377,7 +349,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "user", "employee" ]
+          "bearerAuth" : [ ]
         } ]
       },
       "post" : {
@@ -403,7 +375,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "customer" ]
+          "bearerAuth" : [ ]
         } ]
       }
     },
@@ -459,7 +431,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "employee" ]
+          "bearerAuth" : [ ]
         } ]
       },
       "post" : {
@@ -502,7 +474,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "employee" ]
+          "bearerAuth" : [ ]
         } ]
       }
     },
@@ -542,7 +514,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "employee" ]
+          "bearerAuth" : [ ]
         } ]
       }
     },
@@ -582,7 +554,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "employee" ]
+          "bearerAuth" : [ ]
         } ]
       },
       "put" : {
@@ -623,35 +595,7 @@
           }
         },
         "security" : [ {
-          "oAuthSample" : [ "employee" ]
-        } ]
-      },
-      "delete" : {
-        "tags" : [ "user" ],
-        "summary" : "Deletes a user",
-        "description" : "deleting a user by his username",
-        "operationId" : "deleteUser",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "The username",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Indicates success"
-          },
-          "400" : {
-            "description" : "bad input parameter"
-          }
-        },
-        "security" : [ {
-          "oAuthSample" : [ "employee" ]
+          "bearerAuth" : [ ]
         } ]
       }
     }
@@ -826,17 +770,10 @@
       }
     },
     "securitySchemes" : {
-      "oAuthSample" : {
-        "type" : "oauth2",
-        "flows" : {
-          "implicit" : {
-            "authorizationUrl" : "https://api.example.com/oauth2/authorize",
-            "scopes" : {
-              "customer" : "customer access",
-              "employee" : "employee access"
-            }
-          }
-        }
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
       }
     }
   }
