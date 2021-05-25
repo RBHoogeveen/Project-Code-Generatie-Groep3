@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.util.List;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -7,6 +8,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -53,6 +58,9 @@ public class User   {
 
   @JsonProperty("transactionLimit")
   private BigDecimal transactionLimit = null;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  private List<Role> roles;
 
   public User id(Integer id) {
     this.id = id;
@@ -297,6 +305,13 @@ public class User   {
     this.transactionLimit = transactionLimit;
   }
 
+  public List<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Role> roles) {
+    this.roles = roles;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {

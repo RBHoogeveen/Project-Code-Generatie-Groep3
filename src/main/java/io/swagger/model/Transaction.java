@@ -9,6 +9,8 @@ import io.swagger.model.Account;
 import io.swagger.model.User;
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Entity;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
