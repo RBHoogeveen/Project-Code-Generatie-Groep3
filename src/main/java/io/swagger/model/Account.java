@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.User;
 import java.math.BigDecimal;
+
+import org.iban4j.Iban;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -20,7 +22,7 @@ import javax.validation.constraints.*;
 
 public class Account   {
   @JsonProperty("iban")
-  private Long iban = null;
+  private Iban iban = null;
 
   @JsonProperty("type")
   private Boolean type = null;
@@ -34,7 +36,7 @@ public class Account   {
   @JsonProperty("user")
   private User user = null;
 
-  public Account iban(Long iban) {
+  public Account iban(Iban iban) {
     this.iban = iban;
     return this;
   }
@@ -46,11 +48,11 @@ public class Account   {
   @ApiModelProperty(value = "")
 
 
-  public Long getIban() {
+  public Iban getIban() {
     return iban;
   }
 
-  public void setIban(Long iban) {
+  public void setIban(Iban iban) {
     this.iban = iban;
   }
 
