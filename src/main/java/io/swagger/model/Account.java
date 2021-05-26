@@ -10,6 +10,10 @@ import java.math.BigDecimal;
 
 import org.iban4j.Iban;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -19,8 +23,13 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
-
+@Entity
 public class Account   {
+
+  @Id
+  @GeneratedValue
+  private long id;
+
   @JsonProperty("iban")
   private Iban iban = null;
 
