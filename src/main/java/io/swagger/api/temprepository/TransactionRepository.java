@@ -1,4 +1,4 @@
-package io.swagger.api;
+package io.swagger.api.temprepository;
 
 import io.swagger.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,5 +1,6 @@
-package io.swagger.api;
+package io.swagger.api.tempservice;
 
+import io.swagger.api.temprepository.TransactionRepository;
 import io.swagger.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,8 +10,8 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-
     public void SaveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
     }
+
 }
