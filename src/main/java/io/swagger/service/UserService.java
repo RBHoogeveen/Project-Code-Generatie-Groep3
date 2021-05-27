@@ -15,3 +15,4 @@ public class UserService {
         return userRepository.getOne(userId);
     }
 }
+
