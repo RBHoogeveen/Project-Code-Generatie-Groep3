@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -22,8 +23,10 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
+@Entity
 public class Withdrawal   {
-
+  @Id
+  @GeneratedValue
   @JsonProperty("id")
   private Integer id = null;
 
@@ -36,12 +39,15 @@ public class Withdrawal   {
   @JsonProperty("type")
   private Boolean type = null;
 
+  @ManyToOne
   @JsonProperty("userPerforming")
   private User userPerforming = null;
 
+  @ManyToOne
   @JsonProperty("fromAccount")
   private Account fromAccount = null;
 
+  @ManyToOne
   @JsonProperty("toAccount")
   private Account toAccount = null;
 

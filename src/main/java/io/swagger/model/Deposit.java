@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -36,12 +37,15 @@ public class Deposit   {
   @JsonProperty("type")
   private Boolean type = null;
 
+  @ManyToOne
   @JsonProperty("userPerforming")
   private User userPerforming = null;
 
+  @ManyToOne
   @JsonProperty("fromAccount")
   private Account fromAccount = null;
 
+  @ManyToOne
   @JsonProperty("toAccount")
   private Account toAccount = null;
 
