@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -33,7 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
       filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
-    catch (CustomException e) {
+    catch (ResponseStatusException e) {
       SecurityContextHolder.clearContext();
       e.printStackTrace();
       return;
