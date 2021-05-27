@@ -1,6 +1,6 @@
-package io.swagger.api.tempservice;
+package io.swagger.service;
 
-import io.swagger.api.temprepository.TransactionRepository;
+import io.swagger.repository.TransactionRepository;
 import io.swagger.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
