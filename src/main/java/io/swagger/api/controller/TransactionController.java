@@ -31,18 +31,24 @@ public class TransactionController {
         }
     }
 
-    //TODO if statements toevoegen voor checks
+    //TODO if statements toevoegen voor checks absolute limit, daylimit en transaction limt OFWEL JE MOET USER OOK HEBBEN
     //method to perform the transaction
-    public ResponseEntity<Account> PerformTransaction(@RequestBody Long performerUserId, BigDecimal amount, Iban receiverIban) {
+    public ResponseEntity<Account> PerformTransaction(@RequestBody Long performerUserId, BigDecimal amount, String receiverIban) {
         try {
             //get the account performing that wants to perform the transaction
             Account performerAccount = accountService.getUserAccountById(performerUserId);
+
+            //get the performer user (maybe user will be the parameter instead of userid in the future)
+            //User performerUser = userService.getUserById(performerUserId);
 
             //get the receiver account
             Account receiverAccount = accountService.getUserAccountByIban(receiverIban);
 
             //make the transaction
             Transaction transaction = performerAccount.MakeTransaction(amount, receiverAccount, performerAccount);
+
+            //subtract amount from performer and add to receiver
+            //TODO code om bedrag over te maken
 
             //save the transaction
             transactionService.SaveTransaction(transaction);

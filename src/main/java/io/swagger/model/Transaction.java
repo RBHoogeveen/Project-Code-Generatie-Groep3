@@ -14,9 +14,7 @@ import java.math.BigDecimal;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -42,18 +40,23 @@ public class Transaction {
     @JsonProperty("type")
     private Boolean type = null;
 
+    @ManyToOne
     @JsonProperty("userPerforming")
     private User userPerforming = null;
 
+    @ManyToOne
     @JsonProperty("fromAccount")
     private Account fromAccount = null;
 
+    @ManyToOne
     @JsonProperty("toAccount")
     private Account toAccount = null;
 
+    //empty constructor for the spring annotations
     public Transaction() {
     }
 
+    //TODO onetomany etc ff nachecken
     public Transaction id(Long id) {
         this.id = id;
         return this;

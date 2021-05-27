@@ -11,5 +11,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query(value = "SELECT * FROM Account WHERE userID = ?1", nativeQuery = true)
     public Account getAccountByUserId(Long userId);
 
-    public Account getAccountByIban(Iban iban);
+    public Account getAccountByIban(String iban);
 }

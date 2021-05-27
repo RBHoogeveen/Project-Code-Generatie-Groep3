@@ -17,10 +17,13 @@ public class AccountService {
     }
 
    //get account by iban
-   public Account getUserAccountByIban(Iban iban) {
+   public Account getUserAccountByIban(String iban) {
         return accountRepository.getAccountByIban(iban);
    }
 
+   public void updateBalance() {
+
+   }
    //perform transaction
     public void PerformTransAction() {
 

@@ -14,9 +14,7 @@ import java.math.BigDecimal;
 import org.iban4j.Iban;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.Valid;
 
 /**
@@ -31,8 +29,9 @@ public class Account {
     @GeneratedValue
     private Long accountId;
 
+
     @JsonProperty("iban")
-    private Iban iban = null;
+    private String iban = null;
 
     @JsonProperty("type")
     private Boolean type = null;
@@ -43,13 +42,18 @@ public class Account {
     @JsonProperty("balance")
     private BigDecimal balance = null;
 
+    @ManyToOne
     @JsonProperty("user")
     private User user = null;
+
+    @OneToOne
+    @JsonProperty("transaction")
+    private Transaction transaction = null;
 
     public Account() {
     }
 
-    public Account iban(Iban iban) {
+    public Account iban(String iban) {
         this.iban = iban;
         return this;
     }
@@ -58,7 +62,7 @@ public class Account {
     //method to perform a transaction
     public Transaction MakeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount) {
         //prepare the transaction
-        Transaction transaction = new Transaction();
+        this.transaction = new Transaction();
         transaction.setAmount(amount);
         String timeOfTransaction = convertNowToString();
         transaction.setDate(timeOfTransaction);
@@ -85,11 +89,11 @@ public class Account {
     @ApiModelProperty(value = "")
 
 
-    public Iban getIban() {
+    public String getIban() {
         return iban;
     }
 
-    public void setIban(Iban iban) {
+    public void setIban(String iban) {
         this.iban = iban;
     }
 
