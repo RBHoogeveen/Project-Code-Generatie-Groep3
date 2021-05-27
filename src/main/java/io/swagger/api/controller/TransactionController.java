@@ -1,9 +1,11 @@
 package io.swagger.api.controller;
 
+import io.swagger.model.User;
 import io.swagger.service.AccountService;
 import io.swagger.service.TransactionService;
 import io.swagger.model.Account;
 import io.swagger.model.Transaction;
+import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,9 @@ public class TransactionController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/transaction", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveTransaction(@RequestBody Transaction transaction) {
@@ -38,7 +43,7 @@ public class TransactionController {
             Account performerAccount = accountService.getUserAccountById(performerUserId);
 
             //get the performer user (maybe user will be the parameter instead of userid in the future)
-            //User performerUser = userService.getUserById(performerUserId);
+            User performerUser = userService.getUserById(performerUserId);
 
             //get the receiver account
             Account receiverAccount = accountService.getUserAccountByIban(receiverIban);
