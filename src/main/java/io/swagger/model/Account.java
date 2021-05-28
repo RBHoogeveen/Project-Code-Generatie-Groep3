@@ -50,6 +50,9 @@ public class Account {
     @JsonProperty("transaction")
     private Transaction transaction = null;
 
+    @JsonProperty("absoluteLimit")
+    private BigDecimal absoluteLimit = null;
+
     public Account() {
     }
 
@@ -184,6 +187,21 @@ public class Account {
     }
 
 
+    /**
+     * Get absoluteLimit
+     * @return absoluteLimit
+     **/
+    @ApiModelProperty(value = "")
+
+    @Valid
+
+    public BigDecimal getAbsoluteLimit() {
+        return absoluteLimit;
+    }
+
+    public void setAbsoluteLimit(BigDecimal absoluteLimit) {
+        this.absoluteLimit = absoluteLimit;
+    }
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) {
