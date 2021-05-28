@@ -31,13 +31,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         Authentication auth = jwtTokenProvider.getAuthentication(token);
         SecurityContextHolder.getContext().setAuthentication(auth);
       }
-
-      filterChain.doFilter(httpServletRequest, httpServletResponse);
-    }
-    catch (ResponseStatusException e) {
+    } catch (ResponseStatusException e) {
       SecurityContextHolder.clearContext();
-      e.printStackTrace();
+      httpServletResponse.sendError(e.getRawStatusCode(), e.getMessage());
       return;
     }
+    filterChain.doFilter(httpServletRequest, httpServletResponse);
   }
 }
