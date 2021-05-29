@@ -35,7 +35,6 @@ public class TransactionController {
         }
     }
 
-    //TODO if statements toevoegen voor checks absolute limit, daylimit en transaction limt OFWEL JE MOET USER OOK HEBBEN
     //method to perform the transaction
     public ResponseEntity<?> PerformTransaction(@RequestBody Long performerUserId, BigDecimal amount, String receiverIban) {
         try {

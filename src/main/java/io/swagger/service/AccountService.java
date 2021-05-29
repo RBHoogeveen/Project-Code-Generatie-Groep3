@@ -43,12 +43,46 @@ public class AccountService {
         return accountRepository.getAccountByIban(iban);
     }
 
-    public void updateBalance() {
+    public void updateBalance(Account performerAccount, Account receiverAccount, BigDecimal amount) {
+        try {
+            //get balance from performer account
+            BigDecimal performerBalance = getBalanceByIban(performerAccount.getIban());
 
+            //get balance from receiver account
+            BigDecimal receiverBalance = getBalanceByIban(receiverAccount.getIban());
+
+            //take amount from performer and add to receiver
+            BigDecimal newPerformerBalance = performerBalance.subtract(amount);
+            BigDecimal newReceiverBalance = receiverBalance.add(amount);
+
+            //update balance of performer
+            accountRepository.UpdateBalance(performerAccount.getIban(), newPerformerBalance);
+
+            //update day spent of performer
+            BigDecimal daySpent = getDaySpent(performerAccount.getUser().getId());
+            BigDecimal newDaySpent = daySpent.add(amount);
+            updateDaySpent(performerAccount.getUser().getId(), newDaySpent);
+
+            //update balance of receiver
+            accountRepository.UpdateBalance(receiverAccount.getIban(), newReceiverBalance);
+        } catch (Exception e) {
+            //TODO exception handling
+        }
     }
 
-    //TODO update balance bij performer en receiver
-    //TODO update daySpent bij performer
+    public BigDecimal getDaySpent(Integer userId) {
+        return userService.getDaySpent(userId);
+    }
+
+    public void updateDaySpent(Integer userId, BigDecimal newDaySpent) {
+        userService.updateDaySpent(userId, newDaySpent);
+    }
+
+    public BigDecimal getBalanceByIban(String iban) {
+        return accountRepository.getBalanceByIban(iban);
+    }
+
+    //TODO manier vinden om dayspent te resetten
     public Transaction PerformTransaction(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
         //get the account performing that wants to perform the transaction
         Account performerAccount = getUserAccountById(performerUserId);
@@ -75,7 +109,12 @@ public class AccountService {
         }
         //Make the transaction
         Transaction transaction = performerAccount.MakeTransaction(amount, receiverAccount, performerAccount);
+
+        //save the transaction
         transactionService.SaveTransaction(transaction);
+
+        //execute transaction
+        updateBalance(performerAccount, receiverAccount, amount);
         return transaction;
     }
 }
