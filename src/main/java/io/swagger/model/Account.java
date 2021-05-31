@@ -50,8 +50,17 @@ public class Account {
     @JsonProperty("transaction")
     private Transaction transaction = null;
 
+    @OneToOne
+    @JsonProperty("deposit")
+    private Deposit deposit = null;
+
+    @OneToOne
+    @JsonProperty("withdrawal")
+    private Withdrawal withdrawal = null;
+
     @JsonProperty("absoluteLimit")
     private BigDecimal absoluteLimit = null;
+
 
     public Account() {
     }
@@ -73,7 +82,32 @@ public class Account {
         transaction.setFromAccount(performerAccount);
         transaction.setToAccount(receiverAccount);
         return transaction;
-        //TODO amount van userperforming weghalen en bij receiver erbij doen
+    }
+
+    //method to perform a deposit
+    public Deposit MakeDeposit(BigDecimal amount, Account receiverAccount, Account performerAccount) {
+        //prepare the withdrawal
+        this.deposit = new Deposit();
+        deposit.setAmount(amount);
+        String timeOfDeposit = convertNowToString();
+        deposit.setDate(timeOfDeposit);
+        deposit.setUserPerforming(performerAccount.getUser());
+        deposit.setFromAccount(performerAccount);
+        deposit.setToAccount(receiverAccount);
+        return deposit;
+    }
+
+    //method to perform a withdrawal
+    public Withdrawal MakeWithdrawal(BigDecimal amount, Account receiverAccount, Account performerAccount) {
+        //prepare the withdrawal
+        this.withdrawal = new Withdrawal();
+        withdrawal.setAmount(amount);
+        String timeOfWithdrawel = convertNowToString();
+        withdrawal.setDate(timeOfWithdrawel);
+        withdrawal.setUserPerforming(performerAccount.getUser());
+        withdrawal.setFromAccount(performerAccount);
+        withdrawal.setToAccount(receiverAccount);
+        return withdrawal;
     }
 
     //method to convert now to string
@@ -84,6 +118,12 @@ public class Account {
         String timeOfTransaction = df.format(now);
         return timeOfTransaction;
     }
+
+    public Boolean getType() {
+        return type;
+    }
+
+
     /**
      * Get iban
      *

@@ -3,20 +3,14 @@ package io.swagger.model;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.Account;
-import io.swagger.model.User;
 
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 /**
  * Transaction
@@ -51,6 +45,17 @@ public class Transaction {
     @ManyToOne
     @JsonProperty("toAccount")
     private Account toAccount = null;
+
+    @JsonProperty("transferType")
+    private TransferType transferType = null;
+
+    public TransferType getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(TransferType transferType) {
+        this.transferType = transferType;
+    }
 
     //empty constructor for the spring annotations
     public Transaction() {
