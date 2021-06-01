@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import java.math.BigDecimal;
 
 @Service
 public class UserService {
@@ -48,4 +49,16 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username already in use");
     }
   }
+  
+  public User getUserById(Long userId) {
+        return userRepository.getOne(userId);
+    }
+
+    public BigDecimal getDaySpent(Integer userId) {
+        return userRepository.getDaySpent(userId);
+    }
+
+    public void updateDaySpent(Integer userId, BigDecimal newDaySpent) {
+        userRepository.updateDaySpent(userId, newDaySpent);
+    }
 }

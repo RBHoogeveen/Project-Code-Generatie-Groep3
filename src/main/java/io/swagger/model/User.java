@@ -50,11 +50,17 @@ public class User   {
   @JsonProperty("dayLimit")
   private BigDecimal dayLimit = null;
 
+  @JsonProperty("daySpent")
+  private BigDecimal daySpent = null;
+
   @JsonProperty("transactionLimit")
   private BigDecimal transactionLimit = null;
 
   @ElementCollection(fetch = FetchType.EAGER)
   private List<Role> roles;
+  
+  public User() {
+  }
 
   public User id(Integer id) {
     this.id = id;
@@ -210,6 +216,7 @@ public class User   {
 
   public void setAbsoluteLimit(BigDecimal absoluteLimit) {
     this.absoluteLimit = absoluteLimit;
+
   }
 
   public User dayLimit(BigDecimal dayLimit) {
@@ -220,7 +227,7 @@ public class User   {
   /**
    * Get dayLimit
    * @return dayLimit
-  **/
+   **/
   @ApiModelProperty(value = "")
 
   @Valid
@@ -236,6 +243,22 @@ public class User   {
   public User transactionLimit(BigDecimal transactionLimit) {
     this.transactionLimit = transactionLimit;
     return this;
+  }
+
+  /**
+   * Get daySpent
+   * @return daySpent
+   **/
+  @ApiModelProperty(value = "")
+
+  @Valid
+
+  public BigDecimal getDaySpent() {
+    return daySpent;
+  }
+
+  public void setDaySpent(BigDecimal daySpent) {
+    this.daySpent = daySpent;
   }
 
   /**
