@@ -155,6 +155,7 @@ public class AccountService {
         return performerAndReceiver;
     }
 
+    //method to determine validity of the transaction
     private boolean ValidTransaction(Account[] performerAndReceiver) {
         int valid = 0;
 
@@ -172,6 +173,7 @@ public class AccountService {
         return valid == 2;
     }
 
+    //method to determine validity of the deposit
     private boolean ValidDeposit(Account[] performerAndReceiver) {
         int valid = 0;
 
@@ -189,6 +191,7 @@ public class AccountService {
         return valid == 2;
     }
 
+    //method to determine validity of the withdrawal
     private boolean ValidWithdrawal(Account[] performerAndReceiver) {
         int valid = 0;
 
