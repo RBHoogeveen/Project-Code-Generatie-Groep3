@@ -44,12 +44,6 @@ public class User   {
   @JsonProperty("password")
   private String password = null;
 
-  @JsonProperty("isCustomer")
-  private Boolean isCustomer = null;
-
-  @JsonProperty("isEmployee")
-  private Boolean isEmployee = null;
-
   @JsonProperty("absoluteLimit")
   private BigDecimal absoluteLimit = null;
 
@@ -202,51 +196,6 @@ public class User   {
     this.password = password;
   }
 
-  public User isCustomer(Boolean isCustomer) {
-    this.isCustomer = isCustomer;
-    return this;
-  }
-
-  /**
-   * Get isCustomer
-   * @return isCustomer
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public Boolean isIsCustomer() {
-    return isCustomer;
-  }
-
-  public void setIsCustomer(Boolean isCustomer) {
-    this.isCustomer = isCustomer;
-  }
-
-  public User isEmployee(Boolean isEmployee) {
-    this.isEmployee = isEmployee;
-    return this;
-  }
-
-  /**
-   * Get isEmployee
-   * @return isEmployee
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public Boolean isIsEmployee() {
-    return isEmployee;
-  }
-
-  public void setIsEmployee(Boolean isEmployee) {
-    this.isEmployee = isEmployee;
-  }
-
-  public User absoluteLimit(BigDecimal absoluteLimit) {
-    this.absoluteLimit = absoluteLimit;
-    return this;
-  }
-
   /**
    * Get absoluteLimit
    * @return absoluteLimit
@@ -329,8 +278,6 @@ public class User   {
         Objects.equals(this.email, user.email) &&
         Objects.equals(this.phonenumber, user.phonenumber) &&
         Objects.equals(this.password, user.password) &&
-        Objects.equals(this.isCustomer, user.isCustomer) &&
-        Objects.equals(this.isEmployee, user.isEmployee) &&
         Objects.equals(this.absoluteLimit, user.absoluteLimit) &&
         Objects.equals(this.dayLimit, user.dayLimit) &&
         Objects.equals(this.transactionLimit, user.transactionLimit);
@@ -338,7 +285,7 @@ public class User   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, isCustomer, isEmployee, absoluteLimit, dayLimit, transactionLimit);
+    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, absoluteLimit, dayLimit, transactionLimit);
   }
 
   @Override
@@ -353,8 +300,6 @@ public class User   {
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    phonenumber: ").append(toIndentedString(phonenumber)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("    isCustomer: ").append(toIndentedString(isCustomer)).append("\n");
-    sb.append("    isEmployee: ").append(toIndentedString(isEmployee)).append("\n");
     sb.append("    absoluteLimit: ").append(toIndentedString(absoluteLimit)).append("\n");
     sb.append("    dayLimit: ").append(toIndentedString(dayLimit)).append("\n");
     sb.append("    transactionLimit: ").append(toIndentedString(transactionLimit)).append("\n");
