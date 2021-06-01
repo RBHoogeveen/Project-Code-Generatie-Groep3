@@ -15,7 +15,7 @@ public class LoginController {
   @Autowired
   UserService userService;
 
-  @PostMapping("/login")
+  @PostMapping("/login2")
   public String login(@RequestBody LoginDTO login){
     return userService.login(login.getUsername(), login.getPassword());
   }
