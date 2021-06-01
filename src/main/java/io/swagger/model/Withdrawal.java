@@ -54,6 +54,9 @@ public class Withdrawal {
   @JsonProperty("transferType")
   private TransferType transferType = null;
 
+  public Withdrawal() {
+  }
+
   public TransferType getTransferType() {
     return transferType;
   }
