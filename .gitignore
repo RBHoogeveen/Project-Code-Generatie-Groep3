@@ -87,3 +87,4 @@ buildNumber.properties
 .idea
 *.iml
 *.iws
+*.class

@@ -7,6 +7,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -16,8 +20,10 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
-
+@Entity
 public class User   {
+  @Id
+  @GeneratedValue
   @JsonProperty("id")
   private Integer id = null;
 
@@ -45,14 +51,17 @@ public class User   {
   @JsonProperty("isEmployee")
   private Boolean isEmployee = null;
 
-  @JsonProperty("absoluteLimit")
-  private BigDecimal absoluteLimit = null;
-
   @JsonProperty("dayLimit")
   private BigDecimal dayLimit = null;
 
+  @JsonProperty("daySpent")
+  private BigDecimal daySpent = null;
+
   @JsonProperty("transactionLimit")
   private BigDecimal transactionLimit = null;
+
+  public User() {
+  }
 
   public User id(Integer id) {
     this.id = id;
@@ -234,27 +243,6 @@ public class User   {
     this.isEmployee = isEmployee;
   }
 
-  public User absoluteLimit(BigDecimal absoluteLimit) {
-    this.absoluteLimit = absoluteLimit;
-    return this;
-  }
-
-  /**
-   * Get absoluteLimit
-   * @return absoluteLimit
-  **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public BigDecimal getAbsoluteLimit() {
-    return absoluteLimit;
-  }
-
-  public void setAbsoluteLimit(BigDecimal absoluteLimit) {
-    this.absoluteLimit = absoluteLimit;
-  }
-
   public User dayLimit(BigDecimal dayLimit) {
     this.dayLimit = dayLimit;
     return this;
@@ -263,7 +251,7 @@ public class User   {
   /**
    * Get dayLimit
    * @return dayLimit
-  **/
+   **/
   @ApiModelProperty(value = "")
 
   @Valid
@@ -279,6 +267,22 @@ public class User   {
   public User transactionLimit(BigDecimal transactionLimit) {
     this.transactionLimit = transactionLimit;
     return this;
+  }
+
+  /**
+   * Get daySpent
+   * @return daySpent
+   **/
+  @ApiModelProperty(value = "")
+
+  @Valid
+
+  public BigDecimal getDaySpent() {
+    return daySpent;
+  }
+
+  public void setDaySpent(BigDecimal daySpent) {
+    this.daySpent = daySpent;
   }
 
   /**
@@ -316,14 +320,13 @@ public class User   {
         Objects.equals(this.password, user.password) &&
         Objects.equals(this.isCustomer, user.isCustomer) &&
         Objects.equals(this.isEmployee, user.isEmployee) &&
-        Objects.equals(this.absoluteLimit, user.absoluteLimit) &&
         Objects.equals(this.dayLimit, user.dayLimit) &&
         Objects.equals(this.transactionLimit, user.transactionLimit);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, isCustomer, isEmployee, absoluteLimit, dayLimit, transactionLimit);
+    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, isCustomer, isEmployee, dayLimit, transactionLimit);
   }
 
   @Override
@@ -340,7 +343,6 @@ public class User   {
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    isCustomer: ").append(toIndentedString(isCustomer)).append("\n");
     sb.append("    isEmployee: ").append(toIndentedString(isEmployee)).append("\n");
-    sb.append("    absoluteLimit: ").append(toIndentedString(absoluteLimit)).append("\n");
     sb.append("    dayLimit: ").append(toIndentedString(dayLimit)).append("\n");
     sb.append("    transactionLimit: ").append(toIndentedString(transactionLimit)).append("\n");
     sb.append("}");
