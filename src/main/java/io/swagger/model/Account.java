@@ -199,16 +199,6 @@ public class Account {
         return balance;
     }
 
-
-  @ManyToOne
-  @JsonProperty("user")
-  private User user = null;
-
-  public Account iban(String iban) {
-    this.iban = iban;
-    return this;
-  }
-
   public void setBalance(BigDecimal balance) {
       this.balance = balance;
   }
@@ -227,13 +217,6 @@ public class Account {
 
     @Valid
 
-  public String getIban() {
-    return iban;
-  }
-
-  public void setIban(String iban) {
-    this.iban = iban;
-  }
   
   public User getUser() {
       return user;
