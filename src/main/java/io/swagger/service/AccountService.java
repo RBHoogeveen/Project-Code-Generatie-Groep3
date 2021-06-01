@@ -120,26 +120,90 @@ public class AccountService {
     }
 
     //method to get the performer account and receiver
-    public Account[] GetPerformerAndReceiver(Long performerUserId, String receiverIban, TransferType transferType) {
+    public Account[] GetPerformerAndReceiver(Long performerUserId, String receiverIban, TransferType transferType) throws Exception {
         Account[] performerAndReceiver = new Account[2];
         switch (transferType) {
             //current to current
             case TYPE_TRANSACTION:
                 performerAndReceiver[0] = getCurrentAccountByUserId(performerUserId);
                 performerAndReceiver[1] =  getCurrentAccountByIban(receiverIban);
+
+                //check if the transaction is valid
+                if (!ValidTransaction(performerAndReceiver))
+                    throw new Exception("To make a transaction, the receiver account must have another iban");
                 break;
             case TYPE_DEPOSIT:
                 //current to savings
                 performerAndReceiver[0] = getCurrentAccountByUserId(performerUserId);
                 performerAndReceiver[1] =  getSavingsAccountByIban(receiverIban);
+
+                //check if the deposit is valid
+                if (!ValidDeposit(performerAndReceiver))
+                    throw new Exception("You cannot transfer money directly from your current account to another account's savings account");
+
                 break;
             case TYPE_WITHDRAW:
                 //savings to current
                 performerAndReceiver[0] = getSavingAccountByUserId(performerUserId);
                 performerAndReceiver[1] = getCurrentAccountByIban(receiverIban);
+
+                //check if the withdrawal is valid
+                if (!ValidWithdrawal(performerAndReceiver))
+                    throw new Exception("You cannot transfer money directly from your savings account to another account's current account");
                 break;
         }
         return performerAndReceiver;
+    }
+
+    private boolean ValidTransaction(Account[] performerAndReceiver) {
+        int valid = 0;
+
+        //check if the iban is the same
+        if (!performerAndReceiver[0].getIban().equals(performerAndReceiver[1].getIban())) {
+            valid++;
+        }
+
+        //check if the performer is a current and the receiver a savings
+        if (!performerAndReceiver[0].getType() && !performerAndReceiver[1].getType()) {
+            valid++;
+        }
+
+        //if both true then it is a valid withdrawal
+        return valid == 2;
+    }
+
+    private boolean ValidDeposit(Account[] performerAndReceiver) {
+        int valid = 0;
+
+        //check if the iban is the same
+        if (performerAndReceiver[0].getIban().equals(performerAndReceiver[1].getIban())) {
+            valid++;
+        }
+
+        //check if the performer is a current and the receiver a savings
+        if (!performerAndReceiver[0].getType() && performerAndReceiver[1].getType()) {
+            valid++;
+        }
+
+        //if both true then it is a valid withdrawal
+        return valid == 2;
+    }
+
+    private boolean ValidWithdrawal(Account[] performerAndReceiver) {
+        int valid = 0;
+
+        //check if the iban is the same
+        if (performerAndReceiver[0].getIban().equals(performerAndReceiver[1].getIban())) {
+            valid++;
+        }
+
+        //check if the performer is a savings and the receiver a current
+        if (performerAndReceiver[0].getType() && !performerAndReceiver[1].getType()) {
+            valid++;
+        }
+
+        //if both true then it is a valid withdrawal
+        return valid == 2;
     }
 
     //method to check if the account is a current or savings
@@ -161,7 +225,7 @@ public class AccountService {
 
         //determine if the performers balance is not below the absolute limit
         if (performerAndReceiver[0].getBalance().subtract(amount).compareTo(performerAndReceiver[0].getAbsoluteLimit()) < 0) {
-            throw new Exception("The requested amount to be transferred is below the absolute limit");
+            throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
         }
 
         //check day limit and transaction limit of the user if it is a transaction
@@ -193,7 +257,7 @@ public class AccountService {
 
         //determine if the performers balance is not below the absolute limit
         if (performerAndReceiver[0].getBalance().subtract(amount).compareTo(performerAndReceiver[0].getAbsoluteLimit()) < 0) {
-            throw new Exception("The requested amount to be transferred is below the absolute limit");
+            throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
         }
 
         //check day limit and transaction limit of the user if it is a transaction
@@ -225,7 +289,7 @@ public class AccountService {
 
         //determine if the performers balance is not below the absolute limit
         if (performerAndReceiver[0].getBalance().subtract(amount).compareTo(performerAndReceiver[0].getAbsoluteLimit()) < 0) {
-            throw new Exception("The requested amount to be transferred is below the absolute limit");
+            throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
         }
 
         //check day limit and transaction limit of the user if it is a transaction
