@@ -3,7 +3,9 @@ package io.swagger.service;
 import io.swagger.model.*;
 import io.swagger.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -215,12 +217,25 @@ public class AccountService {
         return account.getType();
     }
 
-    //TODO manier vinden om dayspent te resetten
-    public Transaction PerformTransaction(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
+    public boolean IbanAndAmountCheck(BigDecimal amount, String receiverIban) {
         //check first if the iban exists
         if (accountRepository.getIban(receiverIban).equals("")) {
-            throw new Exception("Target Iban was not found, maybe the account you are looking for does not exist");
+            return true;
         }
+
+        //check if amount is less than zero
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    //TODO manier vinden om dayspent te resetten
+    public Transaction PerformTransaction(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
+        if (IbanAndAmountCheck(amount, receiverIban)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
+        }
+
         //get the performer user (maybe user will be the parameter instead of userid in the future)
         User performerUser = userService.getUserById(performerUserId);
 
@@ -249,9 +264,8 @@ public class AccountService {
 
     //method to perform deposit
     public Deposit PerformDeposit(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
-        //check first if the iban exists
-        if (accountRepository.getIban(receiverIban).equals("")) {
-            throw new Exception("Target Iban was not found, maybe the account you are looking for does not exist");
+        if (IbanAndAmountCheck(amount, receiverIban)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
         //get the performer user (maybe user will be the parameter instead of userid in the future)
         User performerUser = userService.getUserById(performerUserId);
@@ -281,9 +295,8 @@ public class AccountService {
 
     //method to perform deposit
     public Withdrawal PerformWithdrawal(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
-        //check first if the iban exists
-        if (accountRepository.getIban(receiverIban).equals("")) {
-            throw new Exception("Target Iban was not found, maybe the account you are looking for does not exist");
+        if (IbanAndAmountCheck(amount, receiverIban)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
         //get the performer user (maybe user will be the parameter instead of userid in the future)
         User performerUser = userService.getUserById(performerUserId);
