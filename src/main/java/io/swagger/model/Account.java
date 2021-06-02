@@ -29,7 +29,6 @@ public class Account {
     @GeneratedValue
     private Long accountId;
 
-
     @JsonProperty("iban")
     private String iban = null;
 
@@ -200,14 +199,14 @@ public class Account {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
+  public void setBalance(BigDecimal balance) {
+      this.balance = balance;
+  }
 
-    public Account user(User user) {
-        this.user = user;
-        return this;
-    }
+  public Account user(User user) {
+      this.user = user;
+      return this;
+  }
 
     /**
      * Get user
@@ -218,14 +217,14 @@ public class Account {
 
     @Valid
 
-    public User getUser() {
-        return user;
-    }
+  
+  public User getUser() {
+      return user;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
+  public void setUser(User user) {
+      this.user = user;
+  }
 
     /**
      * Get absoluteLimit

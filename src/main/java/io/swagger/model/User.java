@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.util.List;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -8,9 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -45,11 +44,8 @@ public class User   {
   @JsonProperty("password")
   private String password = null;
 
-  @JsonProperty("isCustomer")
-  private Boolean isCustomer = null;
-
-  @JsonProperty("isEmployee")
-  private Boolean isEmployee = null;
+  @JsonProperty("absoluteLimit")
+  private BigDecimal absoluteLimit = null;
 
   @JsonProperty("dayLimit")
   private BigDecimal dayLimit = null;
@@ -60,6 +56,9 @@ public class User   {
   @JsonProperty("transactionLimit")
   private BigDecimal transactionLimit = null;
 
+  @ElementCollection(fetch = FetchType.EAGER)
+  private List<Role> roles;
+  
   public User() {
   }
 
@@ -203,44 +202,21 @@ public class User   {
     this.password = password;
   }
 
-  public User isCustomer(Boolean isCustomer) {
-    this.isCustomer = isCustomer;
-    return this;
-  }
-
   /**
-   * Get isCustomer
-   * @return isCustomer
+   * Get absoluteLimit
+   * @return absoluteLimit
   **/
   @ApiModelProperty(value = "")
 
+  @Valid
 
-  public Boolean isIsCustomer() {
-    return isCustomer;
+  public BigDecimal getAbsoluteLimit() {
+    return absoluteLimit;
   }
 
-  public void setIsCustomer(Boolean isCustomer) {
-    this.isCustomer = isCustomer;
-  }
+  public void setAbsoluteLimit(BigDecimal absoluteLimit) {
+    this.absoluteLimit = absoluteLimit;
 
-  public User isEmployee(Boolean isEmployee) {
-    this.isEmployee = isEmployee;
-    return this;
-  }
-
-  /**
-   * Get isEmployee
-   * @return isEmployee
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public Boolean isIsEmployee() {
-    return isEmployee;
-  }
-
-  public void setIsEmployee(Boolean isEmployee) {
-    this.isEmployee = isEmployee;
   }
 
   public User dayLimit(BigDecimal dayLimit) {
@@ -301,6 +277,13 @@ public class User   {
     this.transactionLimit = transactionLimit;
   }
 
+  public List<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Role> roles) {
+    this.roles = roles;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -318,15 +301,14 @@ public class User   {
         Objects.equals(this.email, user.email) &&
         Objects.equals(this.phonenumber, user.phonenumber) &&
         Objects.equals(this.password, user.password) &&
-        Objects.equals(this.isCustomer, user.isCustomer) &&
-        Objects.equals(this.isEmployee, user.isEmployee) &&
+        Objects.equals(this.absoluteLimit, user.absoluteLimit) &&
         Objects.equals(this.dayLimit, user.dayLimit) &&
         Objects.equals(this.transactionLimit, user.transactionLimit);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, isCustomer, isEmployee, dayLimit, transactionLimit);
+    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, absoluteLimit, dayLimit, transactionLimit);
   }
 
   @Override
@@ -341,8 +323,7 @@ public class User   {
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    phonenumber: ").append(toIndentedString(phonenumber)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("    isCustomer: ").append(toIndentedString(isCustomer)).append("\n");
-    sb.append("    isEmployee: ").append(toIndentedString(isEmployee)).append("\n");
+    sb.append("    absoluteLimit: ").append(toIndentedString(absoluteLimit)).append("\n");
     sb.append("    dayLimit: ").append(toIndentedString(dayLimit)).append("\n");
     sb.append("    transactionLimit: ").append(toIndentedString(transactionLimit)).append("\n");
     sb.append("}");
