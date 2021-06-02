@@ -5,6 +5,8 @@ import io.swagger.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TransactionService {
     @Autowired
@@ -14,4 +16,11 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
+    public Transaction getTransactionById(Long transactionId) {
+        return transactionRepository.getOne(transactionId);
+    }
+
+    public List<Transaction> getTransactionsByUser(Integer userId) {
+        return transactionRepository.getTransactionsByUser(userId);
+    }
 }

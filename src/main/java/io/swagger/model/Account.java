@@ -29,7 +29,6 @@ public class Account {
     @GeneratedValue
     private Long accountId;
 
-
     @JsonProperty("iban")
     private String iban = null;
 
@@ -49,6 +48,18 @@ public class Account {
     @OneToOne
     @JsonProperty("transaction")
     private Transaction transaction = null;
+
+    @OneToOne
+    @JsonProperty("deposit")
+    private Deposit deposit = null;
+
+    @OneToOne
+    @JsonProperty("withdrawal")
+    private Withdrawal withdrawal = null;
+
+    @JsonProperty("absoluteLimit")
+    private BigDecimal absoluteLimit = null;
+
 
     public Account() {
     }
@@ -70,7 +81,32 @@ public class Account {
         transaction.setFromAccount(performerAccount);
         transaction.setToAccount(receiverAccount);
         return transaction;
-        //TODO amount van userperforming weghalen en bij receiver erbij doen
+    }
+
+    //method to perform a deposit
+    public Deposit MakeDeposit(BigDecimal amount, Account receiverAccount, Account performerAccount) {
+        //prepare the withdrawal
+        this.deposit = new Deposit();
+        deposit.setAmount(amount);
+        String timeOfDeposit = convertNowToString();
+        deposit.setDate(timeOfDeposit);
+        deposit.setUserPerforming(performerAccount.getUser());
+        deposit.setFromAccount(performerAccount);
+        deposit.setToAccount(receiverAccount);
+        return deposit;
+    }
+
+    //method to perform a withdrawal
+    public Withdrawal MakeWithdrawal(BigDecimal amount, Account receiverAccount, Account performerAccount) {
+        //prepare the withdrawal
+        this.withdrawal = new Withdrawal();
+        withdrawal.setAmount(amount);
+        String timeOfWithdrawel = convertNowToString();
+        withdrawal.setDate(timeOfWithdrawel);
+        withdrawal.setUserPerforming(performerAccount.getUser());
+        withdrawal.setFromAccount(performerAccount);
+        withdrawal.setToAccount(receiverAccount);
+        return withdrawal;
     }
 
     //method to convert now to string
@@ -81,6 +117,12 @@ public class Account {
         String timeOfTransaction = df.format(now);
         return timeOfTransaction;
     }
+
+    public Boolean getType() {
+        return type;
+    }
+
+
     /**
      * Get iban
      *
@@ -157,14 +199,14 @@ public class Account {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
+  public void setBalance(BigDecimal balance) {
+      this.balance = balance;
+  }
 
-    public Account user(User user) {
-        this.user = user;
-        return this;
-    }
+  public Account user(User user) {
+      this.user = user;
+      return this;
+  }
 
     /**
      * Get user
@@ -175,15 +217,30 @@ public class Account {
 
     @Valid
 
-    public User getUser() {
-        return user;
+  
+  public User getUser() {
+      return user;
+  }
+
+  public void setUser(User user) {
+      this.user = user;
+  }
+
+    /**
+     * Get absoluteLimit
+     * @return absoluteLimit
+     **/
+    @ApiModelProperty(value = "")
+
+    @Valid
+
+    public BigDecimal getAbsoluteLimit() {
+        return absoluteLimit;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAbsoluteLimit(BigDecimal absoluteLimit) {
+        this.absoluteLimit = absoluteLimit;
     }
-
-
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) {

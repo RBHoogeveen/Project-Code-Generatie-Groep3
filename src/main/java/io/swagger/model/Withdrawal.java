@@ -23,8 +23,10 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
-public class Withdrawal   {
-
+@Entity
+public class Withdrawal {
+  @Id
+  @GeneratedValue
   @JsonProperty("id")
   private Integer id = null;
 
@@ -48,6 +50,20 @@ public class Withdrawal   {
   @ManyToOne
   @JsonProperty("toAccount")
   private Account toAccount = null;
+
+  @JsonProperty("transferType")
+  private TransferType transferType = null;
+
+  public Withdrawal() {
+  }
+
+  public TransferType getTransferType() {
+    return transferType;
+  }
+
+  public void setTransferType(TransferType transferType) {
+    this.transferType = transferType;
+  }
 
   public Withdrawal id(Integer id) {
     this.id = id;
