@@ -52,7 +52,7 @@ public interface UserApi {
         @ApiResponse(code = 200, message = "successful operation") })
     @RequestMapping(value = "/user/users",
         method = RequestMethod.GET)
-    ResponseEntity<Void> getListUsers();
+    ResponseEntity<?> getListUsers();
 
 
     @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "", tags={ "account", })
