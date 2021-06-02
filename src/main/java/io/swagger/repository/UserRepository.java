@@ -15,4 +15,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "UPDATE User SET daySpent = ?1 WHERE id = ?2")
     void updateDaySpent(Integer userId, BigDecimal newDaySpent);
+
+    @Query(value = "SELECT * FROM User WHERE id = ?1", nativeQuery = true)
+    void getUserById(Integer userId);
+
+    @Query(value = "SELECT * FROM User", nativeQuery = true)
+    void getUsers();
+
+    @Query(value = "SELECT * FROM User WHERE  ", nativeQuery = true)
+    void getUserBySearchterm(String searchterm);
 }
