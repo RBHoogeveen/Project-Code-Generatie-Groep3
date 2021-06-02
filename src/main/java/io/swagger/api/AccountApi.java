@@ -33,7 +33,7 @@ public interface AccountApi {
     @ApiOperation(value = "Deposit to savings account.", nickname = "deposit", notes = "", tags={ "account", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/account/deposit",
+    @RequestMapping(value = "/accounts/deposit",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
     ResponseEntity<Void> deposit();
@@ -42,7 +42,7 @@ public interface AccountApi {
     @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags={ "account", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/account/transaction",
+    @RequestMapping(value = "/accounts/transaction",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
     ResponseEntity<Void> transaction(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN,@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
@@ -51,7 +51,7 @@ public interface AccountApi {
     @ApiOperation(value = "Withdraw from savings account.", nickname = "withdrawal", notes = "", tags={ "account", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/account/withdrawal",
+    @RequestMapping(value = "/accounts/withdrawal",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
     ResponseEntity<Void> withdrawal();

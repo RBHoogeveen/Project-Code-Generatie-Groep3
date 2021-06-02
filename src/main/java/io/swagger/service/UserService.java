@@ -50,6 +50,7 @@ public class UserService {
     }
   }
 
+  //TODO: implement DTO's to regulate user input, and add checks for each input.
   public User updateUser(User user) {
     User updatedUser = userRepository.getOne(Long.valueOf(user.getId()));
     updatedUser.setUsername(user.getUsername());

@@ -315,6 +315,7 @@ public class AccountService {
         return withdrawal;
     }
 
+    //TODO: implement DTO's to regulate user input, and add checks for each input.
     public Account updateAccount(Account account) {
         Account updatedAccount = accountRepository.getAccountByIban(account.getIban());
         updatedAccount.setAbsoluteLimit(account.getAbsoluteLimit());

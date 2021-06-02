@@ -40,14 +40,14 @@ public interface UserApi {
     @ApiOperation(value = "Fetches users", nickname = "getListUsers", notes = "Fetches users", tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/user/users",
+    @RequestMapping(value = "/users",
         method = RequestMethod.GET)
     ResponseEntity<Void> getListUsers();
 
     @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "", tags={ "account", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/user/{username}/account",
+    @RequestMapping(value = "/users/{username}/account",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<Void> getUserAccount(@ApiParam(value = "",required=true) @PathVariable("username") String username);
@@ -57,7 +57,7 @@ public interface UserApi {
         @ApiResponse(code = 200, message = "successful operation", response = User.class),
         @ApiResponse(code = 400, message = "Invalid username supplied"),
         @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/user/{username}",
+    @RequestMapping(value = "/users/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username);
@@ -66,7 +66,7 @@ public interface UserApi {
     @ApiResponses(value = { 
         @ApiResponse(code = 400, message = "Invalid user supplied"),
         @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/user/{username}",
+    @RequestMapping(value = "/users/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.PUT)
     ResponseEntity<User> updateUser(@ApiParam(value = "Username of name that needs to be updated.",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody User body);
