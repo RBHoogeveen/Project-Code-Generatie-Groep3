@@ -62,3 +62,4 @@ public class UserService {
         userRepository.updateDaySpent(userId, newDaySpent);
     }
 }
+
