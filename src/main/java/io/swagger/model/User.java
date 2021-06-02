@@ -3,15 +3,12 @@ package io.swagger.model;
 import java.util.List;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 /**
  * User
@@ -44,9 +41,6 @@ public class User   {
   @JsonProperty("password")
   private String password = null;
 
-  @JsonProperty("absoluteLimit")
-  private BigDecimal absoluteLimit = null;
-
   @JsonProperty("dayLimit")
   private BigDecimal dayLimit = null;
 
@@ -58,6 +52,9 @@ public class User   {
 
   @ElementCollection(fetch = FetchType.EAGER)
   private List<Role> roles;
+
+  @JsonProperty("isactive")
+  private Boolean isactive = null;
   
   public User() {
   }
@@ -91,8 +88,7 @@ public class User   {
    * Get username
    * @return username
   **/
-  @ApiModelProperty(value = "")
-
+  @ApiModelProperty(example = "test", value = "The username for this user")
 
   public String getUsername() {
     return username;
@@ -111,8 +107,7 @@ public class User   {
    * Get firstname
    * @return firstname
   **/
-  @ApiModelProperty(value = "")
-
+  @ApiModelProperty(example = "John", value = "The users firstname")
 
   public String getFirstname() {
     return firstname;
@@ -131,8 +126,7 @@ public class User   {
    * Get lastname
    * @return lastname
   **/
-  @ApiModelProperty(value = "")
-
+  @ApiModelProperty(example = "Doe", value = "The users lastname")
 
   public String getLastname() {
     return lastname;
@@ -151,8 +145,7 @@ public class User   {
    * Get email
    * @return email
   **/
-  @ApiModelProperty(value = "")
-
+  @ApiModelProperty(example = "John@Doe.com", value = "The users email")
 
   public String getEmail() {
     return email;
@@ -171,8 +164,7 @@ public class User   {
    * Get phonenumber
    * @return phonenumber
   **/
-  @ApiModelProperty(value = "")
-
+  @ApiModelProperty(example = "06 12345678", value = "The password for this user")
 
   public String getPhonenumber() {
     return phonenumber;
@@ -193,7 +185,6 @@ public class User   {
   **/
   @ApiModelProperty(example = "MySecretPassword", value = "The password for this user")
 
-
   public String getPassword() {
     return password;
   }
@@ -203,32 +194,10 @@ public class User   {
   }
 
   /**
-   * Get absoluteLimit
-   * @return absoluteLimit
-  **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public BigDecimal getAbsoluteLimit() {
-    return absoluteLimit;
-  }
-
-  public void setAbsoluteLimit(BigDecimal absoluteLimit) {
-    this.absoluteLimit = absoluteLimit;
-
-  }
-
-  public User dayLimit(BigDecimal dayLimit) {
-    this.dayLimit = dayLimit;
-    return this;
-  }
-
-  /**
    * Get dayLimit
    * @return dayLimit
    **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(example = "1000", value = "The users daily spending limit")
 
   @Valid
 
@@ -262,10 +231,26 @@ public class User   {
   }
 
   /**
+   * Get isActive
+   * @return isActive
+   **/
+  @ApiModelProperty(example = "true", value = "True if the user is active, false if not")
+
+  @Valid
+
+  public Boolean getIsActive() {
+    return isactive;
+  }
+
+  public void setIsActive(Boolean isActive) {
+    this.isactive = isactive;
+  }
+
+  /**
    * Get transactionLimit
    * @return transactionLimit
   **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(example = "500", value = "Maximum amount that can be spend within one transaction")
 
   @Valid
 
@@ -301,14 +286,14 @@ public class User   {
         Objects.equals(this.email, user.email) &&
         Objects.equals(this.phonenumber, user.phonenumber) &&
         Objects.equals(this.password, user.password) &&
-        Objects.equals(this.absoluteLimit, user.absoluteLimit) &&
         Objects.equals(this.dayLimit, user.dayLimit) &&
+        Objects.equals(this.isactive, user.isactive) &&
         Objects.equals(this.transactionLimit, user.transactionLimit);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, absoluteLimit, dayLimit, transactionLimit);
+    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, dayLimit, isactive, transactionLimit);
   }
 
   @Override
@@ -323,8 +308,8 @@ public class User   {
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    phonenumber: ").append(toIndentedString(phonenumber)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("    absoluteLimit: ").append(toIndentedString(absoluteLimit)).append("\n");
     sb.append("    dayLimit: ").append(toIndentedString(dayLimit)).append("\n");
+    sb.append("    isactive: ").append(toIndentedString(isactive)).append("\n");
     sb.append("    transactionLimit: ").append(toIndentedString(transactionLimit)).append("\n");
     sb.append("}");
     return sb.toString();

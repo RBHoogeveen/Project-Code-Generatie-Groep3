@@ -4,6 +4,8 @@ import antlr.collections.List;
 import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.service.UserService;
+import org.iban4j.CountryCode;
+import org.iban4j.Iban;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
@@ -29,9 +31,8 @@ public class Swagger2SpringBoot implements CommandLineRunner {
         User user = new User();
         user.setUsername("test");
         user.setPassword("test");
-        user.setRoles(Arrays.asList(Role.ROLE_USER));
+        user.setRoles(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));
         userService.add(user);
-
     }
 
     @Autowired

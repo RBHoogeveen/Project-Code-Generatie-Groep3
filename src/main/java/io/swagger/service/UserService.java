@@ -49,6 +49,21 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username already in use");
     }
   }
+
+  public User updateUser(User user) {
+    User updatedUser = userRepository.getOne(Long.valueOf(user.getId()));
+    updatedUser.setUsername(user.getUsername());
+    updatedUser.setPassword(user.getPassword());
+    updatedUser.setRoles(user.getRoles());
+    updatedUser.setEmail(user.getEmail());
+    updatedUser.setFirstname(user.getFirstname());
+    updatedUser.setLastname(user.getLastname());
+    updatedUser.setPhonenumber(user.getPhonenumber());
+    updatedUser.setDayLimit(user.getDayLimit());
+    updatedUser.setTransactionLimit(user.getTransactionLimit());
+    userRepository.save(updatedUser);
+    return updatedUser;
+  }
   
   public User getUserById(Long userId) {
         return userRepository.getOne(userId);

@@ -2,8 +2,12 @@ package io.swagger.service;
 
 import io.swagger.model.*;
 import io.swagger.repository.AccountRepository;
+import org.iban4j.CountryCode;
+import org.iban4j.Iban;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -309,5 +313,26 @@ public class AccountService {
         //execute deposit
         updateBalance(performerAndReceiver[0], performerAndReceiver[1], amount);
         return withdrawal;
+    }
+
+    public Account updateAccount(Account account) {
+        Account updatedAccount = accountRepository.getAccountByIban(account.getIban());
+        updatedAccount.setAbsoluteLimit(account.getAbsoluteLimit());
+        updatedAccount.setType(account.getType());
+        updatedAccount.setUser(account.getUser());
+        accountRepository.save(updatedAccount);
+        return updatedAccount;
+    }
+
+    public Account add(Account account) {
+        if (accountRepository.getAccountByIban(account.getIban()) == null){
+            Iban iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
+            account.setIban(iban.toString());
+            accountRepository.save(account);
+            return account;
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "IBAN already in use");
+        }
     }
 }
