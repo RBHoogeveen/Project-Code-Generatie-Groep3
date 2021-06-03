@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import io.swagger.api.AccountApi;
 import io.swagger.model.Account;
+import io.swagger.model.DTO.CreateUpdateAccountDTO;
 import io.swagger.model.User;
 import io.swagger.service.AccountService;
 import org.slf4j.Logger;
@@ -57,14 +58,14 @@ public class AccountApiController implements AccountApi {
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of account that needs to bee updated",required=true) @PathVariable("iban") String iban, @ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody Account body) {
+    public ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of account that needs to bee updated",required=true) @PathVariable("iban") String iban, @ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
         Account updatedAccount = accountService.updateAccount(body);
 
         return new ResponseEntity<Account>(updatedAccount, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody Account body) {
+    public ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
         Account createdAccount = accountService.add(body);
         return new ResponseEntity<Account>(createdAccount, HttpStatus.OK);
     }

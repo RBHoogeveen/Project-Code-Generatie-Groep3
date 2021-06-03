@@ -1,6 +1,7 @@
 package io.swagger.api.controller;
 
 import io.swagger.api.UserApi;
+import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
@@ -40,7 +41,7 @@ public class UserApiController implements UserApi {
     UserService userService = new UserService();
 
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body) {
+    public ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body) {
         User createdUser = userService.add(body);
         return new ResponseEntity<User>(createdUser, HttpStatus.OK);
     }
@@ -80,7 +81,7 @@ public class UserApiController implements UserApi {
         return new ResponseEntity<User>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<User> updateUser(@ApiParam(value = "name that need to be updated",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody User body) {
+    public ResponseEntity<User> updateUser(@ApiParam(value = "name that need to be updated",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body) {
         User updatedUser = userService.updateUser(body);
 
         return new ResponseEntity<User>(updatedUser, HttpStatus.OK);

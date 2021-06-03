@@ -1,7 +1,9 @@
 package io.swagger.service;
 
 import io.swagger.model.*;
+import io.swagger.model.DTO.CreateUpdateAccountDTO;
 import io.swagger.repository.AccountRepository;
+import io.swagger.repository.UserRepository;
 import org.iban4j.CountryCode;
 import org.iban4j.Iban;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import java.util.List;
 public class AccountService {
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     UserService userService;
@@ -315,25 +320,59 @@ public class AccountService {
         return withdrawal;
     }
 
-    //TODO: implement DTO's to regulate user input, and add checks for each input.
-    public Account updateAccount(Account account) {
-        Account updatedAccount = accountRepository.getAccountByIban(account.getIban());
-        updatedAccount.setAbsoluteLimit(account.getAbsoluteLimit());
-        updatedAccount.setType(account.getType());
-        updatedAccount.setUser(account.getUser());
+    public Account updateAccount(CreateUpdateAccountDTO createUpdateAccount) {
+        Account updatedAccount;
+        if (!createUpdateAccount.getType()){
+            updatedAccount = accountRepository.getCurrentAccountByUsername(createUpdateAccount.getUsername());
+        }
+        else if (createUpdateAccount.getType()){
+            updatedAccount = accountRepository.getSavingsAccountByUsername(createUpdateAccount.getUsername());
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");}
+        if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
+            updatedAccount.setAbsoluteLimit(createUpdateAccount.getAbsoluteLimit());
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Absolute limit can't be lower than 0");}
+        if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null){
+            updatedAccount.setUser(userRepository.findByUsername(createUpdateAccount.getUsername()));
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find user with given username.");}
+        if (createUpdateAccount.getBalance().compareTo(updatedAccount.getAbsoluteLimit()) >= 0) {
+            updatedAccount.setBalance(createUpdateAccount.getBalance());
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");}
+        updatedAccount.setIsActive(createUpdateAccount.getActive());
         accountRepository.save(updatedAccount);
         return updatedAccount;
     }
 
-    public Account add(Account account) {
-        if (accountRepository.getAccountByIban(account.getIban()) == null){
+    public Account add(CreateUpdateAccountDTO createUpdateAccount) {
+        if ((accountRepository.getCurrentAccountByUsername(createUpdateAccount.getUsername()) == null) || (accountRepository.getSavingsAccountByUsername(createUpdateAccount.getUsername()) == null)){
+            Account newAccount = new Account();
             Iban iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
-            account.setIban(iban.toString());
-            accountRepository.save(account);
-            return account;
+            while (accountRepository.getIban(iban.toString()) != null){
+                iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
+            }
+            newAccount.setIban(iban.toString());
+            newAccount.setType(createUpdateAccount.getType());
+            if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
+                newAccount.setAbsoluteLimit(createUpdateAccount.getAbsoluteLimit());
+            }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Absolute limit can't be lower than 0");}
+            if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null){
+                newAccount.setUser(userRepository.findByUsername(createUpdateAccount.getUsername()));
+            }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find user with given username.");}
+            if (createUpdateAccount.getBalance().compareTo(createUpdateAccount.getAbsoluteLimit()) >= 0) {
+                newAccount.setBalance(createUpdateAccount.getBalance());
+            }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");}
+            newAccount.setIsActive(createUpdateAccount.getActive());
+            accountRepository.save(newAccount);
+            return newAccount;
         }
         else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "IBAN already in use");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User already has both account types.");
         }
     }
 }

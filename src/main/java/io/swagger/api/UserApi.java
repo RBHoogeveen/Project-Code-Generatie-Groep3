@@ -5,6 +5,7 @@
  */
 package io.swagger.api;
 
+import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.User;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public interface UserApi {
     @RequestMapping(value = "/user",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body);
+    ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body);
 
     @ApiOperation(value = "Fetches users", nickname = "getListUsers", notes = "Fetches users", tags={ "user", })
     @ApiResponses(value = { 
@@ -69,6 +70,6 @@ public interface UserApi {
     @RequestMapping(value = "/users/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.PUT)
-    ResponseEntity<User> updateUser(@ApiParam(value = "Username of name that needs to be updated.",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody User body);
+    ResponseEntity<User> updateUser(@ApiParam(value = "Username of name that needs to be updated.",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body);
 
 }

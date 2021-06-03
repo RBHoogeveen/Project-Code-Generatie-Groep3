@@ -1,6 +1,7 @@
 package io.swagger;
 
 import antlr.collections.List;
+import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.service.UserService;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 
 @SpringBootApplication
 @EnableSwagger2
-@ComponentScan(basePackages = {"io.swagger", "io.swagger.api.controller", "io.swagger.configuration"})
+@ComponentScan(basePackages = {"io.swagger", "io.swagger.api", "io.swagger.configuration"})
 public class Swagger2SpringBoot implements CommandLineRunner {
 
     @Override
@@ -28,7 +29,7 @@ public class Swagger2SpringBoot implements CommandLineRunner {
             throw new ExitException();
         }
 
-        User user = new User();
+        CreateUpdateUserDTO user = new CreateUpdateUserDTO();
         user.setUsername("test");
         user.setPassword("test");
         user.setRoles(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));

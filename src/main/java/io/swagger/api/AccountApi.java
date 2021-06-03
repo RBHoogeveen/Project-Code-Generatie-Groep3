@@ -8,6 +8,7 @@ package io.swagger.api;
 import java.math.BigDecimal;
 import io.swagger.annotations.*;
 import io.swagger.model.Account;
+import io.swagger.model.DTO.CreateUpdateAccountDTO;
 import io.swagger.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -62,7 +63,7 @@ public interface AccountApi {
     @RequestMapping(value = "/account",
         produces = { "application/xml", "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody Account body);
+    ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body);
 
     @ApiOperation(value = "Updated account", nickname = "updateAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
     @ApiResponses(value = {
@@ -71,5 +72,5 @@ public interface AccountApi {
     @RequestMapping(value = "/accounts/{iban}",
         produces = { "application/xml", "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of the account that needs to be updated.",required=true) @PathVariable("iban") String username, @ApiParam(value = "Updated account object" ,required=true )  @Valid @RequestBody Account body);
+    ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of the account that needs to be updated.",required=true) @PathVariable("iban") String username, @ApiParam(value = "Updated account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body);
 }
