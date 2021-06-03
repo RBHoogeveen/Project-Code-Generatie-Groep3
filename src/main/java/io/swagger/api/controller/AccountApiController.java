@@ -59,6 +59,7 @@ public class AccountApiController implements AccountApi {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
+            //perform the transaction
             Transaction transaction = accountService.PerformTransaction(1L, amount, targetIBAN);
             return ResponseEntity.status(200).body(transaction);
         } catch (Exception e) {
@@ -72,6 +73,7 @@ public class AccountApiController implements AccountApi {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
+            //perform the deposit
             Deposit deposit = accountService.PerformDeposit(1l, amount, targetIBAN);
             return ResponseEntity.status(200).body(deposit);
         } catch (Exception e) {
@@ -85,6 +87,7 @@ public class AccountApiController implements AccountApi {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
+            //perform the withdrawal
             Withdrawal withdrawal = accountService.PerformWithdrawal(1l, amount, targetIBAN);
             return ResponseEntity.status(200).body(withdrawal);
         } catch (Exception e) {
