@@ -52,7 +52,7 @@ public interface UserApi {
         @ApiResponse(code = 200, message = "successful operation") })
     @RequestMapping(value = "/user/users",
         method = RequestMethod.GET)
-    ResponseEntity<Void> getListUsers();
+    ResponseEntity<?> getListUsers();
 
 
     @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "", tags={ "account", })
@@ -72,7 +72,7 @@ public interface UserApi {
     @RequestMapping(value = "/user/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username);
+    ResponseEntity<?> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username);
 
 
     @ApiOperation(value = "Logs out current logged in user session", nickname = "logoutUser", notes = "", tags={ "user", })
