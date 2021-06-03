@@ -3,7 +3,9 @@ package io.swagger.service;
 import io.swagger.model.*;
 import io.swagger.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -57,30 +59,58 @@ public class AccountService {
         return accountRepository.getAccountByIban(iban);
     }
 
-    //method to get savingsaccount
+    //method to get savings account
     public Account getSavingsAccountByIban(String iban) {
         return accountRepository.getCorrectAccountByIban(iban, true);
     }
 
-    //method to get currentaccount
+    //method to get current account
     public Account getCurrentAccountByIban(String iban) {
         return accountRepository.getCorrectAccountByIban(iban, false);
     }
 
+    //method to check if the amount will not be over day limit
+    public boolean UnderDayLimit(List<Transaction> userTransactions, BigDecimal amount) {
+        //check if there were any transactions in the past
+        if (userTransactions.size() == 0)
+           return true;
+
+        //make an empty account to access the time method
+        Account account = new Account();
+        String now = account.convertNowToString();
+
+        //get the day spent and the day limit of the user
+        BigDecimal daySpent = userTransactions.get(0).getUserPerforming().getDaySpent();
+        BigDecimal dayLimit = userTransactions.get(0).getUserPerforming().getDayLimit();
+
+        //calculate total day spent of the transactions on a specific day
+        for (Transaction t: userTransactions) {
+            if (t.getDate().compareTo(now) == 0) {
+                daySpent = daySpent.add(t.getAmount());
+            }
+        }
+
+        //check if the day spent stays below the day limit
+        if (daySpent.add(amount).compareTo(dayLimit) >= 0)
+            return false;
+        return true;
+    }
+
+    //method to update the balance
     public void updateBalance(Account performerAccount, Account receiverAccount, BigDecimal amount) {
         try {
             //get balance from performer account
-            BigDecimal performerBalance = getBalanceByIban(performerAccount.getIban());
+            BigDecimal performerBalance = getBalanceByIban(performerAccount.getIban(), performerAccount.getType());
 
             //get balance from receiver account
-            BigDecimal receiverBalance = getBalanceByIban(receiverAccount.getIban());
+            BigDecimal receiverBalance = getBalanceByIban(receiverAccount.getIban(), receiverAccount.getType());
 
             //take amount from performer and add to receiver
             BigDecimal newPerformerBalance = performerBalance.subtract(amount);
             BigDecimal newReceiverBalance = receiverBalance.add(amount);
 
             //update balance of performer
-            accountRepository.UpdateBalance(performerAccount.getIban(), newPerformerBalance);
+            accountRepository.UpdateBalance(newPerformerBalance, performerAccount.getIban(), performerAccount.getType());
 
             //update day spent of performer
             BigDecimal daySpent = getDaySpent(performerAccount.getUser().getId());
@@ -88,7 +118,7 @@ public class AccountService {
             updateDaySpent(performerAccount.getUser().getId(), newDaySpent);
 
             //update balance of receiver
-            accountRepository.UpdateBalance(receiverAccount.getIban(), newReceiverBalance);
+            accountRepository.UpdateBalance(newReceiverBalance, receiverAccount.getIban(), receiverAccount.getType());
         } catch (Exception e) {
             //TODO exception handling
         }
@@ -102,8 +132,8 @@ public class AccountService {
         userService.updateDaySpent(userId, newDaySpent);
     }
 
-    public BigDecimal getBalanceByIban(String iban) {
-        return accountRepository.getBalanceByIban(iban);
+    public BigDecimal getBalanceByIban(String iban, boolean accountType) {
+        return accountRepository.getBalanceByIban(iban, accountType);
     }
 
     //method to check day limit en transaction limit of the user
@@ -159,12 +189,12 @@ public class AccountService {
     private boolean ValidTransaction(Account[] performerAndReceiver) {
         int valid = 0;
 
-        //check if the iban is the same
+        //check if the iban is not the same
         if (!performerAndReceiver[0].getIban().equals(performerAndReceiver[1].getIban())) {
             valid++;
         }
 
-        //check if the performer is a current and the receiver a savings
+        //check if the performer is a current and the receiver a current
         if (!performerAndReceiver[0].getType() && !performerAndReceiver[1].getType()) {
             valid++;
         }
@@ -215,12 +245,30 @@ public class AccountService {
         return account.getType();
     }
 
-    //TODO manier vinden om dayspent te resetten
-    public Transaction PerformTransaction(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
+    public boolean IbanAndAmountCheck(BigDecimal amount, String receiverIban) {
         //check first if the iban exists
-        if (accountRepository.getIban(receiverIban).equals("")) {
-            throw new Exception("Target Iban was not found, maybe the account you are looking for does not exist");
+        if (accountRepository.getIban(receiverIban).equals(""))
+            return true;
+
+        //check if amount is less than zero
+        if (amount.compareTo(BigDecimal.ZERO) <= 0)
+            return true;
+        return false;
+    }
+
+    //method to perform transaction
+    public Transaction PerformTransaction(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
+        if (IbanAndAmountCheck(amount, receiverIban)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
+
+        //get user by username
+        //User performerUser = userService.getUserByUsername(username);
+
+        //if (!UnderDayLimit(transactionService.getTransactionsByUser(performerUser), amount)) {
+        //    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You went over your day limit, so this transaction cannot be made");
+        //}
+
         //get the performer user (maybe user will be the parameter instead of userid in the future)
         User performerUser = userService.getUserById(performerUserId);
 
@@ -249,10 +297,17 @@ public class AccountService {
 
     //method to perform deposit
     public Deposit PerformDeposit(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
-        //check first if the iban exists
-        if (accountRepository.getIban(receiverIban).equals("")) {
-            throw new Exception("Target Iban was not found, maybe the account you are looking for does not exist");
+        if (IbanAndAmountCheck(amount, receiverIban)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
+
+        //get user by username
+        //User performerUser = userService.getUserByUsername(username);
+
+        //if (!UnderDayLimit(depositService.getDepositsByUser(performerUser), amount)) {
+        //    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You went over your day limit, so this deposit cannot be made");
+        //}
+
         //get the performer user (maybe user will be the parameter instead of userid in the future)
         User performerUser = userService.getUserById(performerUserId);
 
@@ -281,10 +336,17 @@ public class AccountService {
 
     //method to perform deposit
     public Withdrawal PerformWithdrawal(Long performerUserId, BigDecimal amount, String receiverIban) throws Exception {
-        //check first if the iban exists
-        if (accountRepository.getIban(receiverIban).equals("")) {
-            throw new Exception("Target Iban was not found, maybe the account you are looking for does not exist");
+        if (IbanAndAmountCheck(amount, receiverIban)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
+
+        //get user by username
+        //User performerUser = userService.getUserByUsername(username);
+
+        //if (!UnderDayLimit(withdrawalService.getWithdrawalsByUser(performerUser), amount)) {
+        //    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You went over your day limit, so this withdrawal cannot be made");
+        //}
+
         //get the performer user (maybe user will be the parameter instead of userid in the future)
         User performerUser = userService.getUserById(performerUserId);
 

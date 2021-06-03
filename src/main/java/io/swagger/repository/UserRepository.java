@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT * FROM User WHERE username LIKE %?1%  ", nativeQuery = true)
     List<User> getUserBySearchterm(String searchterm);
+
+    @Query(value = "SELECT * FROM User WHERE id = ?1", nativeQuery = true)
+    void getUserById(Integer userId);
 }

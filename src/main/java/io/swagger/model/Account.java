@@ -80,6 +80,7 @@ public class Account {
         transaction.setUserPerforming(performerAccount.getUser());
         transaction.setFromAccount(performerAccount);
         transaction.setToAccount(receiverAccount);
+        transaction.setTransferType(TransferType.TYPE_TRANSACTION);
         return transaction;
     }
 
@@ -93,6 +94,7 @@ public class Account {
         deposit.setUserPerforming(performerAccount.getUser());
         deposit.setFromAccount(performerAccount);
         deposit.setToAccount(receiverAccount);
+        deposit.setTransferType(TransferType.TYPE_DEPOSIT);
         return deposit;
     }
 
@@ -106,6 +108,7 @@ public class Account {
         withdrawal.setUserPerforming(performerAccount.getUser());
         withdrawal.setFromAccount(performerAccount);
         withdrawal.setToAccount(receiverAccount);
+        withdrawal.setTransferType(TransferType.TYPE_WITHDRAW);
         return withdrawal;
     }
 

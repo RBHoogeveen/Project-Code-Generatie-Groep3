@@ -7,6 +7,9 @@ package io.swagger.api;
 
 import java.math.BigDecimal;
 import io.swagger.annotations.*;
+import io.swagger.model.Deposit;
+import io.swagger.model.Transaction;
+import io.swagger.model.Withdrawal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +37,7 @@ public interface AccountApi {
     @RequestMapping(value = "/account/deposit",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> deposit();
+    ResponseEntity<?> deposit(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
 
 
     @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags={ "account", })
@@ -43,7 +46,7 @@ public interface AccountApi {
     @RequestMapping(value = "/account/transaction",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> transaction(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN,@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
+    ResponseEntity<?> transaction(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
 
 
     @ApiOperation(value = "Withdraw from savings account.", nickname = "withdrawal", notes = "", tags={ "account", })
@@ -52,6 +55,6 @@ public interface AccountApi {
     @RequestMapping(value = "/account/withdrawal",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> withdrawal();
+    ResponseEntity<?> withdrawal(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
 
 }

@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import io.swagger.model.User;
 import io.swagger.model.Withdrawal;
 import io.swagger.repository.WithdrawalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class WithdrawalService {
         return withdrawalRepository.getOne(withdrawalId);
     }
 
-    public List<Withdrawal> getWithdrawalsByUser(Integer userId) {
-        return withdrawalRepository.getWithdrawalsByUser(userId);
+    public List<Withdrawal> getWithdrawalsByUser(User user) {
+        return withdrawalRepository.getWithdrawalsByUser(user);
     }
 }
