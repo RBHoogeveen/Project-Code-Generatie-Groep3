@@ -60,7 +60,7 @@ public class AccountApiController implements AccountApi {
             String username = authentication.getName();
 
             //perform the transaction
-            Transaction transaction = accountService.PerformTransaction(1L, amount, targetIBAN);
+            Transaction transaction = accountService.PerformTransaction(username, amount, targetIBAN);
             return ResponseEntity.status(200).body(transaction);
         } catch (Exception e) {
          return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
@@ -74,7 +74,7 @@ public class AccountApiController implements AccountApi {
             String username = authentication.getName();
 
             //perform the deposit
-            Deposit deposit = accountService.PerformDeposit(1l, amount, targetIBAN);
+            Deposit deposit = accountService.PerformDeposit(username, amount, targetIBAN);
             return ResponseEntity.status(200).body(deposit);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
@@ -88,7 +88,7 @@ public class AccountApiController implements AccountApi {
             String username = authentication.getName();
 
             //perform the withdrawal
-            Withdrawal withdrawal = accountService.PerformWithdrawal(1l, amount, targetIBAN);
+            Withdrawal withdrawal = accountService.PerformWithdrawal(username, amount, targetIBAN);
             return ResponseEntity.status(200).body(withdrawal);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());

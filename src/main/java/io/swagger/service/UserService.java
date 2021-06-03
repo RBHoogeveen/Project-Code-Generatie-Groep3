@@ -11,60 +11,68 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 public class UserService {
 
-  @Autowired
-  private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-  @Autowired
-  JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
-  @Autowired
-  AuthenticationManager authenticationManager;
+    @Autowired
+    AuthenticationManager authenticationManager;
 
-  @Autowired
-  PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-  public String login(String username, String password) {
-    try {
-      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-      User user = userRepository.findByUsername(username);
-      String token = jwtTokenProvider.createToken(username, user.getRoles());
-      return token;
-    } catch (AuthenticationException e) {
-      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username/password invalid");
+    public String login(String username, String password) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            User user = userRepository.findByUsername(username);
+            String token = jwtTokenProvider.createToken(username, user.getRoles());
+            return token;
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username/password invalid");
+        }
     }
-  }
 
-  public User add(User user) {
-    if (userRepository.findByUsername(user.getUsername()) == null){
-      user.setPassword(passwordEncoder.encode(user.getPassword()));
-      userRepository.save(user);
-      return user;
+    public User add(User user) {
+        if (userRepository.findByUsername(user.getUsername()) == null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+            return user;
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username already in use");
+        }
     }
-    else {
-      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username already in use");
-    }
-  }
-  
-  public User getUserById(Long userId) {
+
+    public User getUserById(Long userId) {
         return userRepository.getOne(userId);
     }
 
-  public BigDecimal getDaySpent(Integer userId) {
-      return userRepository.getDaySpent(userId);
-  }
+    public BigDecimal getDaySpent(Integer userId) {
+        return userRepository.getDaySpent(userId);
+    }
 
-  public void updateDaySpent(Integer userId, BigDecimal newDaySpent) {
-      userRepository.updateDaySpent(userId, newDaySpent);
-  }
+    public void updateDaySpent(Integer userId, BigDecimal newDaySpent) {
+        userRepository.updateDaySpent(userId, newDaySpent);
+    }
 
-  public List<User> getUsers(){ return userRepository.findAll(); }
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
 
-  public List<User> getUserBySearchterm(String searchterm){ return userRepository.getUserBySearchterm(searchterm); }
+    public List<User> getUserBySearchterm(String searchterm) {
+        return userRepository.getUserBySearchterm(searchterm);
+    }
+
+    public User getUserByUsername(String username) {
+      return userRepository.getUserByUsername(username);
+    }
 }
 
