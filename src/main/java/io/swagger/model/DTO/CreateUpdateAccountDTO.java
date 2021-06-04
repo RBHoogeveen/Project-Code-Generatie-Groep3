@@ -94,11 +94,11 @@ public class CreateUpdateAccountDTO {
   }
 
   /**
-   * Get user
+   * Get username
    *
-   * @return user
+   * @return username
    **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(example = "John", value = "The username of the coupled user")
 
   @Valid
 
@@ -107,7 +107,7 @@ public class CreateUpdateAccountDTO {
     return username;
   }
 
-  public void setUsername(User user) {
+  public void setUsername(String username) {
     this.username = username;
   }
 
