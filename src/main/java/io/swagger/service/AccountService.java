@@ -349,11 +349,7 @@ public class AccountService {
     public Account add(CreateUpdateAccountDTO createUpdateAccount) {
         if ((accountRepository.getCurrentAccountByUsername(createUpdateAccount.getUsername()) == null) || (accountRepository.getSavingsAccountByUsername(createUpdateAccount.getUsername()) == null)){
             Account newAccount = new Account();
-            Iban iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
-            while (accountRepository.getIban(iban.toString()) != null){
-                iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
-            }
-            newAccount.setIban(iban.toString());
+            newAccount.setIban(generateIban());
             newAccount.setType(createUpdateAccount.getType());
             if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
                 newAccount.setAbsoluteLimit(createUpdateAccount.getAbsoluteLimit());
@@ -374,5 +370,35 @@ public class AccountService {
         else {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User already has both account types.");
         }
+    }
+
+    public String generateIban(){
+        Iban iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
+        while (accountRepository.getIban(iban.toString()) != null){
+            iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
+        }
+        return iban.toString();
+    }
+
+    public void createCurrentAccount(String username){
+        Account newAccount = new Account();
+        newAccount.setIban(generateIban());
+        newAccount.setType(false);
+        newAccount.setUser(userRepository.findByUsername(username));
+        newAccount.setAbsoluteLimit(BigDecimal.ZERO);
+        newAccount.setBalance(BigDecimal.ZERO);
+        newAccount.setIsActive(true);
+        accountRepository.save(newAccount);
+    }
+
+    public void createSavingsAccount(String username){
+        Account newAccount = new Account();
+        newAccount.setIban(generateIban());
+        newAccount.setType(true);
+        newAccount.setUser(userRepository.findByUsername(username));
+        newAccount.setAbsoluteLimit(BigDecimal.ZERO);
+        newAccount.setBalance(BigDecimal.ZERO);
+        newAccount.setIsActive(true);
+        accountRepository.save(newAccount);
     }
 }

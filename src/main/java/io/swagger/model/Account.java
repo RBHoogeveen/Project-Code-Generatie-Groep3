@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Account
@@ -27,9 +28,6 @@ import javax.validation.Valid;
 @Entity
 public class Account {
     @Id
-    @GeneratedValue
-    private Long accountId;
-
     @JsonProperty("iban")
     private String iban = null;
 
@@ -42,18 +40,6 @@ public class Account {
     @ManyToOne
     @JsonProperty("user")
     private User user = null;
-
-    @OneToOne
-    @JsonProperty("transaction")
-    private Transaction transaction = null;
-
-    @OneToOne
-    @JsonProperty("deposit")
-    private Deposit deposit = null;
-
-    @OneToOne
-    @JsonProperty("withdrawal")
-    private Withdrawal withdrawal = null;
 
     @JsonProperty("absoluteLimit")
     private BigDecimal absoluteLimit = null;
@@ -73,7 +59,7 @@ public class Account {
     //method to perform a transaction
     public Transaction MakeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount) {
         //prepare the transaction
-        this.transaction = new Transaction();
+        Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         String timeOfTransaction = convertNowToString();
         transaction.setDate(timeOfTransaction);
@@ -86,7 +72,7 @@ public class Account {
     //method to perform a deposit
     public Deposit MakeDeposit(BigDecimal amount, Account receiverAccount, Account performerAccount) {
         //prepare the withdrawal
-        this.deposit = new Deposit();
+        Deposit deposit = new Deposit();
         deposit.setAmount(amount);
         String timeOfDeposit = convertNowToString();
         deposit.setDate(timeOfDeposit);
@@ -99,7 +85,7 @@ public class Account {
     //method to perform a withdrawal
     public Withdrawal MakeWithdrawal(BigDecimal amount, Account receiverAccount, Account performerAccount) {
         //prepare the withdrawal
-        this.withdrawal = new Withdrawal();
+        Withdrawal withdrawal = new Withdrawal();
         withdrawal.setAmount(amount);
         String timeOfWithdrawel = convertNowToString();
         withdrawal.setDate(timeOfWithdrawel);
@@ -193,6 +179,7 @@ public class Account {
      * @return isActive
      **/
     @ApiModelProperty(example = "true", value = "True if the user is active, false if not")
+      @NotNull
 
     @Valid
 
@@ -200,7 +187,7 @@ public class Account {
         return isactive;
     }
 
-    public void setIsActive(Boolean isActive) {
+    public void setIsActive(Boolean isactive) {
         this.isactive = isactive;
     }
 
@@ -262,7 +249,6 @@ public class Account {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Account {\n");
-
         sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
         sb.append("    type: ").append(toIndentedString(type)).append("\n");
         sb.append("    balance: ").append(toIndentedString(balance)).append("\n");

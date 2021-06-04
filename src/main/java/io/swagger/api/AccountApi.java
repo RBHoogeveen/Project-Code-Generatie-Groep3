@@ -28,7 +28,7 @@ import java.util.List;
 
 @Validated
 @Api(value = "account", description = "the account API")
-@RequestMapping(value = "/InHollandINFGroup3/ProjectCodeGeneration/v1")
+@RequestMapping(value = "/api")
 public interface AccountApi {
 
     @ApiOperation(value = "Deposit to savings account.", nickname = "deposit", notes = "", tags={ "account", })
