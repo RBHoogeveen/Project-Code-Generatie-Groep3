@@ -341,7 +341,7 @@ public class AccountService {
             updatedAccount.setBalance(createUpdateAccount.getBalance());
         }
         else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");}
-        updatedAccount.setIsActive(createUpdateAccount.getActive());
+        updatedAccount.setIsActive(createUpdateAccount.getIsActive());
         accountRepository.save(updatedAccount);
         return updatedAccount;
     }
@@ -363,7 +363,7 @@ public class AccountService {
                 newAccount.setBalance(createUpdateAccount.getBalance());
             }
             else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");}
-            newAccount.setIsActive(createUpdateAccount.getActive());
+            newAccount.setIsActive(createUpdateAccount.getIsActive());
             accountRepository.save(newAccount);
             return newAccount;
         }
