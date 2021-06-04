@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Account;
 import io.swagger.model.User;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
+
+@Schema(description = "Requestbody for creating or updating an account.")
+@Validated
 
 public class CreateUpdateAccountDTO {
   @JsonProperty("type")
