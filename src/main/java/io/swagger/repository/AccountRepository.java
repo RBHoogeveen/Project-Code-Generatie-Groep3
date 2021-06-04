@@ -15,11 +15,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query(value = "SELECT * FROM Account WHERE iban = ?1", nativeQuery = true)
     Account getAccountByIban(String iban);
 
-    @Query(value = "SELECT balance FROM Account WHERE iban = ?1", nativeQuery = true)
-    BigDecimal getBalanceByIban(String iban);
+    @Query(value = "SELECT balance FROM Account WHERE iban = ?1 AND type = ?2")
+    BigDecimal getBalanceByIban(String iban, boolean accountType);
 
-    @Query(value = "UPDATE Account SET balance = ?1 WHERE iban = ?2", nativeQuery = true)
-    void UpdateBalance(String iban, BigDecimal newBalance);
+    @Query(value = "UPDATE Account SET balance = ?1 WHERE iban = ?2 AND type = ?3")
+    void UpdateBalance(BigDecimal newBalance, String iban, boolean accountType);
 
     @Query(value = "SELECT iban FROM Account WHERE iban = ?1")
     String getIban(String iban);

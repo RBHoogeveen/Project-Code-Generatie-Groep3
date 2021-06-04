@@ -1,10 +1,13 @@
 package io.swagger.service;
 
+import io.swagger.model.Transfer;
+import io.swagger.model.User;
 import io.swagger.repository.TransactionRepository;
 import io.swagger.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,7 +23,7 @@ public class TransactionService {
         return transactionRepository.getOne(transactionId);
     }
 
-    public List<Transaction> getTransactionsByUser(Integer userId) {
-        return transactionRepository.getTransactionsByUser(userId);
+    public List<Transaction> getTransactionsByUser(User user) {
+        return transactionRepository.getTransactionsByUser(user);
     }
 }

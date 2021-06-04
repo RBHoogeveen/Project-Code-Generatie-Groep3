@@ -15,12 +15,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
+import java.util.List;
 
 @Service
 public class UserService {
 
-  @Autowired
-  private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
   @Autowired
   AccountService accountService;
@@ -34,18 +35,17 @@ public class UserService {
   @Autowired
   PasswordEncoder passwordEncoder;
 
-  public String login(String username, String password) {
-    try {
-      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-      User user = userRepository.findByUsername(username);
-      String token = jwtTokenProvider.createToken(username, user.getRoles());
-      return token;
-    } catch (AuthenticationException e) {
-      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username/password invalid");
+    public String login(String username, String password) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            User user = userRepository.findByUsername(username);
+            String token = jwtTokenProvider.createToken(username, user.getRoles());
+            return token;
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username/password invalid");
+        }
     }
-  }
 
-  //TODO fix nullpointers
   public User add(CreateUpdateUserDTO createUpdateUser) {
     try {
       if (userRepository.findByUsername(createUpdateUser.getUsername()) == null) {
@@ -139,5 +139,17 @@ public class UserService {
     public void updateDaySpent (Integer userId, BigDecimal newDaySpent){
       userRepository.updateDaySpent(userId, newDaySpent);
     }
-  }
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+
+    public List<User> getUserBySearchterm(String searchterm) {
+        return userRepository.getUserBySearchterm(searchterm);
+    }
+
+    public User getUserByUsername(String username) {
+      return userRepository.getUserByUsername(username);
+    }
+}
 

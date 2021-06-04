@@ -1,4 +1,11 @@
 package io.swagger.model;
 
-public class Transfer {
+import java.math.BigDecimal;
+
+public interface Transfer {
+    User getUserPerforming();
+
+    BigDecimal getAmount();
+
+    String getDate();
 }
