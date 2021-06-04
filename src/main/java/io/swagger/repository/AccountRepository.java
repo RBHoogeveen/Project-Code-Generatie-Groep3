@@ -28,7 +28,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Account getCorrectAccountByIban(String iban, boolean savingsAccount);
 
     @Query(value = "SELECT * FROM Account WHERE userID = ?1 AND type = ?2", nativeQuery = true)
-    Account getCorrectAccountByUserId(Long userId, boolean savingsAccount);
+    Account getCorrectAccountByUserId(Integer userId, boolean savingsAccount);
 
     @Query(value = "SELECT * FROM Account WHERE username = ?1 AND type = 0", nativeQuery = true)
     Account getCurrentAccountByUsername(String username);
