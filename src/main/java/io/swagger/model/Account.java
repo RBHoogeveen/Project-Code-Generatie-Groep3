@@ -69,7 +69,6 @@ public class Account {
         return this;
     }
 
-    //TODO check nog ff of deze method niet in een andere class moet, user?
     //method to perform a transaction
     public Transaction MakeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount) {
         //prepare the transaction

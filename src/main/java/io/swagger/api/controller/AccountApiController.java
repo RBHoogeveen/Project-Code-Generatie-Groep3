@@ -94,5 +94,4 @@ public class AccountApiController implements AccountApi {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }
     }
-
 }
