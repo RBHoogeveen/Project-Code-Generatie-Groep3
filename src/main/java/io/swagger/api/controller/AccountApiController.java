@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import io.swagger.api.AccountApi;
+import io.swagger.model.Account;
+import io.swagger.model.DTO.CreateUpdateAccountDTO;
+import io.swagger.model.User;
+import io.swagger.service.AccountService;
 import io.swagger.model.*;
 import io.swagger.security.JwtTokenProvider;
-import io.swagger.service.AccountService;
 import io.swagger.service.TransactionService;
 import io.swagger.service.UserService;
 import org.slf4j.Logger;
@@ -14,9 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.constraints.*;
@@ -94,4 +100,17 @@ public class AccountApiController implements AccountApi {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }
     }
+
+    public ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of account that needs to bee updated",required=true) @PathVariable("iban") String iban, @ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
+        Account updatedAccount = accountService.updateAccount(body);
+
+        return new ResponseEntity<Account>(updatedAccount, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
+        Account createdAccount = accountService.add(body);
+        return new ResponseEntity<Account>(createdAccount, HttpStatus.OK);
+    }
+
 }

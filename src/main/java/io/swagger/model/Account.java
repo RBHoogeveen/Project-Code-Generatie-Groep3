@@ -11,11 +11,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 
+import org.iban4j.CountryCode;
 import org.iban4j.Iban;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Account
@@ -26,17 +28,11 @@ import javax.validation.Valid;
 @Entity
 public class Account {
     @Id
-    @GeneratedValue
-    private Long accountId;
-
     @JsonProperty("iban")
     private String iban = null;
 
     @JsonProperty("type")
     private Boolean type = null;
-
-    @JsonProperty("name")
-    private String name = null;
 
     @JsonProperty("balance")
     private BigDecimal balance = null;
@@ -45,21 +41,11 @@ public class Account {
     @JsonProperty("user")
     private User user = null;
 
-    @OneToOne
-    @JsonProperty("transaction")
-    private Transaction transaction = null;
-
-    @OneToOne
-    @JsonProperty("deposit")
-    private Deposit deposit = null;
-
-    @OneToOne
-    @JsonProperty("withdrawal")
-    private Withdrawal withdrawal = null;
-
     @JsonProperty("absoluteLimit")
     private BigDecimal absoluteLimit = null;
 
+    @JsonProperty("isactive")
+    private Boolean isactive = null;
 
     public Account() {
     }
@@ -72,7 +58,7 @@ public class Account {
     //method to perform a transaction
     public Transaction MakeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount) {
         //prepare the transaction
-        this.transaction = new Transaction();
+        Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         String timeOfTransaction = convertNowToString();
         transaction.setDate(timeOfTransaction);
@@ -86,7 +72,7 @@ public class Account {
     //method to perform a deposit
     public Deposit MakeDeposit(BigDecimal amount, Account receiverAccount, Account performerAccount) {
         //prepare the withdrawal
-        this.deposit = new Deposit();
+        Deposit deposit = new Deposit();
         deposit.setAmount(amount);
         String timeOfDeposit = convertNowToString();
         deposit.setDate(timeOfDeposit);
@@ -100,7 +86,7 @@ public class Account {
     //method to perform a withdrawal
     public Withdrawal MakeWithdrawal(BigDecimal amount, Account receiverAccount, Account performerAccount) {
         //prepare the withdrawal
-        this.withdrawal = new Withdrawal();
+        Withdrawal withdrawal = new Withdrawal();
         withdrawal.setAmount(amount);
         String timeOfWithdrawel = convertNowToString();
         withdrawal.setDate(timeOfWithdrawel);
@@ -130,7 +116,7 @@ public class Account {
      *
      * @return iban
      **/
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(example = "NLxxINHO0xxxxxxxxx", value = "The accounts IBAN, serves as ID")
 
 
     public String getIban() {
@@ -141,8 +127,8 @@ public class Account {
         this.iban = iban;
     }
 
-    public Account type(Boolean type) {
-        this.type = type;
+    public Account Iban(String iban) {
+        this.iban = iban;
         return this;
     }
 
@@ -151,7 +137,7 @@ public class Account {
      *
      * @return type
      **/
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(example = "true", value = "true for savings, false for current")
 
 
     public Boolean isType() {
@@ -162,29 +148,8 @@ public class Account {
         this.type = type;
     }
 
-    public Account name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return name
-     **/
-    @ApiModelProperty(value = "")
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Account balance(BigDecimal balance) {
-        this.balance = balance;
+    public Account type(Boolean type) {
+        this.type = type;
         return this;
     }
 
@@ -193,7 +158,7 @@ public class Account {
      *
      * @return balance
      **/
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(example = "€100.000,00", value = "The account balance")
 
     @Valid
 
@@ -209,6 +174,24 @@ public class Account {
       this.user = user;
       return this;
   }
+
+
+    /**
+     * Get isActive
+     * @return isActive
+     **/
+    @ApiModelProperty(example = "true", value = "True if the user is active, false if not")
+      @NotNull
+
+    @Valid
+
+    public Boolean getIsActive() {
+        return isactive;
+    }
+
+    public void setIsActive(Boolean isactive) {
+        this.isactive = isactive;
+    }
 
     /**
      * Get user
@@ -232,7 +215,7 @@ public class Account {
      * Get absoluteLimit
      * @return absoluteLimit
      **/
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(example = "5000", value = "The users absolute spending limit")
 
     @Valid
 
@@ -254,25 +237,24 @@ public class Account {
         Account account = (Account) o;
         return Objects.equals(this.iban, account.iban) &&
                 Objects.equals(this.type, account.type) &&
-                Objects.equals(this.name, account.name) &&
                 Objects.equals(this.balance, account.balance) &&
+                Objects.equals(this.isactive, account.isactive) &&
                 Objects.equals(this.user, account.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(iban, type, name, balance, user);
+        return Objects.hash(iban, type, balance, isactive, user);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Account {\n");
-
         sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
         sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
         sb.append("    balance: ").append(toIndentedString(balance)).append("\n");
+        sb.append("    isactive: ").append(toIndentedString(isactive)).append("\n");
         sb.append("    user: ").append(toIndentedString(user)).append("\n");
         sb.append("}");
         return sb.toString();

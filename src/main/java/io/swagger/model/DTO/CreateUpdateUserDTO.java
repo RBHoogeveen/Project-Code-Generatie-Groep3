@@ -1,28 +1,25 @@
-package io.swagger.model;
+package io.swagger.model.DTO;
 
-import java.util.List;
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
+import io.swagger.model.Role;
+import io.swagger.model.User;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.FetchType;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
 
-/**
- * User
- */
+@Schema(description = "Requestbody for creating or updating a user.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
-@Entity
-public class User   {
-  @Id
-  @GeneratedValue
-  @JsonProperty("id")
-  private Integer id = null;
-
+public class CreateUpdateUserDTO {
   @JsonProperty("username")
   private String username = null;
 
@@ -44,9 +41,6 @@ public class User   {
   @JsonProperty("dayLimit")
   private BigDecimal dayLimit = null;
 
-  @JsonProperty("daySpent")
-  private BigDecimal daySpent = null;
-
   @JsonProperty("transactionLimit")
   private BigDecimal transactionLimit = null;
 
@@ -55,31 +49,31 @@ public class User   {
 
   @JsonProperty("isactive")
   private Boolean isactive = null;
-  
-  public User() {
+
+  private Boolean createSavingsAccount;
+  private Boolean createCurrentAccount;
+
+
+
+
+
+  public Boolean getCreateSavingsAccount() {
+    return createSavingsAccount;
   }
 
-  public User id(Integer id) {
-    this.id = id;
-    return this;
+  public void setCreateSavingsAccount(Boolean createSavingsAccount) {
+    this.createSavingsAccount = createSavingsAccount;
   }
 
-  /**
-   * Get id
-   * @return id
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public Integer getId() {
-    return id;
+  public Boolean getCreateCurrentAccount() {
+    return createCurrentAccount;
   }
 
-  public void setId(Integer id) {
-    this.id = id;
+  public void setCreateCurrentAccount(Boolean createCurrentAccount) {
+    this.createCurrentAccount = createCurrentAccount;
   }
 
-  public User username(String username) {
+  public CreateUpdateUserDTO username(String username) {
     this.username = username;
     return this;
   }
@@ -87,8 +81,9 @@ public class User   {
   /**
    * Get username
    * @return username
-  **/
+   **/
   @ApiModelProperty(example = "test", value = "The username for this user")
+    @NotNull
 
   public String getUsername() {
     return username;
@@ -98,7 +93,7 @@ public class User   {
     this.username = username;
   }
 
-  public User firstname(String firstname) {
+  public CreateUpdateUserDTO firstname(String firstname) {
     this.firstname = firstname;
     return this;
   }
@@ -106,8 +101,9 @@ public class User   {
   /**
    * Get firstname
    * @return firstname
-  **/
+   **/
   @ApiModelProperty(example = "John", value = "The users firstname")
+    @NotNull
 
   public String getFirstname() {
     return firstname;
@@ -117,7 +113,7 @@ public class User   {
     this.firstname = firstname;
   }
 
-  public User lastname(String lastname) {
+  public CreateUpdateUserDTO lastname(String lastname) {
     this.lastname = lastname;
     return this;
   }
@@ -125,8 +121,9 @@ public class User   {
   /**
    * Get lastname
    * @return lastname
-  **/
+   **/
   @ApiModelProperty(example = "Doe", value = "The users lastname")
+    @NotNull
 
   public String getLastname() {
     return lastname;
@@ -136,7 +133,7 @@ public class User   {
     this.lastname = lastname;
   }
 
-  public User email(String email) {
+  public CreateUpdateUserDTO email(String email) {
     this.email = email;
     return this;
   }
@@ -144,8 +141,9 @@ public class User   {
   /**
    * Get email
    * @return email
-  **/
+   **/
   @ApiModelProperty(example = "John@Doe.com", value = "The users email")
+    @NotNull
 
   public String getEmail() {
     return email;
@@ -155,7 +153,7 @@ public class User   {
     this.email = email;
   }
 
-  public User phonenumber(String phonenumber) {
+  public CreateUpdateUserDTO phonenumber(String phonenumber) {
     this.phonenumber = phonenumber;
     return this;
   }
@@ -163,8 +161,9 @@ public class User   {
   /**
    * Get phonenumber
    * @return phonenumber
-  **/
+   **/
   @ApiModelProperty(example = "06 12345678", value = "The password for this user")
+    @NotNull
 
   public String getPhonenumber() {
     return phonenumber;
@@ -174,7 +173,7 @@ public class User   {
     this.phonenumber = phonenumber;
   }
 
-  public User password(String password) {
+  public CreateUpdateUserDTO password(String password) {
     this.password = password;
     return this;
   }
@@ -182,8 +181,9 @@ public class User   {
   /**
    * The password for this user
    * @return password
-  **/
+   **/
   @ApiModelProperty(example = "MySecretPassword", value = "The password for this user")
+    @NotNull
 
   public String getPassword() {
     return password;
@@ -198,6 +198,7 @@ public class User   {
    * @return dayLimit
    **/
   @ApiModelProperty(example = "1000", value = "The users daily spending limit")
+    @NotNull
 
   @Valid
 
@@ -209,25 +210,9 @@ public class User   {
     this.dayLimit = dayLimit;
   }
 
-  public User transactionLimit(BigDecimal transactionLimit) {
+  public CreateUpdateUserDTO transactionLimit(BigDecimal transactionLimit) {
     this.transactionLimit = transactionLimit;
     return this;
-  }
-
-  /**
-   * Get daySpent
-   * @return daySpent
-   **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public BigDecimal getDaySpent() {
-    return daySpent;
-  }
-
-  public void setDaySpent(BigDecimal daySpent) {
-    this.daySpent = daySpent;
   }
 
   /**
@@ -235,6 +220,7 @@ public class User   {
    * @return isActive
    **/
   @ApiModelProperty(example = "true", value = "True if the user is active, false if not")
+    @NotNull
 
   @Valid
 
@@ -249,9 +235,9 @@ public class User   {
   /**
    * Get transactionLimit
    * @return transactionLimit
-  **/
+   **/
   @ApiModelProperty(example = "500", value = "Maximum amount that can be spend within one transaction")
-
+    @NotNull
   @Valid
 
   public BigDecimal getTransactionLimit() {
@@ -278,9 +264,8 @@ public class User   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    User user = (User) o;
-    return Objects.equals(this.id, user.id) &&
-        Objects.equals(this.username, user.username) &&
+    CreateUpdateUserDTO user = (CreateUpdateUserDTO) o;
+    return Objects.equals(this.username, user.username) &&
         Objects.equals(this.firstname, user.firstname) &&
         Objects.equals(this.lastname, user.lastname) &&
         Objects.equals(this.email, user.email) &&
@@ -293,15 +278,14 @@ public class User   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, firstname, lastname, email, phonenumber, password, dayLimit, isactive, transactionLimit);
+    return Objects.hash(username, firstname, lastname, email, phonenumber, password, dayLimit, isactive, transactionLimit);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class User {\n");
-    
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("class CreateUpdateUserDTO {\n");
+
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    firstname: ").append(toIndentedString(firstname)).append("\n");
     sb.append("    lastname: ").append(toIndentedString(lastname)).append("\n");
@@ -326,4 +310,3 @@ public class User   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
