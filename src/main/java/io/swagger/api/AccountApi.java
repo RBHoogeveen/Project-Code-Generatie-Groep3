@@ -7,6 +7,9 @@ package io.swagger.api;
 
 import java.math.BigDecimal;
 import io.swagger.annotations.*;
+import io.swagger.model.Account;
+import io.swagger.model.DTO.CreateUpdateAccountDTO;
+import io.swagger.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,13 +28,13 @@ import java.util.List;
 
 @Validated
 @Api(value = "account", description = "the account API")
-@RequestMapping(value = "/InHollandINFGroup3/ProjectCodeGeneration/v1")
+@RequestMapping(value = "/api")
 public interface AccountApi {
 
     @ApiOperation(value = "Deposit to savings account.", nickname = "deposit", notes = "", tags={ "account", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/account/deposit",
+    @RequestMapping(value = "/accounts/deposit",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
     ResponseEntity<Void> deposit();
@@ -40,7 +43,7 @@ public interface AccountApi {
     @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags={ "account", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/account/transaction",
+    @RequestMapping(value = "/accounts/transaction",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
     ResponseEntity<Void> transaction(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN,@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
@@ -49,9 +52,25 @@ public interface AccountApi {
     @ApiOperation(value = "Withdraw from savings account.", nickname = "withdrawal", notes = "", tags={ "account", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/account/withdrawal",
+    @RequestMapping(value = "/accounts/withdrawal",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
     ResponseEntity<Void> withdrawal();
 
+    @ApiOperation(value = "Create account", nickname = "createAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "successful operation") })
+    @RequestMapping(value = "/account",
+        produces = { "application/xml", "application/json" },
+        method = RequestMethod.POST)
+    ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body);
+
+    @ApiOperation(value = "Updated account", nickname = "updateAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiResponses(value = {
+        @ApiResponse(code = 400, message = "Invalid account supplied"),
+        @ApiResponse(code = 404, message = "Account not found") })
+    @RequestMapping(value = "/accounts/{iban}",
+        produces = { "application/xml", "application/json" },
+        method = RequestMethod.PUT)
+    ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of the account that needs to be updated.",required=true) @PathVariable("iban") String username, @ApiParam(value = "Updated account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body);
 }
