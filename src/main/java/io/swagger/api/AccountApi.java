@@ -67,7 +67,7 @@ public interface AccountApi {
 
     @ApiOperation(value = "Updated account", nickname = "updateAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
     @ApiResponses(value = {
-        @ApiResponse(code = 400, message = "Invalid account supplied"),
+        @ApiResponse(code = 400, message = "Invalid iban supplied"),
         @ApiResponse(code = 404, message = "Account not found") })
     @RequestMapping(value = "/accounts/{iban}",
         produces = { "application/xml", "application/json" },
