@@ -117,7 +117,6 @@ public class Transaction {
      **/
     @ApiModelProperty(value = "")
 
-
     public String getDate() {
         return date;
     }

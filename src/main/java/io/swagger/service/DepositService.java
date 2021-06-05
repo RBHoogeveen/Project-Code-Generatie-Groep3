@@ -1,6 +1,7 @@
 package io.swagger.service;
 
 import io.swagger.model.Deposit;
+import io.swagger.model.User;
 import io.swagger.repository.DepositRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

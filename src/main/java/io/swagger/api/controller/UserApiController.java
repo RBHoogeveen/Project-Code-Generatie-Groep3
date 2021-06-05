@@ -1,6 +1,7 @@
 package io.swagger.api.controller;
 
 import io.swagger.api.UserApi;
+import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
@@ -10,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +24,7 @@ import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
-@Controller
+@RestController
 public class UserApiController implements UserApi {
 
     private static final Logger log = LoggerFactory.getLogger(UserApiController.class);
@@ -39,30 +42,16 @@ public class UserApiController implements UserApi {
         this.request = request;
     }
 
-    public ResponseEntity<Void> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body) {
+        User createdUser = userService.add(body);
+        return new ResponseEntity<User>(createdUser, HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> deleteUser(@ApiParam(value = "The name that needs to be deleted",required=true) @PathVariable("username") String username) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> getListUsers() {
         String accept = request.getHeader("Accept");
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    public ResponseEntity<?> getListUsers() {
-        try {
-            List<User> user = userService.getUsers();
-            if (user.isEmpty()){
-                return ResponseEntity.status(404).build();
-            }
-            else{
-                return ResponseEntity.status(200).body(user);
-            }
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
     }
 
     public ResponseEntity<Void> getUserAccount(@ApiParam(value = "",required=true) @PathVariable("username") String username) {
@@ -70,7 +59,8 @@ public class UserApiController implements UserApi {
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<?> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username) {
         String accept = request.getHeader("Accept");
         try{
             List<User> user = userService.getUserBySearchterm(username);
@@ -78,7 +68,7 @@ public class UserApiController implements UserApi {
                 return ResponseEntity.status(404).build();
             }
             else{
-                return ResponseEntity.status(200).body(user);
+                return ResponseEntity.status(200).body(user.get(0));
             }
         }
         catch (Exception e){
@@ -86,14 +76,10 @@ public class UserApiController implements UserApi {
         }
     }
 
-    public ResponseEntity<Void> logoutUser() {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
-    }
+    public ResponseEntity<User> updateUser(@ApiParam(value = "name that need to be updated",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body) {
+        User updatedUser = userService.updateUser(body);
 
-    public ResponseEntity<Void> updateUser(@ApiParam(value = "name that need to be updated",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody User body) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
     }
 
 }

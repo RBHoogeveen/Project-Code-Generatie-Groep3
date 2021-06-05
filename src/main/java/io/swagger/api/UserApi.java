@@ -5,9 +5,11 @@
  */
 package io.swagger.api;
 
+import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.User;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,72 +27,51 @@ import java.util.List;
 
 @Validated
 @Api(value = "user", description = "the user API")
-@RequestMapping(value = "/InHollandINFGroup3/ProjectCodeGeneration/v1")
+@RequestMapping(value = "/api")
 public interface UserApi {
 
     @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by the logged in user.", tags={ "user", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
+        @ApiResponse(code = 201, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/user",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body);
-
-
-    @ApiOperation(value = "Delete user", nickname = "deleteUser", notes = "This can only be done by the logged in user.", tags={ "user", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 400, message = "Invalid username supplied"),
-        @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/user/{username}",
-        produces = { "application/xml", "application/json" }, 
-        method = RequestMethod.DELETE)
-    ResponseEntity<Void> deleteUser(@ApiParam(value = "The name that needs to be deleted",required=true) @PathVariable("username") String username);
-
+    ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body);
 
     @ApiOperation(value = "Fetches users", nickname = "getListUsers", notes = "Fetches users", tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/user/users",
+    @RequestMapping(value = "/users",
         method = RequestMethod.GET)
     ResponseEntity<?> getListUsers();
-
 
     @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "", tags={ "account", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/user/{username}/account",
+    @RequestMapping(value = "/users/{username}/account",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<Void> getUserAccount(@ApiParam(value = "",required=true) @PathVariable("username") String username);
-
 
     @ApiOperation(value = "Get user by user name", nickname = "getUserByName", notes = "", response = User.class, tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation", response = User.class),
         @ApiResponse(code = 400, message = "Invalid username supplied"),
         @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/user/{username}",
+    @RequestMapping(value = "/users/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<?> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username);
-
-
-    @ApiOperation(value = "Logs out current logged in user session", nickname = "logoutUser", notes = "", tags={ "user", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/user/logout",
-        produces = { "application/xml", "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<Void> logoutUser();
-
 
     @ApiOperation(value = "Updated user", nickname = "updateUser", notes = "This can only be done by the logged in user.", tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 400, message = "Invalid user supplied"),
         @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/user/{username}",
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/users/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.PUT)
-    ResponseEntity<Void> updateUser(@ApiParam(value = "name that need to be updated",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody User body);
+    ResponseEntity<User> updateUser(@ApiParam(value = "Username of name that needs to be updated.",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body);
 
 }

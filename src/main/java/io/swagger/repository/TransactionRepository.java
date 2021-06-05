@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long>{
-    @Query(value = "SELECT * FROM Transaction WHERE userPerforming = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM Transaction WHERE user_performing_id = ?1", nativeQuery = true)
     List<Transaction> getTransactionsByUser(Integer userId);
 }
