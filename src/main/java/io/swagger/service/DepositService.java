@@ -21,7 +21,7 @@ public class DepositService {
         return depositRepository.getOne(depositId);
     }
 
-    public List<Deposit> getDepositsByUser(User user) {
-        return depositRepository.getDepositsByUser(user);
+    public List<Deposit> getDepositsByUser(Integer userId) {
+        return depositRepository.getDepositsByUser(userId);
     }
 }

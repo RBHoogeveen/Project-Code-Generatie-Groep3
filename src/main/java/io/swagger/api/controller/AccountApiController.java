@@ -6,6 +6,7 @@ import io.swagger.annotations.*;
 import io.swagger.api.AccountApi;
 import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
+import io.swagger.model.User;
 import io.swagger.service.AccountService;
 import io.swagger.model.*;
 import io.swagger.security.JwtTokenProvider;
