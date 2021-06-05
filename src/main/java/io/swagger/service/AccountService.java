@@ -407,28 +407,31 @@ public class AccountService {
 
     public Account updateAccount(CreateUpdateAccountDTO createUpdateAccount) {
         Account updatedAccount;
-        if (!createUpdateAccount.getType()){
-            updatedAccount = accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
-        }
-        else if (createUpdateAccount.getType()){
-            updatedAccount = accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
-        }
-        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");}
-        if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
-            updatedAccount.setAbsoluteLimit(createUpdateAccount.getAbsoluteLimit());
-        }
-        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Absolute limit can't be lower than 0");}
         if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null){
-            updatedAccount.setUser(userRepository.findByUsername(createUpdateAccount.getUsername()));
+            if (!createUpdateAccount.getType()){
+                updatedAccount = accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+            }
+            else if (createUpdateAccount.getType()){
+                updatedAccount = accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+            }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");}
+            if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
+                updatedAccount.setAbsoluteLimit(createUpdateAccount.getAbsoluteLimit());
+            }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Absolute limit can't be lower than 0");}
+            if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null){
+                updatedAccount.setUser(userRepository.findByUsername(createUpdateAccount.getUsername()));
+            }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find user with given username.");}
+            if (createUpdateAccount.getBalance().compareTo(updatedAccount.getAbsoluteLimit()) >= 0) {
+                updatedAccount.setBalance(createUpdateAccount.getBalance());
+            }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");}
+            updatedAccount.setIsActive(createUpdateAccount.getIsActive());
+            accountRepository.save(updatedAccount);
+            return updatedAccount;
         }
-        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find user with given username.");}
-        if (createUpdateAccount.getBalance().compareTo(updatedAccount.getAbsoluteLimit()) >= 0) {
-            updatedAccount.setBalance(createUpdateAccount.getBalance());
-        }
-        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");}
-        updatedAccount.setIsActive(createUpdateAccount.getIsActive());
-        accountRepository.save(updatedAccount);
-        return updatedAccount;
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User does not exist.");}
     }
 
     public Account add(CreateUpdateAccountDTO createUpdateAccount) {

@@ -47,8 +47,8 @@ public class CreateUpdateUserDTO {
   @ElementCollection(fetch = FetchType.EAGER)
   private List<Role> roles;
 
-  @JsonProperty("isactive")
-  private Boolean isactive = null;
+  @JsonProperty("isActive")
+  private Boolean isActive = null;
 
   private Boolean createSavingsAccount;
   private Boolean createCurrentAccount;
@@ -225,11 +225,11 @@ public class CreateUpdateUserDTO {
   @Valid
 
   public Boolean getIsActive() {
-    return isactive;
+    return isActive;
   }
 
   public void setIsActive(Boolean isActive) {
-    this.isactive = isactive;
+    this.isActive = isActive;
   }
 
   /**
@@ -272,13 +272,13 @@ public class CreateUpdateUserDTO {
         Objects.equals(this.phonenumber, user.phonenumber) &&
         Objects.equals(this.password, user.password) &&
         Objects.equals(this.dayLimit, user.dayLimit) &&
-        Objects.equals(this.isactive, user.isactive) &&
+        Objects.equals(this.isActive, user.isActive) &&
         Objects.equals(this.transactionLimit, user.transactionLimit);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(username, firstname, lastname, email, phonenumber, password, dayLimit, isactive, transactionLimit);
+    return Objects.hash(username, firstname, lastname, email, phonenumber, password, dayLimit, isActive, transactionLimit);
   }
 
   @Override
@@ -293,7 +293,7 @@ public class CreateUpdateUserDTO {
     sb.append("    phonenumber: ").append(toIndentedString(phonenumber)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    dayLimit: ").append(toIndentedString(dayLimit)).append("\n");
-    sb.append("    isactive: ").append(toIndentedString(isactive)).append("\n");
+    sb.append("    isActive: ").append(toIndentedString(isActive)).append("\n");
     sb.append("    transactionLimit: ").append(toIndentedString(transactionLimit)).append("\n");
     sb.append("}");
     return sb.toString();
