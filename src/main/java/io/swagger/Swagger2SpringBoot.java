@@ -31,20 +31,7 @@ public class Swagger2SpringBoot implements CommandLineRunner {
             throw new ExitException();
         }
 
-        CreateUpdateUserDTO bank = new CreateUpdateUserDTO();
-        bank.setCreateCurrentAccount(true);
-        bank.setCreateSavingsAccount(true);
-        bank.setIsActive(true);
-        bank.setEmail("Bank@bank.nl");
-        bank.setFirstname("Bank");
-        bank.setLastname("Bank");
-        bank.setDayLimit(BigDecimal.valueOf(10000000));
-        bank.setPhonenumber("06-121212121");
-        bank.setRoles(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));
-        bank.setTransactionLimit(BigDecimal.valueOf(10000000));
-        bank.setUsername("Bank");
-        bank.setPassword("yo");
-        userService.add(bank);
+        userService.createBasicUsers();
     }
 
     @Autowired

@@ -33,6 +33,7 @@ public interface UserApi {
     @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by the logged in user.", tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/user",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
@@ -67,6 +68,7 @@ public interface UserApi {
     @ApiResponses(value = { 
         @ApiResponse(code = 400, message = "Invalid user supplied"),
         @ApiResponse(code = 404, message = "User not found") })
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/users/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.PUT)

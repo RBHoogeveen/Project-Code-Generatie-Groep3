@@ -11,6 +11,7 @@ import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
 import io.swagger.model.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,6 +61,7 @@ public interface AccountApi {
     @ApiOperation(value = "Create account", nickname = "createAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/account",
         produces = { "application/xml", "application/json" },
         method = RequestMethod.POST)
@@ -69,6 +71,7 @@ public interface AccountApi {
     @ApiResponses(value = {
         @ApiResponse(code = 400, message = "Invalid iban supplied"),
         @ApiResponse(code = 404, message = "Account not found") })
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/accounts/{iban}",
         produces = { "application/xml", "application/json" },
         method = RequestMethod.PUT)

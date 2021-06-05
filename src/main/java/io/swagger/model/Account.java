@@ -156,7 +156,7 @@ public class Account {
      *
      * @return balance
      **/
-    @ApiModelProperty(example = "€100.000,00", value = "The account balance")
+    @ApiModelProperty(example = "10000", value = "The account balance")
 
     @Valid
 

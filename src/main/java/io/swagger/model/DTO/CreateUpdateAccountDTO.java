@@ -58,7 +58,7 @@ public class CreateUpdateAccountDTO {
    *
    * @return balance
    **/
-  @ApiModelProperty(example = "€100.000,00", value = "The account balance")
+  @ApiModelProperty(example = "100000", value = "The account balance")
 
   @Valid
 
