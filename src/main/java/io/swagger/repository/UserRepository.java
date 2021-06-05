@@ -5,12 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
   User findByUsername(String username);
   
-  @Query(value = "SELECT daySpent FROM User WHERE id = ?1")
+    @Query(value = "SELECT daySpent FROM User WHERE id = ?1")
     BigDecimal getDaySpent(Integer userId);
 
     @Query(value = "UPDATE User SET daySpent = ?1 WHERE id = ?2")
@@ -22,6 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM User", nativeQuery = true)
     void getUsers();
 
-    @Query(value = "SELECT * FROM User WHERE  ", nativeQuery = true)
+    @Query(value = "SELECT * FROM User WHERE username LIKE %?1% ", nativeQuery = true)
     void getUserBySearchterm(String searchterm);
 }

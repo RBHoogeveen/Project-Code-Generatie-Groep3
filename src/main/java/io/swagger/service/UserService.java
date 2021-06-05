@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -54,12 +55,16 @@ public class UserService {
         return userRepository.getOne(userId);
     }
 
-    public BigDecimal getDaySpent(Integer userId) {
-        return userRepository.getDaySpent(userId);
-    }
+  public BigDecimal getDaySpent(Integer userId) {
+      return userRepository.getDaySpent(userId);
+  }
 
-    public void updateDaySpent(Integer userId, BigDecimal newDaySpent) {
-        userRepository.updateDaySpent(userId, newDaySpent);
-    }
+  public void updateDaySpent(Integer userId, BigDecimal newDaySpent) {
+      userRepository.updateDaySpent(userId, newDaySpent);
+  }
+
+  public List<User> getUsers(){ return userRepository.findAll(); }
+
+  public List<User> getUserBySearchterm(String searchterm){ return userRepository.getUserBySearchterm(searchterm); }
 }
 
