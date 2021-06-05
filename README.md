@@ -1,3 +1,21 @@
+# Api details
+Made by: Ruben Schild, Ruben Hoogeveen and Pim de Groot.  
+INF2Sa
+
+### Usefull links
+[Github link](https://github.com/RBHoogeveen/Project-Code-Generatie-Groep3)  
+[Localhost SwaggerUI](http://localhost:8080/swagger-ui/#/)  
+[Localhost H2-Console](http://localhost:8080/h2-console/)
+
+## Login details
+User account:  
+Username: User  
+Password: User
+
+Admin account:  
+Username: Admin  
+Password: Admin
+
 # Swagger generated server
 
 Spring Boot Server 

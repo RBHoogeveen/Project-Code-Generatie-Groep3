@@ -423,10 +423,10 @@ public class AccountService {
     public Account updateAccount(CreateUpdateAccountDTO createUpdateAccount) {
         Account updatedAccount;
         if (!createUpdateAccount.getType()){
-            updatedAccount = accountRepository.getCurrentAccountByUsername(createUpdateAccount.getUsername());
+            updatedAccount = accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
         }
         else if (createUpdateAccount.getType()){
-            updatedAccount = accountRepository.getSavingsAccountByUsername(createUpdateAccount.getUsername());
+            updatedAccount = accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
         }
         else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");}
         if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
@@ -447,7 +447,7 @@ public class AccountService {
     }
 
     public Account add(CreateUpdateAccountDTO createUpdateAccount) {
-        if ((accountRepository.getCurrentAccountByUsername(createUpdateAccount.getUsername()) == null) || (accountRepository.getSavingsAccountByUsername(createUpdateAccount.getUsername()) == null)){
+        if ((accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null) || (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null)){
             Account newAccount = new Account();
             newAccount.setIban(generateIban());
             newAccount.setType(createUpdateAccount.getType());

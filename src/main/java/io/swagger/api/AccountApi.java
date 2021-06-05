@@ -14,6 +14,7 @@ import io.swagger.model.Deposit;
 import io.swagger.model.Transaction;
 import io.swagger.model.Withdrawal;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +64,7 @@ public interface AccountApi {
     @ApiOperation(value = "Create account", nickname = "createAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/account",
         produces = { "application/xml", "application/json" },
         method = RequestMethod.POST)
@@ -70,8 +72,9 @@ public interface AccountApi {
 
     @ApiOperation(value = "Updated account", nickname = "updateAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
     @ApiResponses(value = {
-        @ApiResponse(code = 400, message = "Invalid account supplied"),
+        @ApiResponse(code = 400, message = "Invalid iban supplied"),
         @ApiResponse(code = 404, message = "Account not found") })
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/accounts/{iban}",
         produces = { "application/xml", "application/json" },
         method = RequestMethod.PUT)
