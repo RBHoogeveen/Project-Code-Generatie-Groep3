@@ -27,7 +27,7 @@ import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
 @Entity
-public class Withdrawal implements Transfer {
+public class Withdrawal  {
     @Id
     @GeneratedValue
     @JsonProperty("id")
@@ -103,7 +103,6 @@ public class Withdrawal implements Transfer {
 
     @Valid
 
-    @Override
     public BigDecimal getAmount() {
         return amount;
     }
@@ -125,7 +124,6 @@ public class Withdrawal implements Transfer {
     @ApiModelProperty(value = "")
 
 
-    @Override
     public String getDate() {
         return date;
     }
@@ -169,7 +167,6 @@ public class Withdrawal implements Transfer {
 
     @Valid
 
-    @Override
     public User getUserPerforming() {
         return userPerforming;
     }

@@ -24,7 +24,7 @@ import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
 @Entity
-public class Deposit implements Transfer{
+public class Deposit {
 
   @Id
   @GeneratedValue
@@ -99,7 +99,6 @@ public class Deposit implements Transfer{
 
   @Valid
 
-  @Override
   public BigDecimal getAmount() {
     return amount;
   }
@@ -120,7 +119,6 @@ public class Deposit implements Transfer{
   @ApiModelProperty(value = "")
 
 
-  @Override
   public String getDate() {
     return date;
   }
@@ -162,7 +160,6 @@ public class Deposit implements Transfer{
 
   @Valid
 
-  @Override
   public User getUserPerforming() {
     return userPerforming;
   }
