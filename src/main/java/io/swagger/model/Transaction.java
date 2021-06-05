@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
 @Entity
-public class Transaction {
+public class Transaction implements Transfer{
     @Id
     @GeneratedValue
     @JsonProperty("id")
@@ -97,6 +97,7 @@ public class Transaction {
 
     @Valid
 
+    @Override
     public BigDecimal getAmount() {
         return amount;
     }
@@ -117,7 +118,7 @@ public class Transaction {
      **/
     @ApiModelProperty(value = "")
 
-
+    @Override
     public String getDate() {
         return date;
     }
@@ -161,6 +162,7 @@ public class Transaction {
 
     @Valid
 
+    @Override
     public User getUserPerforming() {
         return userPerforming;
     }
