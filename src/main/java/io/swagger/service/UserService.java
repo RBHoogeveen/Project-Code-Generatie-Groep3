@@ -149,7 +149,7 @@ public class UserService {
     }
 
     public void updateDaySpent (Integer userId, BigDecimal newDaySpent){
-      userRepository.updateDaySpent(userId, newDaySpent);
+      userRepository.updateDaySpent(newDaySpent, userId);
     }
   
   public void createBasicUsers() {
