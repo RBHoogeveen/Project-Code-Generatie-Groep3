@@ -32,7 +32,7 @@ public interface UserApi {
 
     @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by the logged in user.", tags={ "user", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
+        @ApiResponse(code = 201, message = "successful operation") })
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/user",
         produces = { "application/xml", "application/json" }, 

@@ -37,7 +37,8 @@ public interface AccountApi {
 
     @ApiOperation(value = "Deposit to savings account.", nickname = "deposit", notes = "", tags={ "account", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
+        @ApiResponse(code = 201, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @RequestMapping(value = "/accounts/deposit",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
@@ -46,7 +47,8 @@ public interface AccountApi {
 
     @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags={ "account", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
+        @ApiResponse(code = 201, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @RequestMapping(value = "/accounts/transaction",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
@@ -55,7 +57,8 @@ public interface AccountApi {
 
     @ApiOperation(value = "Withdraw from savings account.", nickname = "withdrawal", notes = "", tags={ "account", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
+        @ApiResponse(code = 201, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @RequestMapping(value = "/accounts/withdrawal",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
@@ -63,7 +66,7 @@ public interface AccountApi {
 
     @ApiOperation(value = "Create account", nickname = "createAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "successful operation") })
+        @ApiResponse(code = 201, message = "successful operation") })
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/account",
         produces = { "application/xml", "application/json" },

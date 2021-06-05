@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.*;
 import javax.validation.Valid;
@@ -31,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
-@Controller
+@RestController
 public class AccountApiController implements AccountApi {
 
     private static final Logger log = LoggerFactory.getLogger(AccountApiController.class);
@@ -58,7 +59,6 @@ public class AccountApiController implements AccountApi {
         this.request = request;
     }
 
-
     public ResponseEntity<?> transaction(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN,@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount) {
         try {
             //get username of the current user
@@ -67,7 +67,7 @@ public class AccountApiController implements AccountApi {
 
             //perform the transaction
             Transaction transaction = accountService.PerformTransaction(username, amount, targetIBAN);
-            return ResponseEntity.status(200).body(transaction);
+            return ResponseEntity.status(201).body(transaction);
         } catch (Exception e) {
          return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }
@@ -81,7 +81,7 @@ public class AccountApiController implements AccountApi {
 
             //perform the deposit
             Deposit deposit = accountService.PerformDeposit(username, amount, targetIBAN);
-            return ResponseEntity.status(200).body(deposit);
+            return ResponseEntity.status(201).body(deposit);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }
@@ -95,7 +95,7 @@ public class AccountApiController implements AccountApi {
 
             //perform the withdrawal
             Withdrawal withdrawal = accountService.PerformWithdrawal(username, amount, targetIBAN);
-            return ResponseEntity.status(200).body(withdrawal);
+            return ResponseEntity.status(201).body(withdrawal);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }

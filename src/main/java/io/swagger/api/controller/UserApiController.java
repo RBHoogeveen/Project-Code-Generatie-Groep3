@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
-@Controller
+@RestController
 public class UserApiController implements UserApi {
 
     private static final Logger log = LoggerFactory.getLogger(UserApiController.class);
