@@ -5,6 +5,7 @@
  */
 package io.swagger.api;
 
+import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.User;
 import io.swagger.annotations.*;
@@ -46,13 +47,13 @@ public interface UserApi {
         method = RequestMethod.GET)
     ResponseEntity<?> getListUsers();
 
-    @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "", tags={ "account", })
+    @ApiOperation(value = "Get users account", nickname = "getUserAccount", response = Account.class, notes = "", tags={ "account", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/users/{username}/account",
+        @ApiResponse(code = 200, message = "successful operation", response = Account.class),  })
+    @RequestMapping(value = "/users/{userid}/account",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Void> getUserAccount(@ApiParam(value = "",required=true) @PathVariable("username") String username);
+    ResponseEntity<?> getUserAccount(@ApiParam(value = "",required=true) @PathVariable("user id") Integer userId);
 
     @ApiOperation(value = "Get user by user name", nickname = "getUserByName", notes = "", response = User.class, tags={ "user", })
     @ApiResponses(value = { 

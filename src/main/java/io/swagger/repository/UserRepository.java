@@ -1,5 +1,6 @@
 package io.swagger.repository;
 
+import io.swagger.model.Account;
 import io.swagger.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,6 +14,9 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
+
+    @Query(value = "SELECT * FROM Account WHERE user_ID = ?1", nativeQuery = true)
+    List<Account> getAccountByUserId(Integer userId);
 
     @Query(value = "SELECT daySpent FROM User WHERE id = ?1")
     BigDecimal getDaySpent(Integer userId);

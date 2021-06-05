@@ -1,6 +1,7 @@
 package io.swagger.api.controller;
 
 import io.swagger.api.UserApi;
+import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,14 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
@@ -49,18 +48,36 @@ public class UserApiController implements UserApi {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> getListUsers() {
+    public ResponseEntity<List<User>> getListUsers() {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        try{
+           List<User> user = userService.getUsers();
+            return ResponseEntity.status(200).body(user);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(404).build();
+        }
     }
 
-    public ResponseEntity<Void> getUserAccount(@ApiParam(value = "",required=true) @PathVariable("username") String username) {
+    @Override
+    public ResponseEntity<?> getUserAccount(Integer userId) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        try{
+            List<Account> accounts = userService.getUserAccountById(userId);
+            if (accounts.isEmpty()){
+                return ResponseEntity.status(404).build();
+            }
+            else{
+                return ResponseEntity.status(200).body(accounts);
+            }
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username) {
+    public ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.",required=true) @PathVariable("username") String username) {
         String accept = request.getHeader("Accept");
         try{
             List<User> user = userService.getUserBySearchterm(username);

@@ -50,11 +50,6 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
-    //get account by userid
-    public Account getUserAccountById(Long userId) {
-        return accountRepository.getAccountByUserId(userId);
-    }
-
     //get saving account by userid
     public Account getSavingAccountByUserId(Integer userId) {
         return accountRepository.getCorrectAccountByUserId(userId, true);
