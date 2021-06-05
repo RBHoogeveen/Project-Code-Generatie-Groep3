@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Account;
 import io.swagger.model.User;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
+
+@Schema(description = "Requestbody for creating or updating an account.")
+@Validated
 
 public class CreateUpdateAccountDTO {
   @JsonProperty("type")
@@ -53,7 +58,7 @@ public class CreateUpdateAccountDTO {
    *
    * @return balance
    **/
-  @ApiModelProperty(example = "€100.000,00", value = "The account balance")
+  @ApiModelProperty(example = "100000", value = "The account balance")
 
   @Valid
 
@@ -89,11 +94,11 @@ public class CreateUpdateAccountDTO {
   }
 
   /**
-   * Get user
+   * Get username
    *
-   * @return user
+   * @return username
    **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(example = "John", value = "The username of the coupled user")
 
   @Valid
 
@@ -101,8 +106,8 @@ public class CreateUpdateAccountDTO {
   public String getUsername() {
     return username;
   }
-
-  public void setUsername(User user) {
+  
+  public void setUsername(String username) {
     this.username = username;
   }
 

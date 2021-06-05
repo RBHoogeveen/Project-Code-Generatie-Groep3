@@ -407,70 +407,65 @@ public class AccountService {
 
     public Account updateAccount(CreateUpdateAccountDTO createUpdateAccount) {
         Account updatedAccount;
-        if (!createUpdateAccount.getType()) {
-            updatedAccount = accountRepository.getCurrentAccountByUsername(createUpdateAccount.getUsername());
-        } else if (createUpdateAccount.getType()) {
-            updatedAccount = accountRepository.getSavingsAccountByUsername(createUpdateAccount.getUsername());
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");
+        if (!createUpdateAccount.getType()){
+            updatedAccount = accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
         }
-        if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0) {
+        else if (createUpdateAccount.getType()){
+            updatedAccount = accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");}
+        if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
             updatedAccount.setAbsoluteLimit(createUpdateAccount.getAbsoluteLimit());
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Absolute limit can't be lower than 0");
         }
-        if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null) {
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Absolute limit can't be lower than 0");}
+        if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null){
             updatedAccount.setUser(userRepository.findByUsername(createUpdateAccount.getUsername()));
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find user with given username.");
         }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find user with given username.");}
         if (createUpdateAccount.getBalance().compareTo(updatedAccount.getAbsoluteLimit()) >= 0) {
             updatedAccount.setBalance(createUpdateAccount.getBalance());
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");
         }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");}
         updatedAccount.setIsActive(createUpdateAccount.getIsActive());
         accountRepository.save(updatedAccount);
         return updatedAccount;
     }
 
     public Account add(CreateUpdateAccountDTO createUpdateAccount) {
-        if ((accountRepository.getCurrentAccountByUsername(createUpdateAccount.getUsername()) == null) || (accountRepository.getSavingsAccountByUsername(createUpdateAccount.getUsername()) == null)) {
+        if ((accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null) || (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null)){
             Account newAccount = new Account();
             newAccount.setIban(generateIban());
             newAccount.setType(createUpdateAccount.getType());
-            if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0) {
+            if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
                 newAccount.setAbsoluteLimit(createUpdateAccount.getAbsoluteLimit());
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Absolute limit can't be lower than 0");
             }
-            if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null) {
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Absolute limit can't be lower than 0");}
+            if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null){
                 newAccount.setUser(userRepository.findByUsername(createUpdateAccount.getUsername()));
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find user with given username.");
             }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find user with given username.");}
             if (createUpdateAccount.getBalance().compareTo(createUpdateAccount.getAbsoluteLimit()) >= 0) {
                 newAccount.setBalance(createUpdateAccount.getBalance());
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");
             }
+            else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "New balance is below absolute limit");}
             newAccount.setIsActive(createUpdateAccount.getIsActive());
             accountRepository.save(newAccount);
             return newAccount;
-        } else {
+        }
+        else {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User already has both account types.");
         }
     }
 
-    public String generateIban() {
+    public String generateIban(){
         Iban iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
-        while (accountRepository.getIban(iban.toString()) != null) {
+        while (accountRepository.getIban(iban.toString()) != null){
             iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
         }
         return iban.toString();
     }
 
-    public void createCurrentAccount(String username) {
+    public void createCurrentAccount(String username){
         Account newAccount = new Account();
         newAccount.setIban(generateIban());
         newAccount.setType(false);
@@ -481,7 +476,7 @@ public class AccountService {
         accountRepository.save(newAccount);
     }
 
-    public void createSavingsAccount(String username) {
+    public void createSavingsAccount(String username){
         Account newAccount = new Account();
         newAccount.setIban(generateIban());
         newAccount.setType(true);

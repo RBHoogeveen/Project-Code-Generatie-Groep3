@@ -41,7 +41,6 @@ public class UserApiController implements UserApi {
         this.request = request;
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body) {
         User createdUser = userService.add(body);
