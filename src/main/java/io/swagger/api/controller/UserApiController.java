@@ -41,8 +41,6 @@ public class UserApiController implements UserApi {
         this.request = request;
     }
 
-    @Autowired
-    UserService userService = new UserService();
 
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body) {
@@ -70,7 +68,7 @@ public class UserApiController implements UserApi {
                 return ResponseEntity.status(404).build();
             }
             else{
-                return ResponseEntity.status(200).body(user);
+                return ResponseEntity.status(200).body(user.get(0));
             }
         }
         catch (Exception e){

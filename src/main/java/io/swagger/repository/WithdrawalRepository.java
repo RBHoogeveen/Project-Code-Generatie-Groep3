@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface WithdrawalRepository extends JpaRepository<Withdrawal, Long> {
-    @Query(value = "SELECT * FROM Withdrawal WHERE userID = ?1", nativeQuery = true)
-    List<Withdrawal> getWithdrawalsByUser(User user);
+    @Query(value = "SELECT * FROM Withdrawal WHERE user_performing_id = ?1", nativeQuery = true)
+    List<Withdrawal> getWithdrawalsByUser(Integer userId);
 }

@@ -21,7 +21,7 @@ public class WithdrawalService {
         return withdrawalRepository.getOne(withdrawalId);
     }
 
-    public List<Withdrawal> getWithdrawalsByUser(User user) {
-        return withdrawalRepository.getWithdrawalsByUser(user);
+    public List<Withdrawal> getWithdrawalsByUser(Integer userId) {
+        return withdrawalRepository.getWithdrawalsByUser(userId);
     }
 }

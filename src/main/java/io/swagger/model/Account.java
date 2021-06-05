@@ -55,57 +55,6 @@ public class Account {
         return this;
     }
 
-    //method to perform a transaction
-    public Transaction MakeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount) {
-        //prepare the transaction
-        Transaction transaction = new Transaction();
-        transaction.setAmount(amount);
-        String timeOfTransaction = convertNowToString();
-        transaction.setDate(timeOfTransaction);
-        transaction.setUserPerforming(performerAccount.getUser());
-        transaction.setFromAccount(performerAccount);
-        transaction.setToAccount(receiverAccount);
-        transaction.setTransferType(TransferType.TYPE_TRANSACTION);
-        return transaction;
-    }
-
-    //method to perform a deposit
-    public Deposit MakeDeposit(BigDecimal amount, Account receiverAccount, Account performerAccount) {
-        //prepare the withdrawal
-        Deposit deposit = new Deposit();
-        deposit.setAmount(amount);
-        String timeOfDeposit = convertNowToString();
-        deposit.setDate(timeOfDeposit);
-        deposit.setUserPerforming(performerAccount.getUser());
-        deposit.setFromAccount(performerAccount);
-        deposit.setToAccount(receiverAccount);
-        deposit.setTransferType(TransferType.TYPE_DEPOSIT);
-        return deposit;
-    }
-
-    //method to perform a withdrawal
-    public Withdrawal MakeWithdrawal(BigDecimal amount, Account receiverAccount, Account performerAccount) {
-        //prepare the withdrawal
-        Withdrawal withdrawal = new Withdrawal();
-        withdrawal.setAmount(amount);
-        String timeOfWithdrawel = convertNowToString();
-        withdrawal.setDate(timeOfWithdrawel);
-        withdrawal.setUserPerforming(performerAccount.getUser());
-        withdrawal.setFromAccount(performerAccount);
-        withdrawal.setToAccount(receiverAccount);
-        withdrawal.setTransferType(TransferType.TYPE_WITHDRAW);
-        return withdrawal;
-    }
-
-    //method to convert now to string
-    public String convertNowToString() {
-        String pattern = "dd/MM/yyyy";
-        DateFormat df = new SimpleDateFormat(pattern);
-        Date now = Calendar.getInstance().getTime();
-        String timeOfTransaction = df.format(now);
-        return timeOfTransaction;
-    }
-
     public Boolean getType() {
         return type;
     }

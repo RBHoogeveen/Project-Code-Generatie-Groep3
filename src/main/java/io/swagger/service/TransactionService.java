@@ -23,7 +23,7 @@ public class TransactionService {
         return transactionRepository.getOne(transactionId);
     }
 
-    public List<Transaction> getTransactionsByUser(User user) {
-        return transactionRepository.getTransactionsByUser(user);
+    public List<Transaction> getTransactionsByUser(Integer userId) {
+        return transactionRepository.getTransactionsByUser(userId);
     }
 }
