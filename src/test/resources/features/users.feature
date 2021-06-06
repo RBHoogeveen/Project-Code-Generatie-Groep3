@@ -5,7 +5,7 @@ Feature: User tests
     Then I get http status 200
 
   Scenario: Retrieving all users returns list
-    When I retrieve all users
+    When I fetch all users
     Then I get a list of 3 users
 
   Scenario: Retrieve users by searchTerm

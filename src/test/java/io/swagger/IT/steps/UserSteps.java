@@ -17,7 +17,8 @@ import java.net.URISyntaxException;
 public class UserSteps {
 
   private HttpHeaders headers = new HttpHeaders();
-  private String baseUrl = "http://localhost:8080/api/users/";
+  private String baseUrl = "http://localhost:8080/swagger-ui/#/user/getListUsers/";
+  private String searchTermUrl = "http://localhost:8080/swagger-ui/#/user/getUserByName/";
   private RestTemplate template = new RestTemplate();
   private ResponseEntity<String> responseEntity;
 
@@ -34,6 +35,14 @@ public class UserSteps {
     Assert.assertEquals(expected, response);
   }
 
+
+  @When("I fetch all users")
+  public void iFetchAllUsers() throws URISyntaxException {
+    URI uri =  new URI(baseUrl);
+    HttpEntity<String> entity = new HttpEntity<>(null, headers);
+    responseEntity = template.getForEntity(uri, String.class);
+  }
+
   @Then("I get a list of {int} users")
   public void iGetAListOfMultipleUsers(int expected) throws JSONException {
     String response = responseEntity.getBody();
@@ -44,14 +53,16 @@ public class UserSteps {
 
   @When("I retrieve a user with searchTerm {string}")
   public void iRetrieveAUserWithSearchTerm(String searchterm) throws URISyntaxException {
-    URI uri = new URI(baseUrl + searchterm);
+    URI uri = new URI(searchTermUrl + searchterm);
     responseEntity = template.getForEntity(uri, String.class);
   }
 
   @Then("I get a dayLimit with {int}")
-  public void iGetADayLimitWith(int dayLimit) throws JSONException {
+  public void iGetADayLimitWith(int expected) throws JSONException {
     String response = responseEntity.getBody();
-    JSONObject jsonObject = new JSONObject(response);
-    Assert.assertEquals(dayLimit, jsonObject.getInt("dayLimit"));
+    JSONObject actual = new JSONObject(response);
+    Assert.assertEquals(expected, actual.getInt("dayLimit"));
   }
+
+
 }

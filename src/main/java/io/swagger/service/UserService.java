@@ -151,6 +151,10 @@ public class UserService {
     public void updateDaySpent (Integer userId, BigDecimal newDaySpent){
       userRepository.updateDaySpent(newDaySpent, userId);
     }
+
+    public List<User> findAllUsers() {
+      return userRepository.findAll();
+    }
   
   public void createBasicUsers() {
     CreateUpdateUserDTO bank = new CreateUpdateUserDTO();
