@@ -1,6 +1,7 @@
 package io.swagger.api.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,11 +10,12 @@ import io.swagger.api.AccountApi;
 import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
 import io.swagger.model.User;
-import io.swagger.service.AccountService;
+import io.swagger.service.*;
 import io.swagger.model.*;
 import io.swagger.security.JwtTokenProvider;
-import io.swagger.service.TransactionService;
-import io.swagger.service.UserService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,12 @@ public class AccountApiController implements AccountApi {
 
     @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    private DepositService depositService;
+
+    @Autowired
+    private WithdrawalService withdrawalService;
 
     @Autowired
     private AccountService accountService;
@@ -109,10 +117,33 @@ public class AccountApiController implements AccountApi {
         return new ResponseEntity<Account>(updatedAccount, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
         Account createdAccount = accountService.add(body);
         return new ResponseEntity<Account>(createdAccount, HttpStatus.OK);
     }
 
+    public ResponseEntity<List<Transaction>> getTransactionHistory() {
+        List<Transaction> transactions = transactionService.getTransactionHistory();
+        return new ResponseEntity<List<Transaction>>(transactions, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<Deposit>> getDepositHistory() {
+        List<Deposit> deposits = depositService.getDepositHistory();
+        return new ResponseEntity<List<Deposit>>(deposits, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<Withdrawal>> getWithdrawalHistory() {
+        List<Withdrawal> withdrawals = withdrawalService.getWithdrawalHistory();
+        return new ResponseEntity<List<Withdrawal>>(withdrawals, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<?>> getTransferHistory() {
+        List transfers = accountService.getTransferHistory();
+        return new ResponseEntity<List<?>>(transfers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<Account>> getUserAccount(@NotNull @ApiParam(value = "The username", required = true) @Valid @PathVariable(value = "username", required = true) String username) {
+        List<Account> userAccounts = accountService.getUserAccounts(username);
+        return new ResponseEntity<List<Account>>(userAccounts, HttpStatus.OK);
+    }
 }
