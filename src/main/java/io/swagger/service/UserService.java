@@ -226,9 +226,9 @@ public class UserService {
 
       List<Account> accounts = userRepository.getAccountByUserId(username);
 
-//      for (Account account: accounts) {
-//        account.setUser(userRepository.getUserById(userRepository.getUserIdByUsername(username)));
-//      }
+      for (Account account: accounts) {
+        account.setUser(userRepository.getUserById(userRepository.getUserIdByUsername(username)));
+      }
 
       return accounts;
     }

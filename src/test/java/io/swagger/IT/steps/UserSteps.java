@@ -63,6 +63,4 @@ public class UserSteps {
     JSONObject actual = new JSONObject(response);
     Assert.assertEquals(expected, actual.getInt("dayLimit"));
   }
-
-
 }

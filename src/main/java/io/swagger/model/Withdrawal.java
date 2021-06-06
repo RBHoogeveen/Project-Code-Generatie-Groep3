@@ -57,6 +57,7 @@ public class Withdrawal  {
     @JsonProperty("transferType")
     private TransferType transferType = null;
 
+    //empty constructor for the spring annotations
     public Withdrawal() {
     }
 
