@@ -6,6 +6,7 @@ import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
+import io.swagger.service.AccountService;
 import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public class UserApiController implements UserApi {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AccountService accountService;
 
     @org.springframework.beans.factory.annotation.Autowired
     public UserApiController(ObjectMapper objectMapper, HttpServletRequest request) {

@@ -53,10 +53,6 @@ public class CreateUpdateUserDTO {
   private Boolean createSavingsAccount;
   private Boolean createCurrentAccount;
 
-
-
-
-
   public Boolean getCreateSavingsAccount() {
     return createSavingsAccount;
   }

@@ -41,4 +41,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Query(value = "SELECT * FROM Account WHERE user_id = ?1 AND type = true", nativeQuery = true)
     Account getSavingsAccountByUserId(Integer userid);
+
+    @Query(value = "SELECT * FROM ACCOUNT where user_id = (SELECT ID FROM user WHERE username = '?1')", nativeQuery = true)
+    List<Account> getAccountByUserId(String username);
 }

@@ -51,6 +51,10 @@ public class AccountService {
 
     private Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+    @Autowired
+    AccountRepository accountService;
+
+
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
@@ -577,5 +581,16 @@ public class AccountService {
             return accounts;
         }
         else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for user: " + username);}
+    }
+
+    public List<Account> getUserAccountById(String username) {
+
+        List<Account> accounts = accountService.getAccountByUserId(username);
+
+        for (Account account: accounts) {
+            account.setUser(userRepository.getUserById(userRepository.getUserIdByUsername(username)));
+        }
+
+        return accounts;
     }
 }
