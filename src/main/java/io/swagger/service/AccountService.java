@@ -522,8 +522,8 @@ public class AccountService {
         //prepare the withdrawal
         Withdrawal withdrawal = new Withdrawal();
         withdrawal.setAmount(amount);
-        String timeOfWithdrawel = convertNowToString();
-        withdrawal.setDate(timeOfWithdrawel);
+        String timeOfWithdrawal = convertNowToString();
+        withdrawal.setDate(timeOfWithdrawal);
         withdrawal.setUserPerforming(performerAccount.getUser());
         withdrawal.setFromAccount(performerAccount);
         withdrawal.setToAccount(receiverAccount);
