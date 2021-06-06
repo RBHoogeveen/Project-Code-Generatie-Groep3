@@ -8,11 +8,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query(value = "SELECT * FROM Account WHERE user_ID = ?1", nativeQuery = true)
-    Account getAccountByUserId(Long userId);
+    List<Account> getAccountByUserId(Long userId);
 
     @Query(value = "SELECT * FROM Account WHERE iban = ?1", nativeQuery = true)
     Account getAccountByIban(String iban);
