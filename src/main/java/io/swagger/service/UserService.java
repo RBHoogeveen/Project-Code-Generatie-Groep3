@@ -222,8 +222,15 @@ public class UserService {
     }
 
     //get account by userid
-    public List<Account> getUserAccountById(Integer userId) {
-      return userRepository.getAccountByUserId(userId);
+    public List<Account> getUserAccountById(String username) {
+
+      List<Account> accounts = userRepository.getAccountByUserId(username);
+
+//      for (Account account: accounts) {
+//        account.setUser(userRepository.getUserById(userRepository.getUserIdByUsername(username)));
+//      }
+
+      return accounts;
     }
     public User getUserByUsername(String username) {
       return userRepository.findByUsername(username);

@@ -60,10 +60,10 @@ public class UserApiController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<?> getUserAccount(Integer userId) {
+    public ResponseEntity<?> getUserAccount(String username) {
         String accept = request.getHeader("Accept");
         try{
-            List<Account> accounts = userService.getUserAccountById(userId);
+            List<Account> accounts = userService.getUserAccountById(username);
             if (accounts.isEmpty()){
                 return ResponseEntity.status(404).build();
             }
