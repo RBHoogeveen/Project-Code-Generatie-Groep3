@@ -2,18 +2,20 @@ package io.swagger.service;
 
 import io.swagger.model.*;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
-import io.swagger.repository.AccountRepository;
-import io.swagger.repository.UserRepository;
+import io.swagger.repository.*;
 import org.iban4j.CountryCode;
 import org.iban4j.Iban;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,22 +23,33 @@ import java.util.List;
 @Service
 public class AccountService {
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    UserService userService;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    TransactionService transactionService;
+    private DepositRepository depositRepository;
 
     @Autowired
-    DepositService depositService;
+    private WithdrawalRepository withdrawalRepository;
 
     @Autowired
-    WithdrawalService withdrawalService;
+    private UserService userService;
+
+    @Autowired
+    private TransactionService transactionService;
+
+    @Autowired
+    private DepositService depositService;
+
+    @Autowired
+    private WithdrawalService withdrawalService;
+
+    private Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     @Autowired
     AccountRepository accountService;
@@ -536,8 +549,38 @@ public class AccountService {
         String pattern = "dd/MM/yyyy";
         DateFormat df = new SimpleDateFormat(pattern);
         Date now = Calendar.getInstance().getTime();
-        String timeOfTransaction = df.format(now);
-        return timeOfTransaction;
+        return df.format(now);
+    }
+
+    public List<?> getTransferHistory() {
+        List<Object> transfers = new ArrayList<>();
+        if (transactionRepository.getTransactionsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null) {
+            transfers.addAll(transactionService.getTransactionHistory());
+        }
+        if (depositRepository.getDepositsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null) {
+            transfers.addAll(depositService.getDepositHistory());
+        }
+        if (withdrawalRepository.getWithdrawalsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null){
+            transfers.addAll(withdrawalService.getWithdrawalHistory());
+        }
+        if (!transfers.isEmpty()){
+            return transfers;
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No transfers found.");}
+    }
+
+    public List<Account> getUserAccounts(String username) {
+        List<Account> accounts = new ArrayList<>();
+        if (accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(username)) != null){
+            accounts.add(accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(username)));
+        }
+        if (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(username)) != null){
+            accounts.add(accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(username)));
+        }
+        if(!accounts.isEmpty()){
+            return accounts;
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for user: " + username);}
     }
 
     public List<Account> getUserAccountById(String username) {

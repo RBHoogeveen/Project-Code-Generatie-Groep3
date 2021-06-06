@@ -63,23 +63,6 @@ public class UserApiController implements UserApi {
         }
     }
 
-    @Override
-    public ResponseEntity<?> getUserAccount(String username) {
-        String accept = request.getHeader("Accept");
-        try{
-            List<Account> accounts = accountService.getUserAccountById(username);
-            if (accounts.isEmpty()){
-                return ResponseEntity.status(404).build();
-            }
-            else{
-                return ResponseEntity.status(200).body(accounts);
-            }
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.",required=true) @PathVariable("username") String username) {
         String accept = request.getHeader("Accept");
