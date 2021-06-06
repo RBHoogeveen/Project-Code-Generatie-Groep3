@@ -15,9 +15,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
 
-    @Query(value = "SELECT * FROM ACCOUNT where user_id = (SELECT ID FROM User WHERE username = '?1')", nativeQuery = true)
-    List<Account> getAccountByUserId(String username);
-
     @Query(value = "SELECT daySpent FROM User WHERE id = ?1")
     BigDecimal getDaySpent(Integer userId);
 

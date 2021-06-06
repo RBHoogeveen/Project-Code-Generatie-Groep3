@@ -38,6 +38,10 @@ public class AccountService {
     @Autowired
     WithdrawalService withdrawalService;
 
+    @Autowired
+    AccountRepository accountService;
+
+
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
@@ -534,5 +538,16 @@ public class AccountService {
         Date now = Calendar.getInstance().getTime();
         String timeOfTransaction = df.format(now);
         return timeOfTransaction;
+    }
+
+    public List<Account> getUserAccountById(String username) {
+
+        List<Account> accounts = accountService.getAccountByUserId(username);
+
+        for (Account account: accounts) {
+            account.setUser(userRepository.getUserById(userRepository.getUserIdByUsername(username)));
+        }
+
+        return accounts;
     }
 }
