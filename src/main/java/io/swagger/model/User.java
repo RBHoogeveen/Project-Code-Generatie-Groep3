@@ -55,7 +55,8 @@ public class User   {
 
   @JsonProperty("isactive")
   private Boolean isactive = null;
-  
+
+  //empty constructor for the spring annotations
   public User() {
   }
 

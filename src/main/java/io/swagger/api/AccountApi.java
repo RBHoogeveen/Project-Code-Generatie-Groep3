@@ -13,6 +13,9 @@ import io.swagger.model.User;
 import io.swagger.model.Deposit;
 import io.swagger.model.Transaction;
 import io.swagger.model.Withdrawal;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -82,4 +85,49 @@ public interface AccountApi {
         produces = { "application/xml", "application/json" },
         method = RequestMethod.PUT)
     ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of the account that needs to be updated.",required=true) @PathVariable("iban") String username, @ApiParam(value = "Updated account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body);
+
+    @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "Get the accounts of the given username", tags={ "account", })
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "successful operation", response = Account.class, responseContainer = "List") })
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/accounts/{username}",
+        produces = { "application/xml", "application/json" },
+        method = RequestMethod.GET)
+    ResponseEntity<List<Account>> getUserAccount(@ApiParam(value = "The username", required=true) @PathVariable("username") String username);
+
+    @ApiOperation(value = "Transaction history", nickname = "getTransactionHistory", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @RequestMapping(value = "/accounts/transactions",
+        produces = { "application/xml", "application/json" },
+        method = RequestMethod.GET)
+    ResponseEntity<List<Transaction>> getTransactionHistory();
+
+    @ApiOperation(value = "Deposit history", nickname = "getDepositHistory", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @RequestMapping(value = "/accounts/deposits",
+        produces = { "application/xml", "application/json" },
+        method = RequestMethod.GET)
+    ResponseEntity<List<Deposit>> getDepositHistory();
+
+    @ApiOperation(value = "Withdrawal history", nickname = "getWithdrawalHistory", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @RequestMapping(value = "/accounts/withdrawals",
+        produces = { "application/xml", "application/json" },
+        method = RequestMethod.GET)
+    ResponseEntity<List<Withdrawal>> getWithdrawalHistory();
+
+    @ApiOperation(value = "Transfer history", nickname = "getTransferHistory", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "successful operation") })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @RequestMapping(value = "/accounts/transfers",
+        produces = { "application/xml", "application/json" },
+        method = RequestMethod.GET)
+    ResponseEntity<List<?>> getTransferHistory();
 }

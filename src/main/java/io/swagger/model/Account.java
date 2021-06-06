@@ -1,23 +1,16 @@
 package io.swagger.model;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.math.BigDecimal;
-
-import org.iban4j.CountryCode;
-import org.iban4j.Iban;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Account
@@ -47,6 +40,7 @@ public class Account {
     @JsonProperty("isactive")
     private Boolean isactive = null;
 
+    //empty constructor for the spring annotations
     public Account() {
     }
 
@@ -115,22 +109,22 @@ public class Account {
         return balance;
     }
 
-  public void setBalance(BigDecimal balance) {
-      this.balance = balance;
-  }
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 
-  public Account user(User user) {
-      this.user = user;
-      return this;
-  }
-
+    public Account user(User user) {
+        this.user = user;
+        return this;
+    }
 
     /**
      * Get isActive
+     *
      * @return isActive
      **/
     @ApiModelProperty(example = "true", value = "True if the user is active, false if not")
-      @NotNull
+    @NotNull
 
     @Valid
 
@@ -151,17 +145,18 @@ public class Account {
 
     @Valid
 
-  
-  public User getUser() {
-      return user;
-  }
 
-  public void setUser(User user) {
-      this.user = user;
-  }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     /**
      * Get absoluteLimit
+     *
      * @return absoluteLimit
      **/
     @ApiModelProperty(example = "5000", value = "The users absolute spending limit")
@@ -175,6 +170,7 @@ public class Account {
     public void setAbsoluteLimit(BigDecimal absoluteLimit) {
         this.absoluteLimit = absoluteLimit;
     }
+
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) {
