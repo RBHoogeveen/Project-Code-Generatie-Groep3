@@ -5,32 +5,21 @@
  */
 package io.swagger.api;
 
-import java.math.BigDecimal;
 import io.swagger.annotations.*;
 import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
-import io.swagger.model.User;
 import io.swagger.model.Deposit;
 import io.swagger.model.Transaction;
 import io.swagger.model.Withdrawal;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
+
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
 @Validated
@@ -38,96 +27,86 @@ import java.util.List;
 @RequestMapping(value = "/api")
 public interface AccountApi {
 
-    @ApiOperation(value = "Deposit to savings account.", nickname = "deposit", notes = "", tags={ "account", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @ApiOperation(value = "Deposit to savings account.", nickname = "deposit", notes = "", tags = {"account",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/accounts/deposit",
-        produces = { "application/xml", "application/json" }, 
-        method = RequestMethod.POST)
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.POST)
     ResponseEntity<?> deposit(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
 
 
-    @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags={ "account", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags = {"account",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/accounts/transaction",
-        produces = { "application/xml", "application/json" }, 
-        method = RequestMethod.POST)
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.POST)
     ResponseEntity<?> transaction(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
 
 
-    @ApiOperation(value = "Withdraw from savings account.", nickname = "withdrawal", notes = "", tags={ "account", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @ApiOperation(value = "Withdraw from savings account.", nickname = "withdrawal", notes = "", tags = {"account",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/accounts/withdrawal",
-        produces = { "application/xml", "application/json" }, 
-        method = RequestMethod.POST)
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.POST)
     ResponseEntity<?> withdrawal(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount);
 
-    @ApiOperation(value = "Create account", nickname = "createAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiOperation(value = "Create account", nickname = "createAccount", notes = "This can only be done by the logged in user.", tags = {"account",})
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN')")
+            @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/account",
-        produces = { "application/xml", "application/json" },
-        method = RequestMethod.POST)
-    ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body);
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.POST)
+    ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object", required = true) @Valid @RequestBody CreateUpdateAccountDTO body);
 
-    @ApiOperation(value = "Updated account", nickname = "updateAccount", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiOperation(value = "Updated account", nickname = "updateAccount", notes = "This can only be done by the logged in user.", tags = {"account",})
     @ApiResponses(value = {
-        @ApiResponse(code = 400, message = "Invalid iban supplied"),
-        @ApiResponse(code = 404, message = "Account not found") })
-    @PreAuthorize("hasRole('ADMIN')")
+            @ApiResponse(code = 400, message = "Invalid iban supplied"),
+            @ApiResponse(code = 404, message = "Account not found")})
     @RequestMapping(value = "/accounts/{iban}",
-        produces = { "application/xml", "application/json" },
-        method = RequestMethod.PUT)
-    ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of the account that needs to be updated.",required=true) @PathVariable("iban") String username, @ApiParam(value = "Updated account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body);
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.PUT)
+    ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of the account that needs to be updated.", required = true) @PathVariable("iban") String username, @ApiParam(value = "Updated account object", required = true) @Valid @RequestBody CreateUpdateAccountDTO body);
 
-    @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "Get the accounts of the given username", tags={ "account", })
+    @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "Get the accounts of the given username", tags = {"account",})
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "successful operation", response = Account.class, responseContainer = "List") })
-    @PreAuthorize("hasRole('ADMIN')")
+            @ApiResponse(code = 200, message = "successful operation", response = Account.class, responseContainer = "List")})
     @RequestMapping(value = "/accounts/{username}",
-        produces = { "application/xml", "application/json" },
-        method = RequestMethod.GET)
-    ResponseEntity<List<Account>> getUserAccount(@ApiParam(value = "The username", required=true) @PathVariable("username") String username);
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.GET)
+    ResponseEntity<List<Account>> getUserAccount(@ApiParam(value = "The username", required = true) @PathVariable("username") String username);
 
-    @ApiOperation(value = "Transaction history", nickname = "getTransactionHistory", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiOperation(value = "Transaction history", nickname = "getTransactionHistory", notes = "This can only be done by the logged in user.", tags = {"account",})
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+            @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/accounts/transactions",
-        produces = { "application/xml", "application/json" },
-        method = RequestMethod.GET)
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.GET)
     ResponseEntity<List<Transaction>> getTransactionHistory();
 
-    @ApiOperation(value = "Deposit history", nickname = "getDepositHistory", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiOperation(value = "Deposit history", nickname = "getDepositHistory", notes = "This can only be done by the logged in user.", tags = {"account",})
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+            @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/accounts/deposits",
-        produces = { "application/xml", "application/json" },
-        method = RequestMethod.GET)
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.GET)
     ResponseEntity<List<Deposit>> getDepositHistory();
 
-    @ApiOperation(value = "Withdrawal history", nickname = "getWithdrawalHistory", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiOperation(value = "Withdrawal history", nickname = "getWithdrawalHistory", notes = "This can only be done by the logged in user.", tags = {"account",})
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+            @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/accounts/withdrawals",
-        produces = { "application/xml", "application/json" },
-        method = RequestMethod.GET)
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.GET)
     ResponseEntity<List<Withdrawal>> getWithdrawalHistory();
 
-    @ApiOperation(value = "Transfer history", nickname = "getTransferHistory", notes = "This can only be done by the logged in user.", tags={ "account", })
+    @ApiOperation(value = "Transfer history", nickname = "getTransferHistory", notes = "This can only be done by the logged in user.", tags = {"account",})
     @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+            @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/accounts/transfers",
-        produces = { "application/xml", "application/json" },
-        method = RequestMethod.GET)
+            produces = {"application/xml", "application/json"},
+            method = RequestMethod.GET)
     ResponseEntity<List<?>> getTransferHistory();
 }
