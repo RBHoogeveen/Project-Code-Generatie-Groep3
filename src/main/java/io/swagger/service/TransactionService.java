@@ -3,8 +3,13 @@ package io.swagger.service;
 import io.swagger.model.User;
 import io.swagger.repository.TransactionRepository;
 import io.swagger.model.Transaction;
+import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -12,6 +17,11 @@ import java.util.List;
 public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     public void SaveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
@@ -23,5 +33,13 @@ public class TransactionService {
 
     public List<Transaction> getTransactionsByUser(User user) {
         return transactionRepository.getAllByUserPerforming(user);
+    }
+
+    public List<Transaction> getTransactionHistory() {
+        List<Transaction> transactions = transactionRepository.getTransactionsByUser(userRepository.getUserIdByUsername(authentication.getName()));
+        if (!transactions.isEmpty()){
+            return transactions;
+        }
+        else { throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No transactions found"); }
     }
 }
