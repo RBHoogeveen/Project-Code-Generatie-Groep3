@@ -25,8 +25,4 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>{
     void UpdateBalance(BigDecimal newBalance, String iban, boolean accountType);
 
     List<Transaction> getAllByUserPerforming_Id(Integer userId);
-
-    List<Transaction> getAllByUserPerforming_IdAndTransferType_TypeDeposit(Integer userId);
-
-    List<Transaction> getAllByUserPerformingIdAndTransferType_TypeWithdraw(Integer userId);
 }

@@ -58,7 +58,7 @@ public class TransactionService {
     //method to check if the amount will not be over day limit
     public boolean UnderDayLimit(BigDecimal amount, User performerUser) {
         //get all previous transactions
-        List<Transaction> transactions = getTransactionsByUser(performerUser);
+        List<Transaction> transactions = getTransactionsByUser(performerUser.getId());
 
         //if no previous transactions then it is automatically under day limit
         if (transactions.size() == 0)
@@ -120,8 +120,8 @@ public class TransactionService {
         switch (transferType) {
             //current to current
             case TYPE_TRANSACTION:
-                performerAndReceiver[0] = accountRepository.getCurrentAccountByUserId(performerUserId);
-                performerAndReceiver[1] = accountRepository.getCorrectAccountByIban(receiverIban, false);
+                performerAndReceiver[0] = accountRepository.getAccountByUserIdAndTypeIsFalse(performerUserId);
+                performerAndReceiver[1] = accountRepository.getAccountByIbanAndType(receiverIban, false);
 
                 //check if the transaction is valid
                 if (!ValidTransaction(performerAndReceiver))
@@ -129,8 +129,8 @@ public class TransactionService {
                 break;
             case TYPE_DEPOSIT:
                 //current to savings
-                performerAndReceiver[0] = accountRepository.getCurrentAccountByUserId(performerUserId);
-                performerAndReceiver[1] = accountRepository.getCorrectAccountByIban(receiverIban, true);
+                performerAndReceiver[0] = accountRepository.getAccountByUserIdAndTypeIsFalse(performerUserId);
+                performerAndReceiver[1] = accountRepository.getAccountByIbanAndType(receiverIban, true);
 
                 //check if the deposit is valid
                 if (!ValidDeposit(performerAndReceiver))
@@ -139,8 +139,8 @@ public class TransactionService {
                 break;
             case TYPE_WITHDRAW:
                 //savings to current
-                performerAndReceiver[0] = accountRepository.getCorrectAccountByUserId(performerUserId, true);
-                performerAndReceiver[1] = accountRepository.getCorrectAccountByIban(receiverIban, false);
+                performerAndReceiver[0] = accountRepository.getAccountByUserIdAndType(performerUserId, true);
+                performerAndReceiver[1] = accountRepository.getAccountByIbanAndType(receiverIban, false);
 
                 //check if the withdrawal is valid
                 if (!ValidWithdrawal(performerAndReceiver))
@@ -206,7 +206,7 @@ public class TransactionService {
 
     public boolean IbanAndAmountCheck(BigDecimal amount, String receiverIban) {
         //check first if the iban exists
-        if (accountRepository.getIban(receiverIban).equals(""))
+        if (accountRepository.getAccountByIban(receiverIban) == null)
             return true;
 
         //check if amount is less than zero

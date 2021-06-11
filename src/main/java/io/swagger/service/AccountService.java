@@ -71,9 +71,9 @@ public class AccountService {
         Account updatedAccount;
         if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null) {
             if (!createUpdateAccount.getType()) {
-                updatedAccount = accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+                updatedAccount = accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
             } else if (createUpdateAccount.getType()) {
-                updatedAccount = accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+                updatedAccount = accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
             } else {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");
             }
@@ -130,7 +130,7 @@ public class AccountService {
 
     public String generateIban() {
         Iban iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
-        while (accountRepository.getIban(iban.toString()) != null) {
+        while (accountRepository.getAccountByIban(iban.toString()) != null) {
             iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
         }
         return iban.toString();
