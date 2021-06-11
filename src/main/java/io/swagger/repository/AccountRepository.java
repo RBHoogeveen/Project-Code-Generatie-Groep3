@@ -18,14 +18,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query(value = "SELECT balance FROM Account WHERE iban = ?1 AND type = ?2")
     BigDecimal getBalanceByIban(String iban, boolean accountType);
 
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE Account SET balance = ?1 WHERE iban = ?2 AND type = ?3")
-    void UpdateBalance(BigDecimal newBalance, String iban, boolean accountType);
-
-    @Query(value = "SELECT iban FROM Account WHERE iban = ?1")
-    String getIban(String iban);
-
     Account getAccountByIbanAndType(String iban, boolean accountType);
 
     Account getAccountByUserIdAndType(Integer userId, boolean accountType);

@@ -84,7 +84,6 @@ public class UserService {
         user.setRoles(createUpdateUser.getRoles());
         user.setPassword(passwordEncoder.encode(createUpdateUser.getPassword()));
         user.setIsActive(createUpdateUser.getIsActive());
-        user.setDaySpent(BigDecimal.ZERO);
         userRepository.save(user);
         if (createUpdateUser.getCreateCurrentAccount()) {
           accountService.createCurrentAccount(createUpdateUser.getUsername());
