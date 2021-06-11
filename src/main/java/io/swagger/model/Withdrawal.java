@@ -27,7 +27,7 @@ import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
 @Entity
-public class Withdrawal  {
+public class Withdrawal{
     @Id
     @GeneratedValue
     @JsonProperty("id")

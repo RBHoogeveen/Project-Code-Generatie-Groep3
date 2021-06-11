@@ -44,9 +44,6 @@ public class User   {
   @JsonProperty("dayLimit")
   private BigDecimal dayLimit = null;
 
-  @JsonProperty("daySpent")
-  private BigDecimal daySpent = null;
-
   @JsonProperty("transactionLimit")
   private BigDecimal transactionLimit = null;
 
@@ -215,21 +212,6 @@ public class User   {
     return this;
   }
 
-  /**
-   * Get daySpent
-   * @return daySpent
-   **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public BigDecimal getDaySpent() {
-    return daySpent;
-  }
-
-  public void setDaySpent(BigDecimal daySpent) {
-    this.daySpent = daySpent;
-  }
 
   /**
    * Get isActive

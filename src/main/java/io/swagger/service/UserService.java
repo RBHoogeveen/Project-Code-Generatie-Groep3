@@ -84,7 +84,6 @@ public class UserService {
         user.setRoles(createUpdateUser.getRoles());
         user.setPassword(passwordEncoder.encode(createUpdateUser.getPassword()));
         user.setIsActive(createUpdateUser.getIsActive());
-        user.setDaySpent(BigDecimal.ZERO);
         userRepository.save(user);
         if (createUpdateUser.getCreateCurrentAccount()) {
           accountService.createCurrentAccount(createUpdateUser.getUsername());
@@ -142,10 +141,6 @@ public class UserService {
 
     public User getUserById (Long userId){
       return userRepository.getOne(userId);
-    }
-
-    public BigDecimal getDaySpent (Integer userId){
-      return userRepository.getDaySpent(userId);
     }
 
     public void updateDaySpent (Integer userId, BigDecimal newDaySpent){
