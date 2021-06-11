@@ -15,9 +15,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
 
-    @Query(value = "SELECT * FROM Account WHERE user_ID = ?1", nativeQuery = true)
-    List<Account> getAccountByUserId(Integer userId);
-
     @Query(value = "SELECT daySpent FROM User WHERE id = ?1")
     BigDecimal getDaySpent(Integer userId);
 
@@ -33,8 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> getUserBySearchterm(String searchterm);
 
     @Query(value = "SELECT * FROM User WHERE id = ?1", nativeQuery = true)
-    void getUserById(Integer userId);
+    User getUserById(Integer userId);
 
-    @Query(value = "SELECT ID FROM User WHERE username = ?1", nativeQuery = true)
+    @Query(value = "SELECT ID FROM User WHERE username = '?1'", nativeQuery = true)
     Integer getUserIdByUsername(String username);
 }

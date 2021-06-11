@@ -55,6 +55,7 @@ public class Deposit {
   @JsonProperty("transferType")
   private TransferType transferType = null;
 
+  //empty constructor for the spring annotations
   public Deposit() {
   }
 

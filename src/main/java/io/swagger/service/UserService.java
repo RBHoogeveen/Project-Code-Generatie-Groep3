@@ -151,6 +151,10 @@ public class UserService {
     public void updateDaySpent (Integer userId, BigDecimal newDaySpent){
       userRepository.updateDaySpent(newDaySpent, userId);
     }
+
+    public List<User> findAllUsers() {
+      return userRepository.findAll();
+    }
   
   public void createBasicUsers() {
     CreateUpdateUserDTO bank = new CreateUpdateUserDTO();
@@ -217,10 +221,6 @@ public class UserService {
         return userRepository.getUserBySearchterm(searchterm);
     }
 
-    //get account by userid
-    public List<Account> getUserAccountById(Integer userId) {
-      return userRepository.getAccountByUserId(userId);
-    }
     public User getUserByUsername(String username) {
       return userRepository.findByUsername(username);
     }
