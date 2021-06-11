@@ -1,6 +1,9 @@
 package io.swagger.service;
 
 import io.swagger.model.*;
+import io.swagger.model.DTO.DepositWithdrawalDTO;
+import io.swagger.model.DTO.TransactionDTO;
+import io.swagger.model.DTO.TransactionResponseDTO;
 import io.swagger.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,13 +30,7 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
-    private WithdrawalRepository withdrawalRepository;
-
-    @Autowired
-    private DepositRepository depositRepository;
-
-    private Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     public void SaveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
@@ -48,6 +45,7 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactionHistory() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Transaction> transactions = transactionRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName()));
         if (!transactions.isEmpty()){
             return transactions;
@@ -106,61 +104,17 @@ public class TransactionService {
         return transactionRepository.getBalanceByIban(iban, accountType);
     }
 
-    //method to check day limit en transaction limit of the user
-    void CheckTransactionLimit(BigDecimal amount, User performerUser) throws Exception {
-        //determine if the amount is higher than the transaction limit
-        if (amount.compareTo(performerUser.getTransactionLimit()) > 0) {
-            throw new Exception("Cannot make transaction, because the amount to be transferred is higher than the transaction limit");
-        }
-    }
-
-    //method to get the performer account and receiver
-    public Account[] GetPerformerAndReceiver(Integer performerUserId, String receiverIban, TransferType transferType) throws Exception {
-        Account[] performerAndReceiver = new Account[2];
-        switch (transferType) {
-            //current to current
-            case TYPE_TRANSACTION:
-                performerAndReceiver[0] = accountRepository.getAccountByUserIdAndTypeIsFalse(performerUserId);
-                performerAndReceiver[1] = accountRepository.getAccountByIbanAndType(receiverIban, false);
-
-                //check if the transaction is valid
-                if (!ValidTransaction(performerAndReceiver))
-                    throw new Exception("To make a transaction, the receiver account must have another iban");
-                break;
-            case TYPE_DEPOSIT:
-                //current to savings
-                performerAndReceiver[0] = accountRepository.getAccountByUserIdAndTypeIsFalse(performerUserId);
-                performerAndReceiver[1] = accountRepository.getAccountByIbanAndType(receiverIban, true);
-
-                //check if the deposit is valid
-                if (!ValidDeposit(performerAndReceiver))
-                    throw new Exception("You cannot transfer money directly from your current account to another account's savings account");
-
-                break;
-            case TYPE_WITHDRAW:
-                //savings to current
-                performerAndReceiver[0] = accountRepository.getAccountByUserIdAndType(performerUserId, true);
-                performerAndReceiver[1] = accountRepository.getAccountByIbanAndType(receiverIban, false);
-
-                //check if the withdrawal is valid
-                if (!ValidWithdrawal(performerAndReceiver))
-                    throw new Exception("You cannot transfer money directly from your savings account to another account's current account");
-                break;
-        }
-        return performerAndReceiver;
-    }
-
     //method to determine validity of the transaction
-    private boolean ValidTransaction(Account[] performerAndReceiver) {
+    private boolean ValidTransaction(Account performer, Account receiver) {
         int valid = 0;
 
         //check if the iban is not the same
-        if (!performerAndReceiver[0].getIban().equals(performerAndReceiver[1].getIban())) {
+        if (!performer.getIban().equals(receiver.getIban())) {
             valid++;
         }
 
         //check if the performer is a current and the receiver a current
-        if (!performerAndReceiver[0].getType() && !performerAndReceiver[1].getType()) {
+        if (!performer.getType() && !receiver.getType()) {
             valid++;
         }
 
@@ -169,16 +123,16 @@ public class TransactionService {
     }
 
     //method to determine validity of the deposit
-    private boolean ValidDeposit(Account[] performerAndReceiver) {
+    private boolean ValidDeposit(Account performer, Account receiver) {
         int valid = 0;
 
         //check if the iban is the same
-        if (!performerAndReceiver[0].getIban().equals(performerAndReceiver[1].getIban())) {
+        if (!performer.getIban().equals(receiver.getIban())) {
             valid++;
         }
 
         //check if the performer is a current and the receiver a savings
-        if (!performerAndReceiver[0].getType() && performerAndReceiver[1].getType()) {
+        if (!performer.getType() && receiver.getType()) {
             valid++;
         }
 
@@ -187,16 +141,16 @@ public class TransactionService {
     }
 
     //method to determine validity of the withdrawal
-    private boolean ValidWithdrawal(Account[] performerAndReceiver) {
+    private boolean ValidWithdrawal(Account performer, Account receiver) {
         int valid = 0;
 
         //check if the iban is not the same
-        if (!performerAndReceiver[0].getIban().equals(performerAndReceiver[1].getIban())) {
+        if (!performer.getIban().equals(receiver.getIban())) {
             valid++;
         }
 
         //check if the performer is a savings and the receiver a current
-        if (performerAndReceiver[0].getType() && !performerAndReceiver[1].getType()) {
+        if (performer.getType() && !receiver.getType()) {
             valid++;
         }
 
@@ -216,125 +170,145 @@ public class TransactionService {
     }
 
     //method to perform transaction
-    public Transaction PerformTransaction(String performerUsername, BigDecimal amount, String receiverIban) throws Exception {
-        if (IbanAndAmountCheck(amount, receiverIban)) {
+    public TransactionResponseDTO PerformTransaction(TransactionDTO body) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //get user by username
+        User performerUser = userRepository.findByUsername(authentication.getName());
+
+        //get the performer account and the receiver
+        Account performerAccount = accountRepository.getAccountByUserIdAndType(performerUser.getId(), false);
+        Account receiverAccount = accountRepository.getAccountByIbanAndType(body.getTargetIban(), false);
+
+        //check if the amount is not below zero and if the iban exists
+        if (IbanAndAmountCheck(body.getAmount(), body.getTargetIban())) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
 
-        //get user by username
-        User performerUser = userRepository.findByUsername(performerUsername);
-
-        if (UnderDayLimit(amount, performerUser)) {
+        //check if the the transaction stays under the day limit
+        if (UnderDayLimit(body.getAmount(), performerUser)) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You went over your day limit, so this transaction cannot be made");
         }
 
-        //get the performer user (maybe user will be the parameter instead of userid in the future)
-        Account[] performerAndReceiver = GetPerformerAndReceiver(performerUser.getId(), receiverIban, TransferType.TYPE_TRANSACTION);
+        //check if it is a valid transaction
+        if (!ValidTransaction(performerAccount, receiverAccount)) {
+            throw new Exception("To make a transaction, the receiver account must have another iban");
+        }
 
-        //determine if the performers balance is not below the absolute limit
-        if (performerAndReceiver[0].getBalance().subtract(amount).compareTo(performerAndReceiver[0].getAbsoluteLimit()) < 0) {
+        //check if the performers balance is not below the absolute limit
+        if (performerAccount.getBalance().subtract(body.getAmount()).compareTo(receiverAccount.getAbsoluteLimit()) < 0) {
             throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
         }
 
-        //check day limit and transaction limit of the user if it is a transaction
-        if (!performerAndReceiver[0].getIban().equals(performerAndReceiver[1].getIban())) {
-            CheckTransactionLimit(amount, performerUser);
+        //check transaction limit of the user
+        if (body.getAmount().compareTo(performerUser.getTransactionLimit()) > 0) {
+            throw new Exception("Cannot make transaction, because the amount to be transferred is higher than the transaction limit");
         }
 
         //Make the transaction
-        Transaction transaction = MakeTransaction(amount, performerAndReceiver[1], performerAndReceiver[0]);
+        Transaction transaction = MakeTransaction(body.getAmount(), receiverAccount, performerAccount, TransferType.TYPE_TRANSACTION);
 
         //save the transaction
         transactionRepository.save(transaction);
 
+        //make a transaction response
+        TransactionResponseDTO responseDTO = createResponse(transaction);
+
         //execute transaction
-        updateBalance(performerAndReceiver[0], performerAndReceiver[1], amount);
-        return transaction;
+        updateBalance(performerAccount, receiverAccount, body.getAmount());
+        return responseDTO;
     }
 
     //method to perform deposit
-    public Deposit PerformDeposit(String performerUsername, BigDecimal amount, String receiverIban) throws Exception {
-        if (IbanAndAmountCheck(amount, receiverIban)) {
+    public TransactionResponseDTO PerformDeposit(DepositWithdrawalDTO body) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //get user by username
+        User performerUser = userRepository.findByUsername(authentication.getName());
+
+        //get current en savings account from the user
+        Account currentAccount = accountRepository.getAccountByUserIdAndTypeIsFalse(performerUser.getId());
+        Account savingsAccount = accountRepository.getAccountByUserIdAndTypeIsTrue(performerUser.getId());
+
+        //check if the amount is not below zero and if the iban exists
+        if (IbanAndAmountCheck(body.getAmount(), savingsAccount.getIban())) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
 
-        //get user by username
-        User performerUser = userRepository.findByUsername(performerUsername);
-
-        Account[] performerAndReceiver = GetPerformerAndReceiver(performerUser.getId(), receiverIban, TransferType.TYPE_DEPOSIT);
+        //check if the deposit is valid
+        if (!ValidDeposit(currentAccount, savingsAccount)) {
+            throw new Exception("You cannot transfer money directly from your current account to another account's savings account");
+        }
 
         //determine if the performers balance is not below the absolute limit
-        if (performerAndReceiver[0].getBalance().subtract(amount).compareTo(performerAndReceiver[0].getAbsoluteLimit()) < 0) {
+        if (currentAccount.getBalance().subtract(body.getAmount()).compareTo(currentAccount.getAbsoluteLimit()) < 0) {
             throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
         }
 
         //make the deposit
-        Deposit deposit = MakeDeposit(amount, performerAndReceiver[1], performerAndReceiver[0]);
+        Transaction deposit = MakeTransaction(body.getAmount(), savingsAccount, currentAccount, TransferType.TYPE_DEPOSIT);
+
+        //make a transaction response
+        TransactionResponseDTO responseDTO = createResponse(deposit);
 
         //save the deposit
-        depositRepository.save(deposit);
+        transactionRepository.save(deposit);
 
         //execute deposit
-        updateBalance(performerAndReceiver[0], performerAndReceiver[1], amount);
-        return deposit;
+        updateBalance(currentAccount, savingsAccount, body.getAmount());
+        return responseDTO;
     }
 
     //method to perform deposit
-    public Withdrawal PerformWithdrawal(String performerUsername, BigDecimal amount, String receiverIban) throws Exception {
-        if (IbanAndAmountCheck(amount, receiverIban)) {
+    public TransactionResponseDTO PerformWithdrawal(DepositWithdrawalDTO body) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //get user by username
+        User performerUser = userRepository.findByUsername(authentication.getName());
+
+        //get current en savings account from the user
+        Account currentAccount = accountRepository.getAccountByUserIdAndTypeIsFalse(performerUser.getId());
+        Account savingsAccount = accountRepository.getAccountByUserIdAndTypeIsTrue(performerUser.getId());
+
+        //check if the amount is not below zero and if the iban exists
+        if (IbanAndAmountCheck(body.getAmount(), currentAccount.getIban())) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
 
-        //get user by username
-        User performerUser = userRepository.findByUsername(performerUsername);
-
-        Account[] performerAndReceiver = GetPerformerAndReceiver(performerUser.getId(), receiverIban, TransferType.TYPE_WITHDRAW);
+        //check if the withdrawal is valid
+        if (!ValidWithdrawal(savingsAccount, currentAccount)) {
+            throw new Exception("You cannot transfer money directly from your savings account to another account's current account");
+        }
 
         //determine if the performers balance is not below the absolute limit
-        if (performerAndReceiver[0].getBalance().subtract(amount).compareTo(performerAndReceiver[0].getAbsoluteLimit()) < 0) {
+        if (savingsAccount.getBalance().subtract(body.getAmount()).compareTo(savingsAccount.getAbsoluteLimit()) < 0) {
             throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
         }
 
         //make the deposit
-        Withdrawal withdrawal = MakeWithdrawal(amount, performerAndReceiver[1], performerAndReceiver[0]);
+        Transaction withdrawal = MakeTransaction(body.getAmount(), savingsAccount, currentAccount, TransferType.TYPE_WITHDRAW);
+
+        //make a transaction response
+        TransactionResponseDTO responseDTO = createResponse(withdrawal);
 
         //save the deposit
-        withdrawalRepository.save(withdrawal);
+        transactionRepository.save(withdrawal);
 
         //execute deposit
-        updateBalance(performerAndReceiver[0], performerAndReceiver[1], amount);
-        return withdrawal;
-    }
-    //method to perform a deposit
-    public Deposit MakeDeposit(BigDecimal amount, Account receiverAccount, Account performerAccount) {
-        //prepare the withdrawal
-        Deposit deposit = new Deposit();
-        deposit.setAmount(amount);
-        String timeOfDeposit = convertNowToString();
-        deposit.setDate(timeOfDeposit);
-        deposit.setUserPerforming(performerAccount.getUser());
-        deposit.setFromAccount(performerAccount);
-        deposit.setToAccount(receiverAccount);
-        deposit.setTransferType(TransferType.TYPE_DEPOSIT);
-        return deposit;
+        updateBalance(savingsAccount, currentAccount, body.getAmount());
+        return responseDTO;
     }
 
-    //method to perform a withdrawal
-    public Withdrawal MakeWithdrawal(BigDecimal amount, Account receiverAccount, Account performerAccount) {
-        //prepare the withdrawal
-        Withdrawal withdrawal = new Withdrawal();
-        withdrawal.setAmount(amount);
-        String timeOfWithdrawal = convertNowToString();
-        withdrawal.setDate(timeOfWithdrawal);
-        withdrawal.setUserPerforming(performerAccount.getUser());
-        withdrawal.setFromAccount(performerAccount);
-        withdrawal.setToAccount(receiverAccount);
-        withdrawal.setTransferType(TransferType.TYPE_WITHDRAW);
-        return withdrawal;
+    //method to create a transaction response
+    private TransactionResponseDTO createResponse(Transaction transaction) {
+        TransactionResponseDTO responseDTO = new TransactionResponseDTO();
+        responseDTO.setAmount(transaction.getAmount());
+        responseDTO.setPerformDate(transaction.getDate());
+        responseDTO.setPerformingIban(transaction.getFromAccount().getIban());
+        responseDTO.setPerformingUser(transaction.getUserPerforming().getUsername());
+        responseDTO.setTargetIban(transaction.getToAccount().getIban());
+        return responseDTO;
     }
 
     //method to perform a transaction
-    public Transaction MakeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount) {
+    public Transaction MakeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount, TransferType transferType) {
         //prepare the transaction
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
@@ -343,7 +317,7 @@ public class TransactionService {
         transaction.setUserPerforming(performerAccount.getUser());
         transaction.setFromAccount(performerAccount);
         transaction.setToAccount(receiverAccount);
-        transaction.setTransferType(TransferType.TYPE_TRANSACTION);
+        transaction.setTransferType(transferType);
         return transaction;
     }
 

@@ -49,12 +49,6 @@ public class AccountApiController implements AccountApi {
     private TransactionService transactionService;
 
     @Autowired
-    private DepositService depositService;
-
-    @Autowired
-    private WithdrawalService withdrawalService;
-
-    @Autowired
     private AccountService accountService;
 
     @Autowired

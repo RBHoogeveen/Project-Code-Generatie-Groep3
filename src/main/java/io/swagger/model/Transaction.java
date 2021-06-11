@@ -31,9 +31,6 @@ public class Transaction {
     @JsonProperty("date")
     private String date = null;
 
-    @JsonProperty("type")
-    private Boolean type = null;
-
     @ManyToOne
     @JsonProperty("userPerforming")
     private User userPerforming = null;
@@ -125,26 +122,6 @@ public class Transaction {
         this.date = date;
     }
 
-    public Transaction type(Boolean type) {
-        this.type = type;
-        return this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return type
-     **/
-    @ApiModelProperty(value = "")
-
-
-    public Boolean isType() {
-        return type;
-    }
-
-    public void setType(Boolean type) {
-        this.type = type;
-    }
 
     public Transaction userPerforming(User userPerforming) {
         this.userPerforming = userPerforming;
@@ -225,7 +202,6 @@ public class Transaction {
         return Objects.equals(this.id, transaction.id) &&
                 Objects.equals(this.amount, transaction.amount) &&
                 Objects.equals(this.date, transaction.date) &&
-                Objects.equals(this.type, transaction.type) &&
                 Objects.equals(this.userPerforming, transaction.userPerforming) &&
                 Objects.equals(this.fromAccount, transaction.fromAccount) &&
                 Objects.equals(this.toAccount, transaction.toAccount);
@@ -233,7 +209,7 @@ public class Transaction {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, amount, date, type, userPerforming, fromAccount, toAccount);
+        return Objects.hash(id, amount, date, userPerforming, fromAccount, toAccount);
     }
 
     @Override
@@ -244,7 +220,6 @@ public class Transaction {
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
         sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
         sb.append("    date: ").append(toIndentedString(date)).append("\n");
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
         sb.append("    userPerforming: ").append(toIndentedString(userPerforming)).append("\n");
         sb.append("    fromAccount: ").append(toIndentedString(fromAccount)).append("\n");
         sb.append("    toAccount: ").append(toIndentedString(toAccount)).append("\n");

@@ -32,22 +32,10 @@ public class AccountService {
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private DepositRepository depositRepository;
-
-    @Autowired
-    private WithdrawalRepository withdrawalRepository;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
     private TransactionService transactionService;
-
-    @Autowired
-    private DepositService depositService;
-
-    @Autowired
-    private WithdrawalService withdrawalService;
 
     private Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -163,12 +151,6 @@ public class AccountService {
         List<Object> transfers = new ArrayList<>();
         if (transactionRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null) {
             transfers.addAll(transactionService.getTransactionHistory());
-        }
-        if (depositRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null) {
-            transfers.addAll(depositService.getDepositHistory());
-        }
-        if (withdrawalRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null){
-            transfers.addAll(withdrawalService.getWithdrawalHistory());
         }
         if (!transfers.isEmpty()){
             return transfers;
