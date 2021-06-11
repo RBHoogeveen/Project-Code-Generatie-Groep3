@@ -69,12 +69,12 @@ public class AccountService {
 
     //get saving account by userid
     public Account getSavingAccountByUserId(Integer userId) {
-        return accountRepository.getCorrectAccountByUserId(userId, true);
+        return accountRepository.getAccountByUserIdAndType(userId, true);
     }
 
     //get current account by userid
     public Account getCurrentAccountByUserId(Integer userId) {
-        return accountRepository.getCorrectAccountByUserId(userId, false);
+        return accountRepository.getAccountByUserIdAndType(userId, false);
     }
 
     //get account by iban
@@ -84,12 +84,12 @@ public class AccountService {
 
     //method to get savings account
     public Account getSavingsAccountByIban(String iban) {
-        return accountRepository.getCorrectAccountByIban(iban, true);
+        return accountRepository.getAccountByIbanAndType(iban, true);
     }
 
     //method to get current account
     public Account getCurrentAccountByIban(String iban) {
-        return accountRepository.getCorrectAccountByIban(iban, false);
+        return accountRepository.getAccountByIbanAndType(iban, false);
     }
 
     //method to check if the amount will not be over day limit
@@ -181,17 +181,8 @@ public class AccountService {
         //update balance of performer
         accountRepository.UpdateBalance(newPerformerBalance, performerAccount.getIban(), performerAccount.getType());
 
-        //update day spent of performer
-        BigDecimal daySpent = getDaySpent(performerAccount.getUser().getId());
-        BigDecimal newDaySpent = daySpent.add(amount);
-        userService.updateDaySpent(performerAccount.getUser().getId(), newDaySpent);
-
         //update balance of receiver
         accountRepository.UpdateBalance(newReceiverBalance, receiverAccount.getIban(), receiverAccount.getType());
-    }
-
-    public BigDecimal getDaySpent(Integer userId) {
-        return userService.getDaySpent(userId);
     }
 
     public BigDecimal getBalanceByIban(String iban, boolean accountType) {
@@ -421,10 +412,10 @@ public class AccountService {
         Account updatedAccount;
         if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null){
             if (!createUpdateAccount.getType()){
-                updatedAccount = accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+                updatedAccount = accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
             }
             else if (createUpdateAccount.getType()){
-                updatedAccount = accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+                updatedAccount = accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
             }
             else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");}
             if (createUpdateAccount.getAbsoluteLimit().compareTo(BigDecimal.ZERO) >= 0){
@@ -447,7 +438,7 @@ public class AccountService {
     }
 
     public Account add(CreateUpdateAccountDTO createUpdateAccount) {
-        if ((accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null) || (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null)){
+        if ((accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null) || (accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null)){
             Account newAccount = new Account();
             newAccount.setIban(generateIban());
             newAccount.setType(createUpdateAccount.getType());
@@ -554,13 +545,13 @@ public class AccountService {
 
     public List<?> getTransferHistory() {
         List<Object> transfers = new ArrayList<>();
-        if (transactionRepository.getTransactionsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null) {
+        if (transactionRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null) {
             transfers.addAll(transactionService.getTransactionHistory());
         }
-        if (depositRepository.getDepositsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null) {
+        if (depositRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null) {
             transfers.addAll(depositService.getDepositHistory());
         }
-        if (withdrawalRepository.getWithdrawalsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null){
+        if (withdrawalRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null){
             transfers.addAll(withdrawalService.getWithdrawalHistory());
         }
         if (!transfers.isEmpty()){
@@ -571,26 +562,15 @@ public class AccountService {
 
     public List<Account> getUserAccounts(String username) {
         List<Account> accounts = new ArrayList<>();
-        if (accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(username)) != null){
-            accounts.add(accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(username)));
+        if (accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(username)) != null){
+            accounts.add(accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(username)));
         }
-        if (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(username)) != null){
-            accounts.add(accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(username)));
+        if (accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(username)) != null){
+            accounts.add(accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(username)));
         }
         if(!accounts.isEmpty()){
             return accounts;
         }
         else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for user: " + username);}
-    }
-
-    public List<Account> getUserAccountById(String username) {
-
-        List<Account> accounts = accountService.getAccountByUserId(username);
-
-        for (Account account: accounts) {
-            account.setUser(userRepository.getUserById(userRepository.getUserIdByUsername(username)));
-        }
-
-        return accounts;
     }
 }

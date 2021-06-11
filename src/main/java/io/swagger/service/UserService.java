@@ -104,7 +104,7 @@ public class UserService {
     public User updateUser (CreateUpdateUserDTO createUpdateUser){
       try {
         User updatedUser = userRepository.findByUsername(createUpdateUser.getUsername());
-        if (!accountRepository.getCurrentAccountByUserId(updatedUser.getId()).getIban().equals("NL01INHO0000000001")){
+        if (!accountRepository.getAccountByUserIdAndTypeIsFalse(updatedUser.getId()).getIban().equals("NL01INHO0000000001")){
           updatedUser.setUsername(createUpdateUser.getUsername());
           if (Pattern.matches("[a-zA-Z]+", createUpdateUser.getFirstname())) {
             updatedUser.setFirstname(createUpdateUser.getFirstname());
@@ -142,14 +142,6 @@ public class UserService {
 
     public User getUserById (Long userId){
       return userRepository.getOne(userId);
-    }
-
-    public BigDecimal getDaySpent (Integer userId){
-      return userRepository.getDaySpent(userId);
-    }
-
-    public void updateDaySpent (Integer userId, BigDecimal newDaySpent){
-      userRepository.updateDaySpent(newDaySpent, userId);
     }
 
     public List<User> findAllUsers() {
@@ -219,10 +211,6 @@ public class UserService {
 
     public List<User> getUserBySearchterm(String searchterm) {
         return userRepository.getUserBySearchterm(searchterm);
-    }
-
-    public User getUserByUsername(String username) {
-      return userRepository.findByUsername(username);
     }
 }
 

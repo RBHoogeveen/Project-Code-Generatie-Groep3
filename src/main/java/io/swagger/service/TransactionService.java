@@ -31,11 +31,11 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactionsByUser(Integer userId) {
-        return transactionRepository.getTransactionsByUser(userId);
+        return transactionRepository.getAllByUserPerforming_Id(userId);
     }
 
     public List<Transaction> getTransactionHistory() {
-        List<Transaction> transactions = transactionRepository.getTransactionsByUser(userRepository.getUserIdByUsername(authentication.getName()));
+        List<Transaction> transactions = transactionRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName()));
         if (!transactions.isEmpty()){
             return transactions;
         }

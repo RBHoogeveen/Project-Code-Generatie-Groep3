@@ -3,6 +3,7 @@ package io.swagger.service;
 import io.swagger.model.Deposit;
 import io.swagger.model.User;
 import io.swagger.repository.DepositRepository;
+import io.swagger.repository.TransactionRepository;
 import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,11 +33,11 @@ public class DepositService {
     }
 
     public List<Deposit> getDepositsByUser(Integer userId) {
-        return depositRepository.getDepositsByUser(userId);
+        return depositRepository.getAllByUserPerforming_Id(userId);
     }
 
     public List<Deposit> getDepositHistory() {
-        List<Deposit> deposits = depositRepository.getDepositsByUser(userRepository.getUserIdByUsername(authentication.getName()));
+        List<Deposit> deposits = depositRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName()));
         if (!deposits.isEmpty()){
             return deposits;
         }
