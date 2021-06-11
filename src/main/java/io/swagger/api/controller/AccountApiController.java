@@ -69,79 +69,20 @@ public class AccountApiController implements AccountApi {
         this.request = request;
     }
 
-    public ResponseEntity<?> transaction(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN,@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount) {
-        try {
-            //get username of the current user
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName();
-
-            //perform the transaction
-            Transaction transaction = accountService.PerformTransaction(username, amount, targetIBAN);
-            return ResponseEntity.status(201).body(transaction);
-        } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }
-    }
-
-    public ResponseEntity<?> deposit(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount) {
-        try {
-            //get username of the current user
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName();
-
-            //perform the deposit
-            Deposit deposit = accountService.PerformDeposit(username, amount, targetIBAN);
-            return ResponseEntity.status(201).body(deposit);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }
-    }
-
-    public ResponseEntity<?> withdrawal(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Target IBAN", required = true) String targetIBAN, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "Amount", required = true) BigDecimal amount) {
-        try {
-            //get username of the current user
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName();
-
-            //perform the withdrawal
-            Withdrawal withdrawal = accountService.PerformWithdrawal(username, amount, targetIBAN);
-            return ResponseEntity.status(201).body(withdrawal);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }
-    }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of account that needs to bee updated",required=true) @PathVariable("iban") String iban, @ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
         Account updatedAccount = accountService.updateAccount(body);
 
         return new ResponseEntity<Account>(updatedAccount, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
         Account createdAccount = accountService.add(body);
         return new ResponseEntity<Account>(createdAccount, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<Transaction>> getTransactionHistory() {
-        List<Transaction> transactions = transactionService.getTransactionHistory();
-        return new ResponseEntity<List<Transaction>>(transactions, HttpStatus.OK);
-    }
-
-    public ResponseEntity<List<Deposit>> getDepositHistory() {
-        List<Deposit> deposits = depositService.getDepositHistory();
-        return new ResponseEntity<List<Deposit>>(deposits, HttpStatus.OK);
-    }
-
-    public ResponseEntity<List<Withdrawal>> getWithdrawalHistory() {
-        List<Withdrawal> withdrawals = withdrawalService.getWithdrawalHistory();
-        return new ResponseEntity<List<Withdrawal>>(withdrawals, HttpStatus.OK);
-    }
-
-    public ResponseEntity<List<?>> getTransferHistory() {
-        List transfers = accountService.getTransferHistory();
-        return new ResponseEntity<List<?>>(transfers, HttpStatus.OK);
-    }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Account>> getUserAccount(@NotNull @ApiParam(value = "The username", required = true) @Valid @PathVariable(value = "username", required = true) String username) {
         List<Account> userAccounts = accountService.getUserAccounts(username);
         return new ResponseEntity<List<Account>>(userAccounts, HttpStatus.OK);
