@@ -25,9 +25,6 @@ public class Swagger2SpringBoot implements CommandLineRunner {
         }
 
         userService.createBasicUsers();
-
-        List<Account> accounts = accountService.getUserAccountById("Admin");
-
     }
 
     @Autowired
