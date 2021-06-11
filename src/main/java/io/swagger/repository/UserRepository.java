@@ -15,9 +15,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
 
-    @Query(value = "SELECT daySpent FROM User WHERE id = ?1")
-    BigDecimal getDaySpent(Integer userId);
-
     @Transactional
     @Modifying
     @Query(value = "UPDATE User SET day_spent = ?1 WHERE id = ?2", nativeQuery = true)

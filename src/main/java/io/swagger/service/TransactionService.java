@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import io.swagger.model.User;
 import io.swagger.repository.TransactionRepository;
 import io.swagger.model.Transaction;
 import io.swagger.repository.UserRepository;
@@ -30,8 +31,8 @@ public class TransactionService {
         return transactionRepository.getOne(transactionId);
     }
 
-    public List<Transaction> getTransactionsByUser(Integer userId) {
-        return transactionRepository.getTransactionsByUser(userId);
+    public List<Transaction> getTransactionsByUser(User user) {
+        return transactionRepository.getAllByUserPerforming(user);
     }
 
     public List<Transaction> getTransactionHistory() {
