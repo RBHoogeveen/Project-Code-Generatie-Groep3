@@ -242,12 +242,6 @@ public class AccountService {
         return valid == 2;
     }
 
-    //method to check if the account is a current or savings
-    public boolean CheckAccount(Account account) {
-        //false = current account, true = savings account
-        return account.getType();
-    }
-
     public boolean IbanAndAmountCheck(BigDecimal amount, String receiverIban) {
         //check first if the iban exists
         if (accountRepository.getIban(receiverIban).equals(""))
