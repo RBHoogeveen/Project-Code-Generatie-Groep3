@@ -101,7 +101,7 @@ public class AccountService {
     }
 
     public Account add(CreateUpdateAccountDTO createUpdateAccount) {
-        if ((accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null) || (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null)) {
+        if ((accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null) || (accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null)){
             Account newAccount = new Account();
             newAccount.setIban(generateIban());
             newAccount.setType(createUpdateAccount.getType());
@@ -161,13 +161,13 @@ public class AccountService {
 
     public List<?> getTransferHistory() {
         List<Object> transfers = new ArrayList<>();
-        if (transactionRepository.getTransactionsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null) {
+        if (transactionRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null) {
             transfers.addAll(transactionService.getTransactionHistory());
         }
-        if (depositRepository.getDepositsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null) {
+        if (depositRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null) {
             transfers.addAll(depositService.getDepositHistory());
         }
-        if (withdrawalRepository.getWithdrawalsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null){
+        if (withdrawalRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null){
             transfers.addAll(withdrawalService.getWithdrawalHistory());
         }
         if (!transfers.isEmpty()){
@@ -178,11 +178,11 @@ public class AccountService {
 
     public List<Account> getUserAccounts(String username) {
         List<Account> accounts = new ArrayList<>();
-        if (accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(username)) != null){
-            accounts.add(accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(username)));
+        if (accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(username)) != null){
+            accounts.add(accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(username)));
         }
-        if (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(username)) != null){
-            accounts.add(accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(username)));
+        if (accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(username)) != null){
+            accounts.add(accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(username)));
         }
         if(!accounts.isEmpty()){
             return accounts;

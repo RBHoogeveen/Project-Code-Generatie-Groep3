@@ -43,12 +43,12 @@ public class TransactionService {
         return transactionRepository.getOne(transactionId);
     }
 
-    public List<Transaction> getTransactionsByUser(User user) {
-        return transactionRepository.getAllByUserPerforming(user);
+    public List<Transaction> getTransactionsByUser(Integer userId) {
+        return transactionRepository.getAllByUserPerforming_Id(userId);
     }
 
     public List<Transaction> getTransactionHistory() {
-        List<Transaction> transactions = transactionRepository.getTransactionsByUser(userRepository.getUserIdByUsername(authentication.getName()));
+        List<Transaction> transactions = transactionRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName()));
         if (!transactions.isEmpty()){
             return transactions;
         }

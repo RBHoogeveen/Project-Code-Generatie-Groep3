@@ -61,7 +61,7 @@ public class Transaction {
     public Transaction() {
     }
 
-    //TODO onetomany etc ff nachecken
+    //TODO onetomany etc ff checken
     public Transaction id(Long id) {
         this.id = id;
         return this;

@@ -3,6 +3,7 @@ package io.swagger.service;
 import io.swagger.model.Deposit;
 import io.swagger.model.User;
 import io.swagger.model.Withdrawal;
+import io.swagger.repository.TransactionRepository;
 import io.swagger.repository.UserRepository;
 import io.swagger.repository.WithdrawalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,11 @@ public class WithdrawalService {
     }
 
     public List<Withdrawal> getWithdrawalsByUser(Integer userId) {
-        return withdrawalRepository.getWithdrawalsByUser(userId);
+        return withdrawalRepository.getAllByUserPerforming_Id(userId);
     }
 
     public List<Withdrawal> getWithdrawalHistory() {
-        List<Withdrawal> withdrawals = withdrawalRepository.getWithdrawalsByUser(userRepository.getUserIdByUsername(authentication.getName()));
+        List<Withdrawal> withdrawals = withdrawalRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName()));
         if (!withdrawals.isEmpty()){
             return withdrawals;
         }

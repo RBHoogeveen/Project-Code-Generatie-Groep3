@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface DepositRepository extends JpaRepository<Deposit, Long> {
-    @Query(value = "SELECT * FROM Deposit WHERE user_performing_id = ?1", nativeQuery = true)
-    List<Deposit> getDepositsByUser(Integer userId);
+  List<Deposit> getAllByUserPerforming_Id(Integer userId);
 }
