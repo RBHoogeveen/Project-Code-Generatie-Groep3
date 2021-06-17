@@ -39,14 +39,6 @@ public class AccountService {
 
     private Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    @Autowired
-    AccountRepository accountService;
-
-
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
-
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
@@ -170,5 +162,13 @@ public class AccountService {
             return accounts;
         }
         else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for user: " + username);}
+    }
+
+    public Account getAccountByIban(String iban){
+        Account account = accountRepository.getAccountByIban(iban);
+        if (account != null){
+            return account;
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for iban: " + iban);}
     }
 }

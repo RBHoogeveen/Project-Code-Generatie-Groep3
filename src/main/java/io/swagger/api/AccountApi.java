@@ -47,5 +47,11 @@ public interface AccountApi {
             method = RequestMethod.GET)
     ResponseEntity<List<Account>> getUserAccount(@ApiParam(value = "The username", required = true) @PathVariable("username") String username);
 
-
+//    @ApiOperation(value = "Get account by iban", nickname = "getAccountByIban", notes = "Get the accounts of the given iban", tags = {"account",})
+//    @ApiResponses(value = {
+//        @ApiResponse(code = 200, message = "successful operation", response = Account.class, responseContainer = "List")})
+//    @RequestMapping(value = "/accounts/{iban}",
+//        produces = {"application/xml", "application/json"},
+//        method = RequestMethod.GET)
+//    ResponseEntity<Account> getAccountByIban(@ApiParam(value = "The Iban", required = true) @PathVariable("iban") String Iban);
 }
