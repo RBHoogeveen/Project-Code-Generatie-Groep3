@@ -90,13 +90,20 @@ public class TransactionService {
         //update balance of receiver
         transactionRepository.UpdateBalance(newReceiverBalance, receiverAccount.getIban(), receiverAccount.getType());
     }
+
     public BigDecimal getBalanceByIban(String iban, boolean accountType) {
         return transactionRepository.getBalanceByIban(iban, accountType);
     }
 
     //method to determine validity of the transaction
-    private boolean ValidTransaction(Account performer, Account receiver) {
+    private boolean ValidTransaction(Account performer, Account receiver, Account userAccount, User user) {
         int valid = 0;
+
+        if (!userAccount.getIban().equals(performer.getIban())) {
+            if (user.getRoles().contains(Role.ROLE_USER)) {
+
+            }
+        }
 
         //check if the iban is not the same
         if (!performer.getIban().equals(receiver.getIban())) {
@@ -162,12 +169,14 @@ public class TransactionService {
 
     //method to perform transaction
     public TransactionResponseDTO PerformTransaction(TransactionDTO body) {
+        //todo zorgen dat een employee een transactie kan doen namens een andere user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //get user by username
         User performerUser = userRepository.findByUsername(authentication.getName());
 
         //get the performer account and the receiver
         Account performerAccount = accountRepository.getAccountByUserIdAndType(performerUser.getId(), false);
+        //Account performerAccount2 = accountRepository.getAccountByIbanAndType(body.getPerformerIban(), false);
         Account receiverAccount = accountRepository.getAccountByIbanAndType(body.getTargetIban(), false);
 
         //check if the amount is not below zero and if the iban exists

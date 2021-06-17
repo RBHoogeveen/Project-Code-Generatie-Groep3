@@ -11,5 +11,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TransactionDTO {
     private BigDecimal amount;
+    private String performerIban;
     private String targetIban;
 }
