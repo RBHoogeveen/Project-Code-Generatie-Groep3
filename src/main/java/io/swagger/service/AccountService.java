@@ -189,12 +189,4 @@ public class AccountService {
         }
         else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for user: " + username);}
     }
-
-    public Account getAccountByIban(String iban){
-        Account account = accountRepository.getAccountByIban(iban);
-        if (account != null){
-            return account;
-        }
-        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for iban: " + iban);}
-    }
 }
