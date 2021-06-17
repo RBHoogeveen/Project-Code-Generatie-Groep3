@@ -30,16 +30,6 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    //private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    public void SaveTransaction(Transaction transaction) {
-        transactionRepository.save(transaction);
-    }
-
-    public Transaction getTransactionById(Long transactionId) {
-        return transactionRepository.getOne(transactionId);
-    }
-
     public List<Transaction> getTransactionsByUser(Integer userId) {
         return transactionRepository.getAllByUserPerforming_Id(userId);
     }
@@ -158,6 +148,7 @@ public class TransactionService {
         return valid == 2;
     }
 
+    //method to check if the iban exists and the amount is not below zero
     public boolean IbanAndAmountCheck(BigDecimal amount, String receiverIban) {
         //check first if the iban exists
         if (accountRepository.getAccountByIban(receiverIban) == null)
@@ -170,7 +161,7 @@ public class TransactionService {
     }
 
     //method to perform transaction
-    public TransactionResponseDTO PerformTransaction(TransactionDTO body) throws Exception {
+    public TransactionResponseDTO PerformTransaction(TransactionDTO body) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //get user by username
         User performerUser = userRepository.findByUsername(authentication.getName());
@@ -191,17 +182,17 @@ public class TransactionService {
 
         //check if it is a valid transaction
         if (!ValidTransaction(performerAccount, receiverAccount)) {
-            throw new Exception("To make a transaction, the receiver account must have another iban");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "To make a transaction, the receiver account must have another iban");
         }
 
         //check if the performers balance is not below the absolute limit
         if (performerAccount.getBalance().subtract(body.getAmount()).compareTo(receiverAccount.getAbsoluteLimit()) < 0) {
-            throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "The requested amount to be transferred is below the absolute limit, and thus not possible");
         }
 
         //check transaction limit of the user
         if (body.getAmount().compareTo(performerUser.getTransactionLimit()) > 0) {
-            throw new Exception("Cannot make transaction, because the amount to be transferred is higher than the transaction limit");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot make transaction, because the amount to be transferred is higher than the transaction limit");
         }
 
         //Make the transaction
@@ -218,8 +209,8 @@ public class TransactionService {
         return responseDTO;
     }
 
-    //method to perform deposit
-    public TransactionResponseDTO PerformDeposit(DepositWithdrawalDTO body) throws Exception {
+    //method to perform a special transaction
+    public TransactionResponseDTO PerformSpecialTransaction(DepositWithdrawalDTO body, TransferType transferType) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //get user by username
         User performerUser = userRepository.findByUsername(authentication.getName());
@@ -233,66 +224,47 @@ public class TransactionService {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
 
-        //check if the deposit is valid
-        if (!ValidDeposit(currentAccount, savingsAccount)) {
-            throw new Exception("You cannot transfer money directly from your current account to another account's savings account");
+        //check the transfer type
+        if (transferType == TransferType.TYPE_DEPOSIT) {
+            //check for a valid deposit
+            if (!ValidDeposit(currentAccount, savingsAccount)) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You cannot transfer money directly from your current account to another account's savings account");
+            }
+
+            //check if the performers balance is not below the absolute limit
+            if (currentAccount.getBalance().subtract(body.getAmount()).compareTo(currentAccount.getAbsoluteLimit()) < 0) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "The requested amount to be transferred is below the absolute limit, and thus not possible");
+            }
+        }
+        else if (transferType == TransferType.TYPE_WITHDRAW) {
+            //check for valid withdrawal
+            if (!ValidWithdrawal(savingsAccount, currentAccount)) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You cannot transfer money directly from your savings account to another account's current account");
+            }
+
+            //determine if the performers balance is not below the absolute limit
+            if (savingsAccount.getBalance().subtract(body.getAmount()).compareTo(savingsAccount.getAbsoluteLimit()) < 0) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "The requested amount to be transferred is below the absolute limit, and thus not possible");
+            }
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "The requested transfer type doesn't appear to exist");
         }
 
-        //determine if the performers balance is not below the absolute limit
-        if (currentAccount.getBalance().subtract(body.getAmount()).compareTo(currentAccount.getAbsoluteLimit()) < 0) {
-            throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
-        }
-
-        //make the deposit
-        Transaction deposit = MakeTransaction(body.getAmount(), savingsAccount, currentAccount, TransferType.TYPE_DEPOSIT);
+        //make the special transaction
+        Transaction specialTransaction = MakeTransaction(body.getAmount(), savingsAccount, currentAccount, transferType);
 
         //make a transaction response
-        TransactionResponseDTO responseDTO = createResponse(deposit);
+        TransactionResponseDTO responseDTO = createResponse(specialTransaction);
 
-        //save the deposit
-        transactionRepository.save(deposit);
+        //save the special transaction
+        transactionRepository.save(specialTransaction);
 
-        //execute deposit
-        updateBalance(currentAccount, savingsAccount, body.getAmount());
-        return responseDTO;
-    }
-
-    //method to perform deposit
-    public TransactionResponseDTO PerformWithdrawal(DepositWithdrawalDTO body) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //get user by username
-        User performerUser = userRepository.findByUsername(authentication.getName());
-
-        //get current en savings account from the user
-        Account currentAccount = accountRepository.getAccountByUserIdAndTypeIsFalse(performerUser.getId());
-        Account savingsAccount = accountRepository.getAccountByUserIdAndTypeIsTrue(performerUser.getId());
-
-        //check if the amount is not below zero and if the iban exists
-        if (IbanAndAmountCheck(body.getAmount(), currentAccount.getIban())) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
-        }
-
-        //check if the withdrawal is valid
-        if (!ValidWithdrawal(savingsAccount, currentAccount)) {
-            throw new Exception("You cannot transfer money directly from your savings account to another account's current account");
-        }
-
-        //determine if the performers balance is not below the absolute limit
-        if (savingsAccount.getBalance().subtract(body.getAmount()).compareTo(savingsAccount.getAbsoluteLimit()) < 0) {
-            throw new Exception("The requested amount to be transferred is below the absolute limit, and thus not possible");
-        }
-
-        //make the deposit
-        Transaction withdrawal = MakeTransaction(body.getAmount(), savingsAccount, currentAccount, TransferType.TYPE_WITHDRAW);
-
-        //make a transaction response
-        TransactionResponseDTO responseDTO = createResponse(withdrawal);
-
-        //save the deposit
-        transactionRepository.save(withdrawal);
-
-        //execute deposit
-        updateBalance(savingsAccount, currentAccount, body.getAmount());
+        //execute the special transaction
+        if (transferType == TransferType.TYPE_WITHDRAW)
+            updateBalance(savingsAccount, currentAccount, body.getAmount());
+        else
+            updateBalance(currentAccount, savingsAccount, body.getAmount());
         return responseDTO;
     }
 

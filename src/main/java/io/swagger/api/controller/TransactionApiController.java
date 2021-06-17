@@ -6,6 +6,7 @@ import io.swagger.model.DTO.DepositWithdrawalDTO;
 import io.swagger.model.DTO.TransactionDTO;
 import io.swagger.model.DTO.TransactionResponseDTO;
 import io.swagger.model.Transaction;
+import io.swagger.model.TransferType;
 import io.swagger.service.AccountService;
 import io.swagger.service.TransactionService;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class TransactionApiController implements TransactionApi {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<TransactionResponseDTO> deposit(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body) {
         try {
-            TransactionResponseDTO transactionResponseDTO = transactionService.PerformDeposit(body);
+            TransactionResponseDTO transactionResponseDTO = transactionService.PerformSpecialTransaction(body, TransferType.TYPE_DEPOSIT);
             return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
@@ -57,7 +58,7 @@ public class TransactionApiController implements TransactionApi {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<TransactionResponseDTO> withdrawal(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body) {
         try {
-            TransactionResponseDTO transactionResponseDTO = transactionService.PerformWithdrawal(body);
+            TransactionResponseDTO transactionResponseDTO = transactionService.PerformSpecialTransaction(body, TransferType.TYPE_WITHDRAW);
             return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());

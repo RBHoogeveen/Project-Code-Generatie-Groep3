@@ -1,5 +1,6 @@
 package io.swagger.model.DTO;
 
+import io.swagger.model.TransferType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
