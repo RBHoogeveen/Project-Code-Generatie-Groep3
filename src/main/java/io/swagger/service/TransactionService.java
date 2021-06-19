@@ -178,6 +178,9 @@ public class TransactionService {
             if (!performerUser.getRoles().contains(Role.ROLE_ADMIN)) {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You need employee rights to perform a transaction with someone else's account.");
             }
+            if (usedAccount.getIban().equals("NL01INHO0000000001")) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You cannot use the bank's account.");
+            }
         }
 
         //check if the used account exists
