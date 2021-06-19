@@ -1,8 +1,10 @@
 package io.swagger.service;
 
-import io.swagger.model.*;
+import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
-import io.swagger.repository.*;
+import io.swagger.repository.AccountRepository;
+import io.swagger.repository.TransactionRepository;
+import io.swagger.repository.UserRepository;
 import org.iban4j.CountryCode;
 import org.iban4j.Iban;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service

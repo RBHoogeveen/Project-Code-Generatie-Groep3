@@ -75,10 +75,10 @@ public class TransactionService {
     //method to update the balance
     public void updateBalance(Account performerAccount, Account receiverAccount, BigDecimal amount) {
         //get balance from performer account
-        BigDecimal performerBalance = getBalanceByIban(performerAccount.getIban(), performerAccount.getType());
+        BigDecimal performerBalance = transactionRepository.getBalanceByIban(performerAccount.getIban(), performerAccount.getType());
 
         //get balance from receiver account
-        BigDecimal receiverBalance = getBalanceByIban(receiverAccount.getIban(), receiverAccount.getType());
+        BigDecimal receiverBalance = transactionRepository.getBalanceByIban(receiverAccount.getIban(), receiverAccount.getType());
 
         //take amount from performer and add to receiver
         BigDecimal newPerformerBalance = performerBalance.subtract(amount);
@@ -91,19 +91,9 @@ public class TransactionService {
         transactionRepository.UpdateBalance(newReceiverBalance, receiverAccount.getIban(), receiverAccount.getType());
     }
 
-    public BigDecimal getBalanceByIban(String iban, boolean accountType) {
-        return transactionRepository.getBalanceByIban(iban, accountType);
-    }
-
     //method to determine validity of the transaction
-    private boolean ValidTransaction(Account performer, Account receiver, Account userAccount, User user) {
+    private boolean ValidTransaction(Account performer, Account receiver) {
         int valid = 0;
-
-        if (!userAccount.getIban().equals(performer.getIban())) {
-            if (user.getRoles().contains(Role.ROLE_USER)) {
-
-            }
-        }
 
         //check if the iban is not the same
         if (!performer.getIban().equals(receiver.getIban())) {
@@ -169,15 +159,31 @@ public class TransactionService {
 
     //method to perform transaction
     public TransactionResponseDTO PerformTransaction(TransactionDTO body) {
-        //todo zorgen dat een employee een transactie kan doen namens een andere user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //get user by username
         User performerUser = userRepository.findByUsername(authentication.getName());
 
-        //get the performer account and the receiver
+        //get the account of the logged in user
         Account performerAccount = accountRepository.getAccountByUserIdAndType(performerUser.getId(), false);
-        //Account performerAccount2 = accountRepository.getAccountByIbanAndType(body.getPerformerIban(), false);
+
+        //get the account that will be used performing the transaction
+        Account usedAccount = accountRepository.getAccountByIbanAndType(body.getPerformerIban(), false);
+
+        //get the receiver account
         Account receiverAccount = accountRepository.getAccountByIbanAndType(body.getTargetIban(), false);
+
+        //check if the used account is the same
+        if (!usedAccount.getIban().equals(performerAccount.getIban())) {
+            //check if the user has employee rights
+            if (!performerUser.getRoles().contains(Role.ROLE_ADMIN)) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You need employee rights to perform a transaction with someone else's account.");
+            }
+        }
+
+        //check if the used account exists
+        if (usedAccount.getIban() == null) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "The filled in iban does not exist");
+        }
 
         //check if the amount is not below zero and if the iban exists
         if (IbanAndAmountCheck(body.getAmount(), body.getTargetIban())) {
@@ -190,12 +196,12 @@ public class TransactionService {
         }
 
         //check if it is a valid transaction
-        if (!ValidTransaction(performerAccount, receiverAccount)) {
+        if (!ValidTransaction(usedAccount, receiverAccount)) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "To make a transaction, the receiver account must have another iban");
         }
 
         //check if the performers balance is not below the absolute limit
-        if (performerAccount.getBalance().subtract(body.getAmount()).compareTo(receiverAccount.getAbsoluteLimit()) < 0) {
+        if (usedAccount.getBalance().subtract(body.getAmount()).compareTo(usedAccount.getAbsoluteLimit()) < 0) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "The requested amount to be transferred is below the absolute limit, and thus not possible");
         }
 
@@ -205,7 +211,7 @@ public class TransactionService {
         }
 
         //Make the transaction
-        Transaction transaction = MakeTransaction(body.getAmount(), receiverAccount, performerAccount, TransferType.TYPE_TRANSACTION);
+        Transaction transaction = MakeTransaction(body.getAmount(), receiverAccount, usedAccount, TransferType.TYPE_TRANSACTION);
 
         //save the transaction
         transactionRepository.save(transaction);
@@ -214,7 +220,7 @@ public class TransactionService {
         TransactionResponseDTO responseDTO = createResponse(transaction);
 
         //execute transaction
-        updateBalance(performerAccount, receiverAccount, body.getAmount());
+        updateBalance(usedAccount, receiverAccount, body.getAmount());
         return responseDTO;
     }
 
