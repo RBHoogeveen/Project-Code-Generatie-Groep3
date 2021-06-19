@@ -23,7 +23,7 @@ public interface TransactionApi {
     @ApiOperation(value = "Deposit to savings account.", nickname = "deposit", notes = "", tags = {"transaction",})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "successful operation")})
-    @RequestMapping(value = "/transaction/deposit",
+    @RequestMapping(value = "/transactions/deposit",
             produces = {"application/xml", "application/json"},
             method = RequestMethod.POST)
     ResponseEntity<TransactionResponseDTO> deposit(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body);
@@ -32,7 +32,7 @@ public interface TransactionApi {
     @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags = {"transaction",})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "successful operation")})
-    @RequestMapping(value = "/transaction/transaction",
+    @RequestMapping(value = "/transactions/transaction",
             produces = {"application/xml", "application/json"},
             method = RequestMethod.POST)
     ResponseEntity<TransactionResponseDTO> transaction(@ApiParam(value = "Enter target iban and an amount", required = true) @Valid @RequestBody TransactionDTO body);
@@ -41,7 +41,7 @@ public interface TransactionApi {
     @ApiOperation(value = "Withdraw from savings account.", nickname = "withdrawal", notes = "", tags = {"transaction",})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "successful operation")})
-    @RequestMapping(value = "/transaction/withdrawal",
+    @RequestMapping(value = "/transactions/withdrawal",
             produces = {"application/xml", "application/json"},
             method = RequestMethod.POST)
     ResponseEntity<TransactionResponseDTO> withdrawal(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body);
@@ -49,7 +49,7 @@ public interface TransactionApi {
     @ApiOperation(value = "Transaction history", nickname = "getTransactionHistory", notes = "This can only be done by the logged in user.", tags = {"transaction",})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "successful operation")})
-    @RequestMapping(value = "/transactions/transactions",
+    @RequestMapping(value = "/transactions",
             produces = {"application/xml", "application/json"},
             method = RequestMethod.GET)
     ResponseEntity<List<Transaction>> getTransactionHistory();
