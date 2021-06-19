@@ -12,15 +12,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TransactionControllerTest {
+public class AccountControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(username = "Bank", password = "Bank", roles = "EMPLOYEE")
-    public void getPerformedTransactionsShouldReturnBadRequest() throws Exception {
-        this.mockMvc.perform(get("/api/transactions/transactions"))
+    @WithMockUser(username = "Bank", password = "Bank", roles = "Admin")
+    public void getAccountShouldReturnBadRequest() throws Exception {
+        this.mockMvc.perform(get("/api/transactions/Bank"))
                 .andExpect(status().isBadRequest());
     }
 }
