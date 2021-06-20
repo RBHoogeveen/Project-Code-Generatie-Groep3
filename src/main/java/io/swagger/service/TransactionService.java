@@ -44,30 +44,32 @@ public class TransactionService {
     }
 
     //method to check if the amount will not be over day limit
-    public boolean UnderDayLimit(BigDecimal amount, User performerUser) {
+    public boolean underDayLimit(BigDecimal amount, User performerUser) {
         //get all previous transactions
-        List<Transaction> transactions = getTransactionsByUser(performerUser.getId());
+
+        //todo refactor string date naar een date date
+        BigDecimal totalAmount = transactionRepository.getTotalAmountOfTransactionsByUserId(performerUser.getId());
 
         //if no previous transactions then it is automatically under day limit
-        if (transactions.size() == 0)
-            return false;
-
-        //get current date
-        String currentDate = convertNowToString();
-
-        //set day limit and day spent
-        BigDecimal daySpent = new BigDecimal(0);
-        BigDecimal dayLimit = performerUser.getDayLimit();
-
-        //calculate total day spent of the transactions on a specific day
-        for (Transaction transaction : transactions) {
-            if (transaction.getDate().compareTo(currentDate) == 0) {
-                daySpent = daySpent.add(transaction.getAmount());
-            }
-        }
+//        if (transactions.size() == 0)
+//            return false;
+//
+//        //get current date
+//        String currentDate = convertNowToString();
+//
+//        //set day limit and day spent
+//        BigDecimal daySpent = new BigDecimal(0);
+//        BigDecimal dayLimit = performerUser.getDayLimit();
+//
+//        //calculate total day spent of the transactions on a specific day
+//        for (Transaction transaction : transactions) {
+//            if (transaction.getDate().compareTo(currentDate) == 0) {
+//                daySpent = daySpent.add(transaction.getAmount());
+//            }
+//        }
 
         //check if the day spent stays below the day limit
-        if (daySpent.add(amount).compareTo(dayLimit) >= 0)
+        if (totalAmount.add(amount).compareTo(performerUser.getDayLimit()) >= 0)
             return true;
         return false;
     }
@@ -92,7 +94,7 @@ public class TransactionService {
     }
 
     //method to determine validity of the transaction
-    private boolean ValidTransaction(Account performer, Account receiver) {
+    private boolean validTransaction(Account performer, Account receiver) {
         int valid = 0;
 
         //check if the iban is not the same
@@ -110,7 +112,7 @@ public class TransactionService {
     }
 
     //method to determine validity of the deposit
-    private boolean ValidDeposit(Account performer, Account receiver) {
+    private boolean validDeposit(Account performer, Account receiver) {
         int valid = 0;
 
         //check if the iban is the same
@@ -128,7 +130,7 @@ public class TransactionService {
     }
 
     //method to determine validity of the withdrawal
-    private boolean ValidWithdrawal(Account performer, Account receiver) {
+    private boolean validWithdrawal(Account performer, Account receiver) {
         int valid = 0;
 
         //check if the iban is not the same
@@ -146,7 +148,7 @@ public class TransactionService {
     }
 
     //method to check if the iban exists and the amount is not below zero
-    public boolean IbanAndAmountCheck(BigDecimal amount, String receiverIban) {
+    public boolean ibanAndAmountCheck(BigDecimal amount, String receiverIban) {
         //check first if the iban exists
         if (accountRepository.getAccountByIban(receiverIban) == null)
             return true;
@@ -158,7 +160,7 @@ public class TransactionService {
     }
 
     //method to perform transaction
-    public TransactionResponseDTO PerformTransaction(TransactionDTO body) {
+    public TransactionResponseDTO performTransaction(TransactionDTO body) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //get user by username
         User performerUser = userRepository.findByUsername(authentication.getName());
@@ -189,17 +191,17 @@ public class TransactionService {
         }
 
         //check if the amount is not below zero and if the iban exists
-        if (IbanAndAmountCheck(body.getAmount(), body.getTargetIban())) {
+        if (ibanAndAmountCheck(body.getAmount(), body.getTargetIban())) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
 
         //check if the the transaction stays under the day limit
-        if (UnderDayLimit(body.getAmount(), performerUser)) {
+        if (underDayLimit(body.getAmount(), performerUser)) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You went over your day limit, so this transaction cannot be made");
         }
 
         //check if it is a valid transaction
-        if (!ValidTransaction(usedAccount, receiverAccount)) {
+        if (!validTransaction(usedAccount, receiverAccount)) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "To make a transaction, the receiver account must have another iban");
         }
 
@@ -214,7 +216,7 @@ public class TransactionService {
         }
 
         //Make the transaction
-        Transaction transaction = MakeTransaction(body.getAmount(), receiverAccount, usedAccount, TransferType.TYPE_TRANSACTION);
+        Transaction transaction = makeTransaction(body.getAmount(), receiverAccount, usedAccount, TransferType.TYPE_TRANSACTION);
 
         //save the transaction
         transactionRepository.save(transaction);
@@ -228,7 +230,7 @@ public class TransactionService {
     }
 
     //method to perform a special transaction
-    public TransactionResponseDTO PerformSpecialTransaction(DepositWithdrawalDTO body, TransferType transferType) {
+    public TransactionResponseDTO performSpecialTransaction(DepositWithdrawalDTO body, TransferType transferType) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //get user by username
         User performerUser = userRepository.findByUsername(authentication.getName());
@@ -238,14 +240,14 @@ public class TransactionService {
         Account savingsAccount = accountRepository.getAccountByUserIdAndTypeIsTrue(performerUser.getId());
 
         //check if the amount is not below zero and if the iban exists
-        if (IbanAndAmountCheck(body.getAmount(), savingsAccount.getIban())) {
+        if (ibanAndAmountCheck(body.getAmount(), savingsAccount.getIban())) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Amount was below zero or the Iban was not found.");
         }
 
         //check the transfer type
         if (transferType == TransferType.TYPE_DEPOSIT) {
             //check for a valid deposit
-            if (!ValidDeposit(currentAccount, savingsAccount)) {
+            if (!validDeposit(currentAccount, savingsAccount)) {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You cannot transfer money directly from your current account to another account's savings account");
             }
 
@@ -256,7 +258,7 @@ public class TransactionService {
         }
         else if (transferType == TransferType.TYPE_WITHDRAW) {
             //check for valid withdrawal
-            if (!ValidWithdrawal(savingsAccount, currentAccount)) {
+            if (!validWithdrawal(savingsAccount, currentAccount)) {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You cannot transfer money directly from your savings account to another account's current account");
             }
 
@@ -270,7 +272,7 @@ public class TransactionService {
         }
 
         //make the special transaction
-        Transaction specialTransaction = MakeTransaction(body.getAmount(), savingsAccount, currentAccount, transferType);
+        Transaction specialTransaction = makeTransaction(body.getAmount(), savingsAccount, currentAccount, transferType);
 
         //make a transaction response
         TransactionResponseDTO responseDTO = createResponse(specialTransaction);
@@ -298,7 +300,7 @@ public class TransactionService {
     }
 
     //method to perform a transaction
-    public Transaction MakeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount, TransferType transferType) {
+    public Transaction makeTransaction(BigDecimal amount, Account receiverAccount, Account performerAccount, TransferType transferType) {
         //prepare the transaction
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);

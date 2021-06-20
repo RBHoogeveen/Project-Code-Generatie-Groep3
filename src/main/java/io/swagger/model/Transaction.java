@@ -31,7 +31,7 @@ public class Transaction {
     @JsonProperty("date")
     private String date = null;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonProperty("userPerforming")
     private User userPerforming = null;
 

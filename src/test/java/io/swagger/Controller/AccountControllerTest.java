@@ -18,9 +18,9 @@ public class AccountControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(username = "Bank", password = "Bank", roles = "Admin")
+    @WithMockUser(username = "Bank", password = "Bank", roles = "ADMIN")
     public void getAccountShouldReturnBadRequest() throws Exception {
-        this.mockMvc.perform(get("/api/transactions/Bank"))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(get("/api/accounts/Bank"))
+                .andExpect(status().isOk());
     }
 }

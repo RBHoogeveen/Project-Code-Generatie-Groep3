@@ -22,4 +22,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>{
     void UpdateBalance(BigDecimal newBalance, String iban, boolean accountType);
 
     List<Transaction> getAllByUserPerforming_Id(Integer userId);
+
+    @Query(value = "SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.date = CURRENT_DATE")
+    BigDecimal getTotalAmountOfTransactionsByUserId(Integer userId);
+
 }

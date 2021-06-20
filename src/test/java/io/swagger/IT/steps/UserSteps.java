@@ -17,8 +17,8 @@ import java.net.URISyntaxException;
 public class UserSteps {
 
   private HttpHeaders headers = new HttpHeaders();
-  private String baseUrl = "http://localhost:8080/swagger-ui/#/user/getListUsers/";
-  private String searchTermUrl = "http://localhost:8080/swagger-ui/#/user/getUserByName/";
+  private String baseUrl = "http://localhost:8080/swagger-ui/#/user/getListUsers/"; //andere url
+  private String searchTermUrl = "http://localhost:8080/swagger-ui/#/user/getUserByName/"; //andere url
   private RestTemplate template = new RestTemplate();
   private ResponseEntity<String> responseEntity;
 
