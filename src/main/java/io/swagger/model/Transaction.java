@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.util.Date;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,7 +30,7 @@ public class Transaction {
     private BigDecimal amount = null;
 
     @JsonProperty("date")
-    private String date = null;
+    private java.sql.Date date = null;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonProperty("userPerforming")
@@ -102,7 +103,7 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Transaction date(String date) {
+    public Transaction date(java.sql.Date date) {
         this.date = date;
         return this;
     }
@@ -114,11 +115,11 @@ public class Transaction {
      **/
     @ApiModelProperty(value = "")
 
-    public String getDate() {
+    public java.sql.Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(java.sql.Date date) {
         this.date = date;
     }
 

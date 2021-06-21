@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -45,28 +45,8 @@ public class TransactionService {
 
     //method to check if the amount will not be over day limit
     public boolean underDayLimit(BigDecimal amount, User performerUser) {
-        //get all previous transactions
-
-        //todo refactor string date naar een date date
+        //get total amount of the previous transactions
         BigDecimal totalAmount = transactionRepository.getTotalAmountOfTransactionsByUserId(performerUser.getId());
-
-        //if no previous transactions then it is automatically under day limit
-//        if (transactions.size() == 0)
-//            return false;
-//
-//        //get current date
-//        String currentDate = convertNowToString();
-//
-//        //set day limit and day spent
-//        BigDecimal daySpent = new BigDecimal(0);
-//        BigDecimal dayLimit = performerUser.getDayLimit();
-//
-//        //calculate total day spent of the transactions on a specific day
-//        for (Transaction transaction : transactions) {
-//            if (transaction.getDate().compareTo(currentDate) == 0) {
-//                daySpent = daySpent.add(transaction.getAmount());
-//            }
-//        }
 
         //check if the day spent stays below the day limit
         if (totalAmount.add(amount).compareTo(performerUser.getDayLimit()) >= 0)
@@ -304,7 +284,7 @@ public class TransactionService {
         //prepare the transaction
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
-        String timeOfTransaction = convertNowToString();
+        java.sql.Date timeOfTransaction = convertNowToString();
         transaction.setDate(timeOfTransaction);
         transaction.setUserPerforming(performerAccount.getUser());
         transaction.setFromAccount(performerAccount);
@@ -314,10 +294,7 @@ public class TransactionService {
     }
 
     //method to convert now to string
-    public String convertNowToString() {
-        String pattern = "dd/MM/yyyy";
-        DateFormat df = new SimpleDateFormat(pattern);
-        Date now = Calendar.getInstance().getTime();
-        return df.format(now);
+    public java.sql.Date convertNowToString() {
+        return new Date(Calendar.getInstance().getTime().getTime());
     }
 }
