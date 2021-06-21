@@ -293,7 +293,7 @@ public class TransactionService {
         return transaction;
     }
 
-    //method to convert now to string
+    //method to get current date
     public java.sql.Date convertNowToString() {
         return new Date(Calendar.getInstance().getTime().getTime());
     }

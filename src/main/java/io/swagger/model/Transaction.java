@@ -3,6 +3,8 @@ package io.swagger.model;
 import java.util.Date;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -59,7 +61,6 @@ public class Transaction {
     public Transaction() {
     }
 
-    //TODO onetomany etc ff checken
     public Transaction id(Long id) {
         this.id = id;
         return this;

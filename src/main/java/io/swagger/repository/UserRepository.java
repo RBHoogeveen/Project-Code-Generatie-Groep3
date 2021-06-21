@@ -14,6 +14,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM User WHERE username LIKE %?1%  ", nativeQuery = true)
     List<User> getUserBySearchterm(String searchterm);
 
+    User getUserByUsername(String username);
+
     //todo * weghalen en de andere documentatie doen
     @Query(value = "SELECT * FROM User WHERE id = ?1", nativeQuery = true)
     User getUserById(Integer userId);

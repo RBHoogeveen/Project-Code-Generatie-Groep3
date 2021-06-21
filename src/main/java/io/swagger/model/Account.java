@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +33,7 @@ public class Account {
 
     @ManyToOne
     @JsonProperty("user")
+    @JsonBackReference
     private User user = null;
 
     @JsonProperty("absoluteLimit")
