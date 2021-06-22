@@ -51,12 +51,4 @@ public interface TransactionApi {
             produces = {"application/xml", "application/json"},
             method = RequestMethod.GET)
     ResponseEntity<List<Transaction>> getTransactionHistory();
-
-    @ApiOperation(value = "Transfer history", nickname = "getTransferHistory", notes = "This can only be done by the logged in user.", tags = {"transaction",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "successful operation")})
-    @RequestMapping(value = "/transactions/transfers",
-            produces = {"application/xml", "application/json"},
-            method = RequestMethod.GET)
-    ResponseEntity<List<?>> getTransferHistory();
 }

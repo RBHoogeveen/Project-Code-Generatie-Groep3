@@ -136,17 +136,6 @@ public class AccountService {
     }
 
 
-    public List<?> getTransferHistory() {
-        List<Object> transfers = new ArrayList<>();
-        if (transactionRepository.getAllByUserPerforming_Id(userRepository.getUserIdByUsername(authentication.getName())) != null) {
-            transfers.addAll(transactionService.getTransactionHistory());
-        }
-        if (!transfers.isEmpty()){
-            return transfers;
-        }
-        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No transfers found.");}
-    }
-
     public List<Account> getUserAccounts(String username) {
         List<Account> accounts = new ArrayList<>();
         if (accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(username)) != null){
