@@ -154,5 +154,9 @@ public class UserService {
     public List<User> getUserBySearchterm(String searchterm) {
         return userRepository.getUserBySearchterm(searchterm);
     }
+
+  public User getUserByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
 }
 

@@ -47,15 +47,26 @@ public interface UserApi {
         method = RequestMethod.GET)
     ResponseEntity<?> getListUsers();
 
-    @ApiOperation(value = "Get user by user name", nickname = "getUserByName", notes = "", response = User.class, tags={ "user", })
+    @ApiOperation(value = "Get user by name", nickname = "getUserByName", notes = "", response = User.class, tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation", response = User.class),
         @ApiResponse(code = 400, message = "Invalid username supplied"),
         @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/users/{username}",
+    @RequestMapping(value = "/users/{searchterm}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username);
+
+    @ApiOperation(value = "Get user by user name", nickname = "getUserByUsername", notes = "", response = User.class, tags={ "user", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = User.class),
+            @ApiResponse(code = 400, message = "Invalid username supplied"),
+            @ApiResponse(code = 404, message = "User not found") })
+    @RequestMapping(value = "/users",
+            params = "username",
+            produces = { "application/xml", "application/json" },
+            method = RequestMethod.GET)
+    ResponseEntity<User> getUserByUsername(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username);
 
     @ApiOperation(value = "Updated user", nickname = "updateUser", notes = "This can only be done by the logged in user.", tags={ "user", })
     @ApiResponses(value = { 

@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +44,7 @@ public class UserApiController implements UserApi {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body) {
+    public ResponseEntity<User> createUser(@ApiParam(value = "Created user object", required = true) @Valid @RequestBody CreateUpdateUserDTO body) {
         User createdUser = userService.add(body);
         return new ResponseEntity<User>(createdUser, HttpStatus.OK);
     }
@@ -54,36 +52,44 @@ public class UserApiController implements UserApi {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getListUsers() {
         String accept = request.getHeader("Accept");
-        try{
-           List<User> user = userService.getUsers();
+        try {
+            List<User> user = userService.getUsers();
             return ResponseEntity.status(200).body(user);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.",required=true) @PathVariable("username") String username) {
+    public ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.", required = true) @PathVariable("searchterm") String username) {
         String accept = request.getHeader("Accept");
-        try{
+        try {
             List<User> user = userService.getUserBySearchterm(username);
-            if (user.isEmpty()){
+            if (user.isEmpty()) {
                 return ResponseEntity.status(404).build();
-            }
-            else{
+            } else {
                 return ResponseEntity.status(200).body(user.get(0));
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    public ResponseEntity<User> updateUser(@ApiParam(value = "name that need to be updated",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body) {
+    public ResponseEntity<User> updateUser(@ApiParam(value = "name that need to be updated", required = true) @PathVariable("username") String username, @ApiParam(value = "Updated user object", required = true) @Valid @RequestBody CreateUpdateUserDTO body) {
         User updatedUser = userService.updateUser(body);
 
         return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "users", params = "username", produces = {"application/json"}, method = RequestMethod.GET)
+    public ResponseEntity<User> getUserByUsername(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.", required = true) @PathVariable("username") String username) {
+        String accept = request.getHeader("Accept");
+        try {
+            User user = userService.getUserByUsername(username);
+            return ResponseEntity.status(200).body(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
