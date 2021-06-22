@@ -13,27 +13,16 @@ import java.util.List;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    @Query(value = "SELECT * FROM Account WHERE user_ID = ?1", nativeQuery = true)
-    List<Account> getAccountByUserId(Long userId);
-
-    @Query(value = "SELECT * FROM Account WHERE iban = ?1", nativeQuery = true)
     Account getAccountByIban(String iban);
 
-    @Query(value = "SELECT iban FROM Account WHERE iban = ?1")
-    String getIban(String iban);
+    @Query(value = "SELECT balance FROM Account WHERE iban = ?1 AND type = ?2")
+    BigDecimal getBalanceByIban(String iban, boolean accountType);
 
-    @Query(value = "SELECT * FROM Account WHERE iban = ?1 AND type = ?2", nativeQuery = true)
-    Account getCorrectAccountByIban(String iban, boolean savingsAccount);
+    Account getAccountByIbanAndType(String iban, boolean accountType);
 
-    @Query(value = "SELECT * FROM Account WHERE user_ID = ?1 AND type = ?2", nativeQuery = true)
-    Account getCorrectAccountByUserId(Integer userId, boolean savingsAccount);
+    Account getAccountByUserIdAndType(Integer userId, boolean accountType);
 
-    @Query(value = "SELECT * FROM Account WHERE user_id = ?1 AND type = false", nativeQuery = true)
-    Account getCurrentAccountByUserId(Integer userid);
+    Account getAccountByUserIdAndTypeIsFalse(Integer userid);
 
-    @Query(value = "SELECT * FROM Account WHERE user_id = ?1 AND type = true", nativeQuery = true)
-    Account getSavingsAccountByUserId(Integer userid);
-
-    @Query(value = "SELECT * FROM ACCOUNT where user_id = (SELECT ID FROM user WHERE username = '?1')", nativeQuery = true)
-    List<Account> getAccountByUserId(String username);
+    Account getAccountByUserIdAndTypeIsTrue(Integer userId);
 }
