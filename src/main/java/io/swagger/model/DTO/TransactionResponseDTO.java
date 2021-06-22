@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
 public class TransactionResponseDTO {
     private BigDecimal amount;
     private String targetIban;
-    private String performDate;
+    private Date performDate;
     private String performingUser;
     private String performingIban;
 }

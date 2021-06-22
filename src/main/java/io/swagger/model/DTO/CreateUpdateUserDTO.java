@@ -74,6 +74,7 @@ public class CreateUpdateUserDTO {
     return this;
   }
 
+
   /**
    * Get username
    * @return username

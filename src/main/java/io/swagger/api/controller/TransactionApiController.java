@@ -38,7 +38,7 @@ public class TransactionApiController implements TransactionApi {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<TransactionResponseDTO> transaction(@ApiParam(value = "Enter target iban and an amount", required = true) @Valid @RequestBody TransactionDTO body) {
         try {
-            TransactionResponseDTO transactionResponseDTO = transactionService.PerformTransaction(body);
+            TransactionResponseDTO transactionResponseDTO = transactionService.performTransaction(body);
             return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
@@ -48,7 +48,7 @@ public class TransactionApiController implements TransactionApi {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<TransactionResponseDTO> deposit(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body) {
         try {
-            TransactionResponseDTO transactionResponseDTO = transactionService.PerformSpecialTransaction(body, TransferType.TYPE_DEPOSIT);
+            TransactionResponseDTO transactionResponseDTO = transactionService.performSpecialTransaction(body, TransferType.TYPE_DEPOSIT);
             return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
@@ -58,7 +58,7 @@ public class TransactionApiController implements TransactionApi {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<TransactionResponseDTO> withdrawal(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body) {
         try {
-            TransactionResponseDTO transactionResponseDTO = transactionService.PerformSpecialTransaction(body, TransferType.TYPE_WITHDRAW);
+            TransactionResponseDTO transactionResponseDTO = transactionService.performSpecialTransaction(body, TransferType.TYPE_WITHDRAW);
             return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());

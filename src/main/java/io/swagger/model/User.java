@@ -3,6 +3,8 @@ package io.swagger.model;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -56,6 +58,7 @@ public class User   {
 
   @JsonProperty("accounts")
   @OneToMany(mappedBy = "user")
+  @JsonManagedReference
   private Collection<Account> accounts;
 
   //empty constructor for the spring annotations
