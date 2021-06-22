@@ -3,6 +3,7 @@ package io.swagger;
 import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.Role;
+import io.swagger.model.Transaction;
 import io.swagger.model.TransferType;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.TransactionRepository;
@@ -130,20 +131,26 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
 
     //make transactions
     //user current to admin current
-    transactionService.makeTransaction(BigDecimal.valueOf(500), accountRepository.getAccountByIban("NL02INHO0000000002"), accountRepository.getAccountByIban("NL04INHO0000000004"), TransferType.TYPE_TRANSACTION);
+    Transaction userCurrentToAdminCurrent = transactionService.makeTransaction(BigDecimal.valueOf(500), accountRepository.getAccountByIban("NL02INHO0000000002"), accountRepository.getAccountByIban("NL04INHO0000000004"), TransferType.TYPE_TRANSACTION);
+    transactionRepository.save(userCurrentToAdminCurrent);
     //admin current to user current
-    transactionService.makeTransaction(BigDecimal.valueOf(500), accountRepository.getAccountByIban("NL04INHO0000000004"), accountRepository.getAccountByIban("NL02INHO0000000002"), TransferType.TYPE_TRANSACTION);
+    Transaction adminCurrentToUserCurrent = transactionService.makeTransaction(BigDecimal.valueOf(500), accountRepository.getAccountByIban("NL04INHO0000000004"), accountRepository.getAccountByIban("NL02INHO0000000002"), TransferType.TYPE_TRANSACTION);
+    transactionRepository.save(adminCurrentToUserCurrent);
 
     //make deposits
     //admin current to admin savings
-    transactionService.makeTransaction(BigDecimal.valueOf(1000), accountRepository.getAccountByIban("NL02INHO0000000002"), accountRepository.getAccountByIban("NL03INHO0000000003"), TransferType.TYPE_DEPOSIT);
+    Transaction adminCurrentToAdminSavings = transactionService.makeTransaction(BigDecimal.valueOf(1000), accountRepository.getAccountByIban("NL02INHO0000000002"), accountRepository.getAccountByIban("NL03INHO0000000003"), TransferType.TYPE_DEPOSIT);
+    transactionRepository.save(adminCurrentToAdminSavings);
     //user current to user savings
-    transactionService.makeTransaction(BigDecimal.valueOf(1000), accountRepository.getAccountByIban("NL04INHO0000000004"), accountRepository.getAccountByIban("NL05INHO0000000005"), TransferType.TYPE_DEPOSIT);
+    Transaction userCurrentToUserSavings = transactionService.makeTransaction(BigDecimal.valueOf(1000), accountRepository.getAccountByIban("NL04INHO0000000004"), accountRepository.getAccountByIban("NL05INHO0000000005"), TransferType.TYPE_DEPOSIT);
+    transactionRepository.save(userCurrentToUserSavings);
 
     //make withdrawals
     //admin savings to admin current
-    transactionService.makeTransaction(BigDecimal.valueOf(2000), accountRepository.getAccountByIban("NL03INHO0000000003"), accountRepository.getAccountByIban("NL02INHO0000000002"), TransferType.TYPE_WITHDRAW);
+    Transaction adminSavingsToAdminCurrent = transactionService.makeTransaction(BigDecimal.valueOf(2000), accountRepository.getAccountByIban("NL03INHO0000000003"), accountRepository.getAccountByIban("NL02INHO0000000002"), TransferType.TYPE_WITHDRAW);
+    transactionRepository.save(adminSavingsToAdminCurrent);
     //user savings to user current
-    transactionService.makeTransaction(BigDecimal.valueOf(1000), accountRepository.getAccountByIban("NL05INHO0000000005"), accountRepository.getAccountByIban("NL04INHO0000000004"), TransferType.TYPE_WITHDRAW);
+    Transaction userSavingsToUserCurrent = transactionService.makeTransaction(BigDecimal.valueOf(1000), accountRepository.getAccountByIban("NL05INHO0000000005"), accountRepository.getAccountByIban("NL04INHO0000000004"), TransferType.TYPE_WITHDRAW);
+    transactionRepository.save(userSavingsToUserCurrent);
   }
 }

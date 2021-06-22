@@ -1,8 +1,6 @@
 package io.swagger.service;
 
-import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateUserDTO;
-import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
@@ -17,10 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.regex.Pattern;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {

@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Calendar;
@@ -295,6 +294,6 @@ public class TransactionService {
 
     //method to get current date
     public java.sql.Date convertNowToString() {
-        return new Date(Calendar.getInstance().getTime().getTime());
+        return new java.sql.Date(Calendar.getInstance().getTime().getTime());
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -27,7 +26,6 @@ public interface TransactionApi {
             produces = {"application/xml", "application/json"},
             method = RequestMethod.POST)
     ResponseEntity<TransactionResponseDTO> deposit(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body);
-
 
     @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags = {"transaction",})
     @ApiResponses(value = {
