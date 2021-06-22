@@ -34,7 +34,6 @@ public interface UserApi {
     @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by the logged in user.", tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "successful operation") })
-    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/user",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.POST)
@@ -47,7 +46,7 @@ public interface UserApi {
         method = RequestMethod.GET)
     ResponseEntity<?> getListUsers();
 
-    @ApiOperation(value = "Get user by name", nickname = "getUserByName", notes = "", response = User.class, tags={ "user", })
+    @ApiOperation(value = "Get user by searchterm", nickname = "getUserBySearchterm", notes = "", response = User.class, tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation", response = User.class),
         @ApiResponse(code = 400, message = "Invalid username supplied"),
@@ -55,24 +54,23 @@ public interface UserApi {
     @RequestMapping(value = "/users/{searchterm}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username);
+    ResponseEntity<List<User>> getUserBySearchterm(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("searchterm") String searchterm);
 
-    @ApiOperation(value = "Get user by user name", nickname = "getUserByUsername", notes = "", response = User.class, tags={ "user", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "successful operation", response = User.class),
-            @ApiResponse(code = 400, message = "Invalid username supplied"),
-            @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/users",
-            params = "username",
-            produces = { "application/xml", "application/json" },
-            method = RequestMethod.GET)
-    ResponseEntity<User> getUserByUsername(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("username") String username);
+//    @ApiOperation(value = "Get user by user name", nickname = "getUserByUsername", notes = "", response = User.class, tags={ "user", })
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "successful operation", response = User.class),
+//            @ApiResponse(code = 400, message = "Invalid username supplied"),
+//            @ApiResponse(code = 404, message = "User not found") })
+//    @RequestMapping(value = "/users",
+//            params = "username",
+//            produces = { "application/xml", "application/json" },
+//            method = RequestMethod.GET)
+//    ResponseEntity<User> getUserByUsername(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @RequestParam("username") String username);
 
     @ApiOperation(value = "Updated user", nickname = "updateUser", notes = "This can only be done by the logged in user.", tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 400, message = "Invalid user supplied"),
         @ApiResponse(code = 404, message = "User not found") })
-    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/users/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.PUT)

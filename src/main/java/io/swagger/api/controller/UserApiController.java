@@ -61,14 +61,14 @@ public class UserApiController implements UserApi {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.", required = true) @PathVariable("searchterm") String username) {
+    public ResponseEntity<List<User>> getUserBySearchterm(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.", required = true) @PathVariable("searchterm") String searchTerm) {
         String accept = request.getHeader("Accept");
         try {
-            List<User> user = userService.getUserBySearchterm(username);
+            List<User> user = userService.getUserBySearchterm(searchTerm);
             if (user.isEmpty()) {
                 return ResponseEntity.status(404).build();
             } else {
-                return ResponseEntity.status(200).body(user.get(0));
+                return ResponseEntity.status(200).body(user);
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -81,15 +81,14 @@ public class UserApiController implements UserApi {
         return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "users", params = "username", produces = {"application/json"}, method = RequestMethod.GET)
-    public ResponseEntity<User> getUserByUsername(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.", required = true) @PathVariable("username") String username) {
-        String accept = request.getHeader("Accept");
-        try {
-            User user = userService.getUserByUsername(username);
-            return ResponseEntity.status(200).body(user);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<User> getUserByUsername(@ApiParam(value = "The name that needs to be fetched. Use Admin for testing.", required = true) @RequestParam("username") String username) {
+//        String accept = request.getHeader("Accept");
+//        try {
+//            User user = userService.getUserByUsername(username);
+//            return ResponseEntity.status(200).body(user);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//    }
 }

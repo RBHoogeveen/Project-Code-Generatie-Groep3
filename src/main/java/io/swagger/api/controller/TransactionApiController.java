@@ -70,10 +70,4 @@ public class TransactionApiController implements TransactionApi {
         List<Transaction> transactions = transactionService.getTransactionHistory();
         return new ResponseEntity<List<Transaction>>(transactions, HttpStatus.OK);
     }
-
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<?>> getTransferHistory() {
-        List transfers = accountService.getTransferHistory();
-        return new ResponseEntity<List<?>>(transfers, HttpStatus.OK);
-    }
 }
