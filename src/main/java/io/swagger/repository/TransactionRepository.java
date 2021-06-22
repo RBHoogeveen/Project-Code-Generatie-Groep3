@@ -12,10 +12,6 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long>{
-
-    @Query(value = "SELECT balance FROM Account WHERE iban = ?1 AND type = ?2")
-    BigDecimal getBalanceByIban(String iban, boolean accountType);
-
     @Transactional
     @Modifying
     @Query(value = "UPDATE Account SET balance = ?1 WHERE iban = ?2 AND type = ?3", nativeQuery = true)

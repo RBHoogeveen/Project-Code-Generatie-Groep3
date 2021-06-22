@@ -57,10 +57,10 @@ public class TransactionService {
     //method to update the balance
     public void updateBalance(Account performerAccount, Account receiverAccount, BigDecimal amount) {
         //get balance from performer account
-        BigDecimal performerBalance = transactionRepository.getBalanceByIban(performerAccount.getIban(), performerAccount.getType());
+        BigDecimal performerBalance = accountRepository.getBalanceByIban(performerAccount.getIban(), performerAccount.getType());
 
         //get balance from receiver account
-        BigDecimal receiverBalance = transactionRepository.getBalanceByIban(receiverAccount.getIban(), receiverAccount.getType());
+        BigDecimal receiverBalance = accountRepository.getBalanceByIban(receiverAccount.getIban(), receiverAccount.getType());
 
         //take amount from performer and add to receiver
         BigDecimal newPerformerBalance = performerBalance.subtract(amount);
