@@ -20,8 +20,6 @@ public class Swagger2SpringBoot implements CommandLineRunner {
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
             throw new ExitException();
         }
-
-        userService.createBasicUsers();
     }
 
     @Autowired

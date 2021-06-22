@@ -120,7 +120,7 @@ public class AccountService {
         newAccount.setType(false);
         newAccount.setUser(userRepository.findByUsername(username));
         newAccount.setAbsoluteLimit(BigDecimal.ZERO);
-        newAccount.setBalance(BigDecimal.ZERO);
+        newAccount.setBalance(BigDecimal.valueOf(1000));
         newAccount.setIsActive(true);
         accountRepository.save(newAccount);
     }
@@ -131,7 +131,7 @@ public class AccountService {
         newAccount.setType(true);
         newAccount.setUser(userRepository.findByUsername(username));
         newAccount.setAbsoluteLimit(BigDecimal.ZERO);
-        newAccount.setBalance(BigDecimal.ZERO);
+        newAccount.setBalance(BigDecimal.valueOf(2000));
         newAccount.setIsActive(true);
         accountRepository.save(newAccount);
     }
