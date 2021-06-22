@@ -1,8 +1,10 @@
 package io.swagger.service;
 
-import io.swagger.model.*;
+import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
-import io.swagger.repository.*;
+import io.swagger.repository.AccountRepository;
+import io.swagger.repository.TransactionRepository;
+import io.swagger.repository.UserRepository;
 import org.iban4j.CountryCode;
 import org.iban4j.Iban;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,32 +29,12 @@ public class AccountService {
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private DepositRepository depositRepository;
-
-    @Autowired
-    private WithdrawalRepository withdrawalRepository;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
     private TransactionService transactionService;
 
-    @Autowired
-    private DepositService depositService;
-
-    @Autowired
-    private WithdrawalService withdrawalService;
-
     private Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    @Autowired
-    AccountRepository accountService;
-
-
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
 
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
@@ -71,9 +48,9 @@ public class AccountService {
         Account updatedAccount;
         if (userRepository.findByUsername(createUpdateAccount.getUsername()) != null) {
             if (!createUpdateAccount.getType()) {
-                updatedAccount = accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+                updatedAccount = accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
             } else if (createUpdateAccount.getType()) {
-                updatedAccount = accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
+                updatedAccount = accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(createUpdateAccount.getUsername()));
             } else {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Can't find users correct account.");
             }
@@ -101,7 +78,7 @@ public class AccountService {
     }
 
     public Account add(CreateUpdateAccountDTO createUpdateAccount) {
-        if ((accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null) || (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null)) {
+        if ((accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null) || (accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(createUpdateAccount.getUsername())) == null)){
             Account newAccount = new Account();
             newAccount.setIban(generateIban());
             newAccount.setType(createUpdateAccount.getType());
@@ -130,7 +107,7 @@ public class AccountService {
 
     public String generateIban() {
         Iban iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
-        while (accountRepository.getIban(iban.toString()) != null) {
+        while (accountRepository.getAccountByIban(iban.toString()) != null) {
             iban = new Iban.Builder().countryCode(CountryCode.NL).bankCode("INHO").buildRandom();
         }
         return iban.toString();
@@ -142,7 +119,7 @@ public class AccountService {
         newAccount.setType(false);
         newAccount.setUser(userRepository.findByUsername(username));
         newAccount.setAbsoluteLimit(BigDecimal.ZERO);
-        newAccount.setBalance(BigDecimal.ZERO);
+        newAccount.setBalance(BigDecimal.valueOf(1000));
         newAccount.setIsActive(true);
         accountRepository.save(newAccount);
     }
@@ -153,40 +130,31 @@ public class AccountService {
         newAccount.setType(true);
         newAccount.setUser(userRepository.findByUsername(username));
         newAccount.setAbsoluteLimit(BigDecimal.ZERO);
-        newAccount.setBalance(BigDecimal.ZERO);
+        newAccount.setBalance(BigDecimal.valueOf(2000));
         newAccount.setIsActive(true);
         accountRepository.save(newAccount);
     }
 
 
-    public List<?> getTransferHistory() {
-        List<Object> transfers = new ArrayList<>();
-        if (transactionRepository.getTransactionsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null) {
-            transfers.addAll(transactionService.getTransactionHistory());
-        }
-        if (depositRepository.getDepositsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null) {
-            transfers.addAll(depositService.getDepositHistory());
-        }
-        if (withdrawalRepository.getWithdrawalsByUser(userRepository.getUserIdByUsername(authentication.getName())) != null){
-            transfers.addAll(withdrawalService.getWithdrawalHistory());
-        }
-        if (!transfers.isEmpty()){
-            return transfers;
-        }
-        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No transfers found.");}
-    }
-
     public List<Account> getUserAccounts(String username) {
         List<Account> accounts = new ArrayList<>();
-        if (accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(username)) != null){
-            accounts.add(accountRepository.getCurrentAccountByUserId(userRepository.getUserIdByUsername(username)));
+        if (accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(username)) != null){
+            accounts.add(accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(username)));
         }
-        if (accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(username)) != null){
-            accounts.add(accountRepository.getSavingsAccountByUserId(userRepository.getUserIdByUsername(username)));
+        if (accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(username)) != null){
+            accounts.add(accountRepository.getAccountByUserIdAndTypeIsTrue(userRepository.getUserIdByUsername(username)));
         }
         if(!accounts.isEmpty()){
             return accounts;
         }
         else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for user: " + username);}
+    }
+
+    public Account getAccountByIban(String iban){
+        Account account = accountRepository.getAccountByIban(iban);
+        if (account != null){
+            return account;
+        }
+        else {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No accounts found for iban: " + iban);}
     }
 }

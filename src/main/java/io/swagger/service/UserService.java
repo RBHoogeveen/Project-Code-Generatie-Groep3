@@ -1,8 +1,6 @@
 package io.swagger.service;
 
-import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateUserDTO;
-import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
@@ -17,10 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.regex.Pattern;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -103,7 +99,7 @@ public class UserService {
     public User updateUser (CreateUpdateUserDTO createUpdateUser){
       try {
         User updatedUser = userRepository.findByUsername(createUpdateUser.getUsername());
-        if (!accountRepository.getCurrentAccountByUserId(updatedUser.getId()).getIban().equals("NL01INHO0000000001")){
+        if (!accountRepository.getAccountByUserIdAndTypeIsFalse(updatedUser.getId()).getIban().equals("NL01INHO0000000001")){
           updatedUser.setUsername(createUpdateUser.getUsername());
           if (Pattern.matches("[a-zA-Z]+", createUpdateUser.getFirstname())) {
             updatedUser.setFirstname(createUpdateUser.getFirstname());
@@ -143,70 +139,9 @@ public class UserService {
       return userRepository.getOne(userId);
     }
 
-    public void updateDaySpent (Integer userId, BigDecimal newDaySpent){
-      userRepository.updateDaySpent(newDaySpent, userId);
-    }
-
     public List<User> findAllUsers() {
       return userRepository.findAll();
     }
-  
-  public void createBasicUsers() {
-    CreateUpdateUserDTO bank = new CreateUpdateUserDTO();
-    bank.setCreateCurrentAccount(false);
-    bank.setCreateSavingsAccount(false);
-    bank.setIsActive(true);
-    bank.setEmail("Bank@bank.nl");
-    bank.setFirstname("Bank");
-    bank.setLastname("Bank");
-    bank.setDayLimit(BigDecimal.valueOf(10000000));
-    bank.setPhonenumber("06-12121212");
-    bank.setRoles(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));
-    bank.setTransactionLimit(BigDecimal.valueOf(10000000));
-    bank.setUsername("Bank");
-    bank.setPassword("Bank");
-    add(bank);
-
-    Account bankAccount = new Account();
-    bankAccount.setUser(userRepository.findByUsername(bank.getUsername()));
-    bankAccount.setBalance(BigDecimal.valueOf(999999999));
-    bankAccount.setIban("NL01INHO0000000001");
-    bankAccount.setIsActive(true);
-    bankAccount.setAbsoluteLimit(BigDecimal.ZERO);
-    bankAccount.setType(false);
-    accountRepository.save(bankAccount);
-
-
-    CreateUpdateUserDTO admin = new CreateUpdateUserDTO();
-    admin.setCreateCurrentAccount(true);
-    admin.setCreateSavingsAccount(true);
-    admin.setIsActive(true);
-    admin.setEmail("Admin@admin.nl");
-    admin.setFirstname("Admin");
-    admin.setLastname("Admin");
-    admin.setDayLimit(BigDecimal.valueOf(12345));
-    admin.setPhonenumber("06-12345678");
-    admin.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
-    admin.setTransactionLimit(BigDecimal.valueOf(5000));
-    admin.setUsername("Admin");
-    admin.setPassword("Admin");
-    add(admin);
-
-    CreateUpdateUserDTO user = new CreateUpdateUserDTO();
-    user.setCreateCurrentAccount(true);
-    user.setCreateSavingsAccount(true);
-    user.setIsActive(true);
-    user.setEmail("User@user.nl");
-    user.setFirstname("User");
-    user.setLastname("User");
-    user.setDayLimit(BigDecimal.valueOf(54321));
-    user.setPhonenumber("06-34343434");
-    user.setRoles(Collections.singletonList(Role.ROLE_USER));
-    user.setTransactionLimit(BigDecimal.valueOf(3000));
-    user.setUsername("User");
-    user.setPassword("User");
-    add(user);
-  }
   
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -216,8 +151,8 @@ public class UserService {
         return userRepository.getUserBySearchterm(searchterm);
     }
 
-    public User getUserByUsername(String username) {
-      return userRepository.findByUsername(username);
-    }
+  public User getUserByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
 }
 

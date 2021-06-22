@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
@@ -32,13 +33,14 @@ public class Account {
 
     @ManyToOne
     @JsonProperty("user")
+    @JsonBackReference
     private User user = null;
 
     @JsonProperty("absoluteLimit")
     private BigDecimal absoluteLimit = null;
 
-    @JsonProperty("isactive")
-    private Boolean isactive = null;
+    @JsonProperty("isActive")
+    private Boolean isActive = null;
 
     //empty constructor for the spring annotations
     public Account() {
@@ -129,11 +131,11 @@ public class Account {
     @Valid
 
     public Boolean getIsActive() {
-        return isactive;
+        return isActive;
     }
 
     public void setIsActive(Boolean isactive) {
-        this.isactive = isactive;
+        this.isActive = isactive;
     }
 
     /**
@@ -183,13 +185,13 @@ public class Account {
         return Objects.equals(this.iban, account.iban) &&
                 Objects.equals(this.type, account.type) &&
                 Objects.equals(this.balance, account.balance) &&
-                Objects.equals(this.isactive, account.isactive) &&
+                Objects.equals(this.isActive, account.isActive) &&
                 Objects.equals(this.user, account.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(iban, type, balance, isactive, user);
+        return Objects.hash(iban, type, balance, isActive, user);
     }
 
     @Override
@@ -199,7 +201,7 @@ public class Account {
         sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
         sb.append("    type: ").append(toIndentedString(type)).append("\n");
         sb.append("    balance: ").append(toIndentedString(balance)).append("\n");
-        sb.append("    isactive: ").append(toIndentedString(isactive)).append("\n");
+        sb.append("    isactive: ").append(toIndentedString(isActive)).append("\n");
         sb.append("    user: ").append(toIndentedString(user)).append("\n");
         sb.append("}");
         return sb.toString();
