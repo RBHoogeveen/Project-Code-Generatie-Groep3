@@ -1,8 +1,10 @@
 package io.swagger.IT.steps;
 
 import io.cucumber.java.bs.A;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.spring.CucumberContextConfiguration;
 import io.swagger.model.User;
 import io.swagger.repository.UserRepository;
 import io.swagger.service.UserService;
@@ -10,7 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +23,11 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+@CucumberContextConfiguration
+@SpringBootTest
 public class UserSteps {
-
   private HttpHeaders headers = new HttpHeaders();
-  private String baseUrl = "http://localhost:8080/users/"; //andere url?
+  private String baseUrl = "http://localhost:8080/users"; //andere url?
   private RestTemplate template = new RestTemplate();
   private ResponseEntity<String> responseEntity;
 
@@ -33,7 +38,7 @@ public class UserSteps {
 
   @When("I retrieve all users")
   public void iRetrieveAllUsers() throws URISyntaxException {
-    URI uri =  new URI(baseUrl);
+    URI uri =  new URI(baseUrl + "/users");
     HttpEntity<String> entity = new HttpEntity<>(null, headers);
     responseEntity = template.getForEntity(uri, String.class);
   }
