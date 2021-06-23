@@ -19,7 +19,7 @@ import java.util.List;
 
 @Validated
 @Api(value = "account", description = "the account API")
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/accounts")
 public interface AccountApi {
 
     @ApiOperation(value = "Create account", nickname = "createAccount", notes = "This can only be done by the logged in user.", tags = {"account",})
@@ -34,7 +34,7 @@ public interface AccountApi {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Invalid iban supplied"),
             @ApiResponse(code = 404, message = "Account not found")})
-    @RequestMapping(value = "/transactions/{iban}",
+    @RequestMapping(value = "/{iban}",
             produces = {"application/xml", "application/json"},
             method = RequestMethod.PUT)
     ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of the account that needs to be updated.", required = true) @PathVariable("iban") String username, @ApiParam(value = "Updated account object", required = true) @Valid @RequestBody CreateUpdateAccountDTO body);
@@ -42,7 +42,7 @@ public interface AccountApi {
     @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "Get the accounts of the given username", tags = {"account",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = Account.class, responseContainer = "List")})
-    @RequestMapping(value = "/transactions/{username}",
+    @RequestMapping(value = "/{username}",
             produces = {"application/xml", "application/json"},
             method = RequestMethod.GET)
     ResponseEntity<List<Account>> getUserAccount(@ApiParam(value = "The username", required = true) @PathVariable("username") String username);

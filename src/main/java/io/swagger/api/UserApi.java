@@ -28,7 +28,7 @@ import java.util.List;
 
 @Validated
 @Api(value = "user", description = "the user API")
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/users")
 public interface UserApi {
 
     @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by the logged in user.", tags={ "user", })
@@ -51,7 +51,7 @@ public interface UserApi {
         @ApiResponse(code = 200, message = "successful operation", response = User.class),
         @ApiResponse(code = 400, message = "Invalid username supplied"),
         @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/users/{searchterm}",
+    @RequestMapping(value = "/{searchterm}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<List<User>> getUserBySearchterm(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.",required=true) @PathVariable("searchterm") String searchterm);
@@ -71,7 +71,7 @@ public interface UserApi {
     @ApiResponses(value = { 
         @ApiResponse(code = 400, message = "Invalid user supplied"),
         @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/users/{username}",
+    @RequestMapping(value = "/{username}",
         produces = { "application/xml", "application/json" }, 
         method = RequestMethod.PUT)
     ResponseEntity<User> updateUser(@ApiParam(value = "Username of name that needs to be updated.",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateUserDTO body);

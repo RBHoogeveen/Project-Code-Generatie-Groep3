@@ -11,3 +11,7 @@ Feature: User tests
   Scenario: Retrieve users by searchTerm
     When I retrieve a user with searchTerm "Admin"
     Then I get a dayLimit with 12345
+
+  Scenario: Create new user
+    When I create a new user
+    Then I get the created user
