@@ -1,5 +1,7 @@
 package io.swagger.Controller;
 
+import io.swagger.repository.UserRepository;
+import io.swagger.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,10 +19,16 @@ public class TransactionControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
-    @WithMockUser(username = "Bank", password = "Bank", roles = "EMPLOYEE")
+    @WithMockUser(username = "Admin", password = "Admin", roles = "EMPLOYEE")
     public void getPerformedTransactionsShouldReturnBadRequest() throws Exception {
-        this.mockMvc.perform(get("/api/transactions/transactions"))
+        this.mockMvc.perform(get("/transactions/history"))
                 .andExpect(status().isBadRequest());
     }
 }

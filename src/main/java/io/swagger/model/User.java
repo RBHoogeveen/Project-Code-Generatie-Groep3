@@ -4,10 +4,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
@@ -56,8 +60,10 @@ public class User   {
   @JsonProperty("isactive")
   private Boolean isactive = null;
 
+  @LazyCollection(LazyCollectionOption.FALSE)
   @JsonProperty("accounts")
   @OneToMany(mappedBy = "user")
+  @JsonIgnore
   @JsonManagedReference
   private Collection<Account> accounts;
 

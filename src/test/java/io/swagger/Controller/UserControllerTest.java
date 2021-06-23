@@ -18,15 +18,15 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(username = "Bank", password = "Bank", roles = "EMPLOYEE")
-    public void getUserByUsernameShouldReturnOk() throws Exception {
+    @WithMockUser(username = "Admin", password = "Admin", roles = "EMPLOYEE")
+    public void getUserByUsernameShouldReturnBadRequest() throws Exception {
         this.mockMvc.perform(get("/api/users/Bank"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @WithMockUser(username = "Admin", password = "Admin", roles = "Admin")
-    public void getUsersShouldReturnOk() throws Exception {
+    public void getUsersShouldReturnBadRequest() throws Exception {
         this.mockMvc.perform(get("/api/users"))
                 .andExpect(status().isBadRequest());
     }
