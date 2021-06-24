@@ -28,7 +28,8 @@ import java.net.URISyntaxException;
 
 @CucumberContextConfiguration
 @SpringBootTest
-public class TransactionSteps {
+public class TransactionSteps
+{
     private final HttpHeaders headers = new HttpHeaders();
     private final RestTemplate template = new RestTemplate();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -43,11 +44,13 @@ public class TransactionSteps {
     private AccountRepository accountRepository;
 
     @Given("That I am logged in as Bank")
-    public void thatIAmLoggedInAsBank() {
+    public void thatIAmLoggedInAsBank()
+    {
     }
 
     @When("I request transaction history of TYPE_TRANSACTION")
-    public void iRequestTransactionHistoryOfTYPE_TRANSACTION() throws URISyntaxException {
+    public void iRequestTransactionHistoryOfTYPE_TRANSACTION() throws URISyntaxException
+    {
         String baseUrl = "http://localhost:8080/transaction/history";
         URI uri = new URI(baseUrl);
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
@@ -55,19 +58,22 @@ public class TransactionSteps {
     }
 
     @Then("I get {int} transactions of TYPE_TRANSACTION")
-    public void iGetTransactionsOfTYPE_TRANSACTION(int expected) throws JSONException {
+    public void iGetTransactionsOfTYPE_TRANSACTION(int expected) throws JSONException
+    {
         String response = responseEntity.getBody();
         JSONArray actual = new JSONArray(response);
         Assert.assertEquals(expected, actual.length());
     }
 
     @Given("I have logged in")
-    public void iHaveLoggedIn() {
+    public void iHaveLoggedIn()
+    {
 
     }
 
     @When("I post a new transaction")
-    public void iPostANewTransaction() throws URISyntaxException, JsonProcessingException {
+    public void iPostANewTransaction() throws URISyntaxException, JsonProcessingException
+    {
         Transaction transaction = transactionService.makeTransaction(BigDecimal.valueOf(700), accountRepository.getAccountByIban("NL02INHO0000000002"), accountRepository.getAccountByIban("NL04INHO0000000004"), TransferType.TYPE_TRANSACTION);
         URI uri = new URI("http://localhost:8080/transactions/transaction");
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -76,7 +82,8 @@ public class TransactionSteps {
     }
 
     @When("I post a new deposit")
-    public void iPostANewDeposit() throws URISyntaxException, JsonProcessingException {
+    public void iPostANewDeposit() throws URISyntaxException, JsonProcessingException
+    {
         Transaction deposit = transactionService.makeTransaction(BigDecimal.valueOf(1000), accountRepository.getAccountByIban("NL02INHO0000000002"), accountRepository.getAccountByIban("NL03INHO0000000003"), TransferType.TYPE_DEPOSIT);
         URI uri = new URI("http://localhost:8080/transactions/deposit");
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -85,7 +92,8 @@ public class TransactionSteps {
     }
 
     @When("I post a new withdrawal")
-    public void iPostANewWithdrawal() throws URISyntaxException, JsonProcessingException {
+    public void iPostANewWithdrawal() throws URISyntaxException, JsonProcessingException
+    {
         Transaction withdrawal = transactionService.makeTransaction(BigDecimal.valueOf(2000), accountRepository.getAccountByIban("NL03INHO0000000003"), accountRepository.getAccountByIban("NL02INHO0000000002"), TransferType.TYPE_WITHDRAW);
         URI uri = new URI("http://localhost:8080/transactions/withdrawal");
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -94,7 +102,8 @@ public class TransactionSteps {
     }
 
     @Then("I get status {int}")
-    public void iGetStatus(int expected) {
+    public void iGetStatus(int expected)
+    {
         int response = transactionResponse.getStatusCodeValue();
         Assert.assertEquals(expected, response);
     }
