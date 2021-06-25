@@ -19,7 +19,7 @@ public class AccountControllerTest {
 
     @Test
     @WithMockUser(username = "Admin", password = "Admin", roles = "ADMIN")
-    public void getAccountShouldReturnBadRequest() throws Exception {
+    public void getAccountShouldReturnInternalServerError() throws Exception {
         this.mockMvc.perform(get("/api/transactions/Bank"))
                 .andExpect(status().isInternalServerError());
     }
