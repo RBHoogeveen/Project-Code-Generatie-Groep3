@@ -14,4 +14,4 @@ Feature: User tests
 
   Scenario: Create new user
     When I create a new user
-    Then I get the created user
+    Then I get http status 200

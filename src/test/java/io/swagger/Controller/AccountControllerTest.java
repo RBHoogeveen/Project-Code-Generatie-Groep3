@@ -20,7 +20,7 @@ public class AccountControllerTest {
     @Test
     @WithMockUser(username = "Bank", password = "Bank", roles = "ADMIN")
     public void getAccountShouldReturnBadRequest() throws Exception {
-        this.mockMvc.perform(get("/api/accounts/Bank"))
+        this.mockMvc.perform(get("/accounts/Bank"))
                 .andExpect(status().isOk());
     }
 }

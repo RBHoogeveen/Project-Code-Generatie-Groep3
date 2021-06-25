@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,6 +21,8 @@ import java.util.Objects;
 @Schema(description = "Requestbody for creating or updating a user.")
 @Validated
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateUpdateUserDTO {
   @JsonProperty("username")
   private String username = null;
