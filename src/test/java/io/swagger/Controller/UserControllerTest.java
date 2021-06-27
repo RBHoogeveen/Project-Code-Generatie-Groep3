@@ -91,7 +91,7 @@ public class UserControllerTest {
   @Test
   @DisplayName("Checks if the admin can get all users")
   public void getUsersShouldReturnOk() throws Exception {
-    this.mockMvc.perform(get("/users/users")
+    this.mockMvc.perform(get("/users")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
         .andExpect(status().isOk());
   }
@@ -114,7 +114,7 @@ public class UserControllerTest {
     createUser.setUsername("John");
     createUser.setPassword("Doe");
 
-    this.mockMvc.perform(post("/users/user")
+    this.mockMvc.perform(post("/users")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin)
         .content(asJsonString(createUser))
         .contentType(MediaType.APPLICATION_JSON)

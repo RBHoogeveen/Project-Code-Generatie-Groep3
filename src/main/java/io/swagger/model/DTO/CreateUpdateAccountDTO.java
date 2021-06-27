@@ -2,12 +2,9 @@ package io.swagger.model.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.Account;
-import io.swagger.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -78,6 +75,7 @@ public class CreateUpdateAccountDTO {
 
   /**
    * Get isActive
+   *
    * @return isActive
    **/
   @ApiModelProperty(example = "true", value = "True if the user is active, false if not")
@@ -106,13 +104,14 @@ public class CreateUpdateAccountDTO {
   public String getUsername() {
     return username;
   }
-  
+
   public void setUsername(String username) {
     this.username = username;
   }
 
   /**
    * Get absoluteLimit
+   *
    * @return absoluteLimit
    **/
   @ApiModelProperty(example = "5000", value = "The users absolute spending limit")
@@ -126,6 +125,7 @@ public class CreateUpdateAccountDTO {
   public void setAbsoluteLimit(BigDecimal absoluteLimit) {
     this.absoluteLimit = absoluteLimit;
   }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {

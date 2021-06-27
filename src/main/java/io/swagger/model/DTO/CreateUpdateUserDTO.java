@@ -3,11 +3,9 @@ package io.swagger.model.DTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Role;
-import io.swagger.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.ElementCollection;
@@ -81,10 +79,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * Get username
+   *
    * @return username
    **/
   @ApiModelProperty(example = "test", value = "The username for this user")
-    @NotNull
+  @NotNull
 
   public String getUsername() {
     return username;
@@ -101,10 +100,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * Get firstname
+   *
    * @return firstname
    **/
   @ApiModelProperty(example = "John", value = "The users firstname")
-    @NotNull
+  @NotNull
 
   public String getFirstname() {
     return firstname;
@@ -121,10 +121,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * Get lastname
+   *
    * @return lastname
    **/
   @ApiModelProperty(example = "Doe", value = "The users lastname")
-    @NotNull
+  @NotNull
 
   public String getLastname() {
     return lastname;
@@ -141,10 +142,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * Get email
+   *
    * @return email
    **/
   @ApiModelProperty(example = "John@Doe.com", value = "The users email")
-    @NotNull
+  @NotNull
 
   public String getEmail() {
     return email;
@@ -161,10 +163,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * Get phonenumber
+   *
    * @return phonenumber
    **/
   @ApiModelProperty(example = "06 12345678", value = "The password for this user")
-    @NotNull
+  @NotNull
 
   public String getPhonenumber() {
     return phonenumber;
@@ -181,10 +184,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * The password for this user
+   *
    * @return password
    **/
   @ApiModelProperty(example = "MySecretPassword", value = "The password for this user")
-    @NotNull
+  @NotNull
 
   public String getPassword() {
     return password;
@@ -196,10 +200,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * Get dayLimit
+   *
    * @return dayLimit
    **/
   @ApiModelProperty(example = "1000", value = "The users daily spending limit")
-    @NotNull
+  @NotNull
 
   @Valid
 
@@ -218,10 +223,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * Get isActive
+   *
    * @return isActive
    **/
   @ApiModelProperty(example = "true", value = "True if the user is active, false if not")
-    @NotNull
+  @NotNull
 
   @Valid
 
@@ -235,10 +241,11 @@ public class CreateUpdateUserDTO {
 
   /**
    * Get transactionLimit
+   *
    * @return transactionLimit
    **/
   @ApiModelProperty(example = "500", value = "Maximum amount that can be spend within one transaction")
-    @NotNull
+  @NotNull
   @Valid
 
   public BigDecimal getTransactionLimit() {

@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
 import javax.validation.Valid;
 import java.util.List;
 
@@ -26,47 +27,47 @@ import java.util.List;
 @RestController
 public class TransactionApiController implements TransactionApi {
 
-    private static final Logger log = LoggerFactory.getLogger(TransactionApiController.class);
+  private static final Logger log = LoggerFactory.getLogger(TransactionApiController.class);
 
-    @Autowired
-    private AccountService accountService;
+  @Autowired
+  private AccountService accountService;
 
-    @Autowired
-    private TransactionService transactionService;
+  @Autowired
+  private TransactionService transactionService;
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<TransactionResponseDTO> transaction(@ApiParam(value = "Enter target iban and an amount", required = true) @Valid @RequestBody TransactionDTO body) {
-        try {
-            TransactionResponseDTO transactionResponseDTO = transactionService.performTransaction(body);
-            return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
-        }
+  @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+  public ResponseEntity<TransactionResponseDTO> transaction(@ApiParam(value = "Enter target iban and an amount", required = true) @Valid @RequestBody TransactionDTO body) {
+    try {
+      TransactionResponseDTO transactionResponseDTO = transactionService.performTransaction(body);
+      return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
     }
+  }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<TransactionResponseDTO> deposit(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body) {
-        try {
-            TransactionResponseDTO transactionResponseDTO = transactionService.performSpecialTransaction(body, TransferType.TYPE_DEPOSIT);
-            return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
-        }
+  @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+  public ResponseEntity<TransactionResponseDTO> deposit(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body) {
+    try {
+      TransactionResponseDTO transactionResponseDTO = transactionService.performSpecialTransaction(body, TransferType.TYPE_DEPOSIT);
+      return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
     }
+  }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<TransactionResponseDTO> withdrawal(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body) {
-        try {
-            TransactionResponseDTO transactionResponseDTO = transactionService.performSpecialTransaction(body, TransferType.TYPE_WITHDRAW);
-            return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
-        }
+  @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+  public ResponseEntity<TransactionResponseDTO> withdrawal(@ApiParam(value = "Enter an amount to be transferred", required = true) @Valid @RequestBody DepositWithdrawalDTO body) {
+    try {
+      TransactionResponseDTO transactionResponseDTO = transactionService.performSpecialTransaction(body, TransferType.TYPE_WITHDRAW);
+      return new ResponseEntity<TransactionResponseDTO>(transactionResponseDTO, HttpStatus.OK);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
     }
+  }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<Transaction>> getTransactionHistory() {
-        List<Transaction> transactions = transactionService.getTransactionHistory();
-        return new ResponseEntity<List<Transaction>>(transactions, HttpStatus.OK);
-    }
+  @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+  public ResponseEntity<List<Transaction>> getTransactionHistory() {
+    List<Transaction> transactions = transactionService.getTransactionHistory();
+    return new ResponseEntity<List<Transaction>>(transactions, HttpStatus.OK);
+  }
 }

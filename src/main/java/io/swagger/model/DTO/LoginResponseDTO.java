@@ -16,6 +16,7 @@ public class LoginResponseDTO {
 
   /**
    * Get token
+   *
    * @return token
    **/
   @Schema(example = "SomeToken", description = "")

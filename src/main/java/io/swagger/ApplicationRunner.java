@@ -24,8 +24,6 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
   @Autowired
   private AccountRepository accountRepository;
   @Autowired
-  private AccountService accountService;
-  @Autowired
   private UserRepository userRepository;
   @Autowired
   private UserService userService;
@@ -35,7 +33,7 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
   private TransactionService transactionService;
 
   @Override
-  public void run(ApplicationArguments args) throws Exception {
+  public void run(ApplicationArguments args) {
     //make bank + bank accounts
     CreateUpdateUserDTO bank = new CreateUpdateUserDTO();
     bank.setCreateCurrentAccount(false);

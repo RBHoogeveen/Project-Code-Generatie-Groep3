@@ -10,11 +10,7 @@ import com.fasterxml.jackson.datatype.threetenbp.DecimalUtils;
 import com.fasterxml.jackson.datatype.threetenbp.deser.ThreeTenDateTimeDeserializerBase;
 import com.fasterxml.jackson.datatype.threetenbp.function.BiFunction;
 import com.fasterxml.jackson.datatype.threetenbp.function.Function;
-import org.threeten.bp.DateTimeException;
-import org.threeten.bp.Instant;
-import org.threeten.bp.OffsetDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.*;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -30,8 +26,6 @@ import java.math.BigDecimal;
  */
 public class CustomInstantDeserializer<T extends Temporal>
     extends ThreeTenDateTimeDeserializerBase<T> {
-  private static final long serialVersionUID = 1L;
-
   public static final CustomInstantDeserializer<Instant> INSTANT = new CustomInstantDeserializer<Instant>(
       Instant.class, DateTimeFormatter.ISO_INSTANT,
       new Function<TemporalAccessor, Instant>() {
@@ -54,7 +48,6 @@ public class CustomInstantDeserializer<T extends Temporal>
       },
       null
   );
-
   public static final CustomInstantDeserializer<OffsetDateTime> OFFSET_DATE_TIME = new CustomInstantDeserializer<OffsetDateTime>(
       OffsetDateTime.class, DateTimeFormatter.ISO_OFFSET_DATE_TIME,
       new Function<TemporalAccessor, OffsetDateTime>() {
@@ -82,7 +75,6 @@ public class CustomInstantDeserializer<T extends Temporal>
         }
       }
   );
-
   public static final CustomInstantDeserializer<ZonedDateTime> ZONED_DATE_TIME = new CustomInstantDeserializer<ZonedDateTime>(
       ZonedDateTime.class, DateTimeFormatter.ISO_ZONED_DATE_TIME,
       new Function<TemporalAccessor, ZonedDateTime>() {
@@ -110,7 +102,7 @@ public class CustomInstantDeserializer<T extends Temporal>
         }
       }
   );
-
+  private static final long serialVersionUID = 1L;
   protected final Function<FromIntegerArguments, T> fromMilliseconds;
 
   protected final Function<FromDecimalArguments, T> fromNanoseconds;
@@ -120,11 +112,11 @@ public class CustomInstantDeserializer<T extends Temporal>
   protected final BiFunction<T, ZoneId, T> adjust;
 
   protected CustomInstantDeserializer(Class<T> supportedType,
-                    DateTimeFormatter parser,
-                    Function<TemporalAccessor, T> parsedToValue,
-                    Function<FromIntegerArguments, T> fromMilliseconds,
-                    Function<FromDecimalArguments, T> fromNanoseconds,
-                    BiFunction<T, ZoneId, T> adjust) {
+                                      DateTimeFormatter parser,
+                                      Function<TemporalAccessor, T> parsedToValue,
+                                      Function<FromIntegerArguments, T> fromMilliseconds,
+                                      Function<FromDecimalArguments, T> fromNanoseconds,
+                                      BiFunction<T, ZoneId, T> adjust) {
     super(supportedType, parser);
     this.parsedToValue = parsedToValue;
     this.fromMilliseconds = fromMilliseconds;

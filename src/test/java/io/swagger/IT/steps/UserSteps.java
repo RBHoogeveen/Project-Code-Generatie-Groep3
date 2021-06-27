@@ -7,7 +7,6 @@ import io.cucumber.java.en.When;
 import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.Role;
 import io.swagger.model.User;
-import io.swagger.repository.UserRepository;
 import io.swagger.service.UserService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,8 +33,6 @@ public class UserSteps {
   private ResponseEntity<User> userEntity;
   private HttpEntity<String> entity;
 
-  @Autowired
-  private UserRepository userRepository;
   @Autowired
   private UserService userService;
 

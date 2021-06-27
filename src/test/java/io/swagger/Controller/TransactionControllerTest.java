@@ -82,7 +82,7 @@ public class TransactionControllerTest {
   @Test
   @DisplayName("Checks if the admin can get its transaction history")
   public void getTransactionHistoryShouldReturnOK() throws Exception {
-    this.mockMvc.perform(get("/transactions/history")
+    this.mockMvc.perform(get("/transactions")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
         .andExpect(status().isOk());
   }

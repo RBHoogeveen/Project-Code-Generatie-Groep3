@@ -9,11 +9,11 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
+  User findByUsername(String username);
 
-    @Query(value = "SELECT u FROM User u WHERE u.username LIKE %?1%")
-    List<User> getUserBySearchterm(String searchterm);
+  @Query(value = "SELECT u FROM User u WHERE u.username LIKE %?1%")
+  List<User> getUserBySearchterm(String searchterm);
 
-    @Query(value = "SELECT id FROM User WHERE username = ?1")
-    Integer getUserIdByUsername(String username);
+  @Query(value = "SELECT id FROM User WHERE username = ?1")
+  Integer getUserIdByUsername(String username);
 }

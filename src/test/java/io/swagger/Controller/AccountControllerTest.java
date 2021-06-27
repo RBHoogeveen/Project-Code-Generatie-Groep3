@@ -97,7 +97,7 @@ public class AccountControllerTest {
     createAccount.setBalance(BigDecimal.valueOf(1000));
     createAccount.setUsername("Test");
 
-    this.mockMvc.perform(post("/accounts/account")
+    this.mockMvc.perform(post("/accounts")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin)
         .content(asJsonString(createAccount))
         .contentType(MediaType.APPLICATION_JSON)
