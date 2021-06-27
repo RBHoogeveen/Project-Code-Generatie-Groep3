@@ -1,26 +1,127 @@
 package io.swagger.Controller;
 
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.model.DTO.CreateUpdateAccountDTO;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.math.BigDecimal;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest()
 @AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AccountControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  //information for jwt token
+  static final String TOKEN_PREFIX = "Bearer";
+  static final String HEADER_STRING = "Authorization";
+  //Admin information
+  private String xAuthTokenAdmin;
+  //User information
+  private String xAuthTokenUser;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Test
-    @WithMockUser(username = "Bank", password = "Bank", roles = "ADMIN")
-    public void getAccountShouldReturnBadRequest() throws Exception {
-        this.mockMvc.perform(get("/accounts/Bank"))
-                .andExpect(status().isOk());
+  public static String asJsonString(final Object obj) {
+    try {
+      return new ObjectMapper().writeValueAsString(obj);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
+  }
+
+  @Before
+  @DisplayName("Checks if the user is able to login (with admin account and also user account)")
+  public void loginUsers() throws Exception {
+    //get user with customer access
+    JSONObject admin = new JSONObject();
+    admin.put("username", "Admin");
+    admin.put("password", "Admin");
+
+    MvcResult result = this.mockMvc.perform(post("/login")
+        .contentType(MediaType.APPLICATION_JSON).content(admin.toString()))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    //Save token and user id for performing tests
+    String content = result.getResponse().getContentAsString();
+    this.xAuthTokenAdmin = content.substring(10, content.indexOf('}') - 1);
+    JSONObject adminUser = new JSONObject(result.getResponse().getContentAsString());
+
+    //Get user with employee access
+    JSONObject user = new JSONObject();
+    user.put("username", "User");
+    user.put("password", "User");
+
+    result = this.mockMvc.perform(post("/login")
+        .contentType(MediaType.APPLICATION_JSON).content(user.toString()))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    String userContent = result.getResponse().getContentAsString();
+    this.xAuthTokenUser = userContent.substring(10, userContent.indexOf('}') - 1);
+    user = new JSONObject(result.getResponse().getContentAsString());
+  }
+
+  @Test
+  @DisplayName("Checks if the admin can get the Admins accounts")
+  public void getAccountsByUsernameShouldReturnOk() throws Exception {
+    this.mockMvc.perform(get("/accounts/Admin")
+        .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("Checks if the user of role admin is able to CREATE an account")
+  public void creatingAnAccountShouldReturnOK() throws Exception {
+    CreateUpdateAccountDTO createAccount = new CreateUpdateAccountDTO();
+    createAccount.setType(false);
+    createAccount.setAbsoluteLimit(BigDecimal.ZERO);
+    createAccount.setIsActive(true);
+    createAccount.setBalance(BigDecimal.valueOf(1000));
+    createAccount.setUsername("Test");
+
+    this.mockMvc.perform(post("/accounts/account")
+        .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin)
+        .content(asJsonString(createAccount))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("Checks if the user of role admin is able to UPDATE an account")
+  public void updatingAnAccountShouldReturnOK() throws Exception {
+    CreateUpdateAccountDTO updateAccount = new CreateUpdateAccountDTO();
+    updateAccount.setType(false);
+    updateAccount.setAbsoluteLimit(BigDecimal.ZERO);
+    updateAccount.setIsActive(false);
+    updateAccount.setBalance(BigDecimal.valueOf(2000));
+    updateAccount.setUsername("Admin");
+
+    this.mockMvc.perform(put("/accounts/NL02INHO0000000002")
+        .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin)
+        .content(asJsonString(updateAccount))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+
 }

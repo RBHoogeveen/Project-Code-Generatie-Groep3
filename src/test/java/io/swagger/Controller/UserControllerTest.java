@@ -1,11 +1,8 @@
 package io.swagger.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cucumber.core.internal.gherkin.deps.com.google.gson.Gson;
 import io.swagger.model.DTO.CreateUpdateUserDTO;
 import io.swagger.model.Role;
-import io.swagger.repository.UserRepository;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -35,21 +32,23 @@ public class UserControllerTest {
   //information for jwt token
   static final String TOKEN_PREFIX = "Bearer";
   static final String HEADER_STRING = "Authorization";
-  @Autowired
-  UserRepository userRepository;
   //Admin information
   private String xAuthTokenAdmin;
-  private Integer userIdAdmin;
-  private JSONArray accountsAdmin;
   //User information
   private String xAuthTokenUser;
-  private Integer userIdUser;
-  private JSONArray accountsUser;
   @Autowired
   private MockMvc mockMvc;
 
+  public static String asJsonString(final Object obj) {
+    try {
+      return new ObjectMapper().writeValueAsString(obj);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @Before
-  @DisplayName("Checks if the user is able to login (with employee account and also customer account)")
+  @DisplayName("Checks if the user is able to login (with admin account and also user account)")
   public void loginUsers() throws Exception {
     //get user with customer access
     JSONObject admin = new JSONObject();
@@ -82,9 +81,9 @@ public class UserControllerTest {
   }
 
   @Test
-  @DisplayName("Checks if the admin can get all users")
+  @DisplayName("Checks if the admin can get the admin user")
   public void getUserByUsernameShouldReturnOk() throws Exception {
-    this.mockMvc.perform(get("/users/Bank")
+    this.mockMvc.perform(get("/users/Admin")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
         .andExpect(status().isOk());
   }
@@ -124,7 +123,7 @@ public class UserControllerTest {
   }
 
   @Test
-  @DisplayName("Checks if the user of role admin is able to Update a user")
+  @DisplayName("Checks if the user of role admin is able to UPDATE a user")
   public void updateAUserShouldReturnOK() throws Exception {
     CreateUpdateUserDTO updateUser = new CreateUpdateUserDTO();
     updateUser.setFirstname("Admin");
@@ -147,13 +146,5 @@ public class UserControllerTest {
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
-  }
-
-  public static String asJsonString(final Object obj) {
-    try {
-      return new ObjectMapper().writeValueAsString(obj);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 }

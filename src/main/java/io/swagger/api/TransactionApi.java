@@ -17,7 +17,7 @@ import java.util.List;
 
 @Validated
 @Api(value = "Transaction", description = "the transaction API")
-@RequestMapping(value = "/transaction")
+@RequestMapping(value = "/transactions")
 public interface TransactionApi {
     @ApiOperation(value = "Deposit to savings account.", nickname = "deposit", notes = "", tags = {"transaction",})
     @ApiResponses(value = {

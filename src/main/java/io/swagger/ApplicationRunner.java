@@ -129,6 +129,22 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
     userSavingsAccount.setType(true);
     accountRepository.save(userSavingsAccount);
 
+    //make test user
+    CreateUpdateUserDTO testUser = new CreateUpdateUserDTO();
+    testUser.setCreateCurrentAccount(false);
+    testUser.setCreateSavingsAccount(false);
+    testUser.setIsActive(true);
+    testUser.setEmail("Test@Test.nl");
+    testUser.setFirstname("Test");
+    testUser.setLastname("Test");
+    testUser.setDayLimit(BigDecimal.valueOf(12345));
+    testUser.setPhonenumber("06-21435465");
+    testUser.setRoles(Collections.singletonList(Role.ROLE_USER));
+    testUser.setTransactionLimit(BigDecimal.valueOf(2500));
+    testUser.setUsername("Test");
+    testUser.setPassword("Test");
+    userService.add(testUser);
+
     //make transactions
     //user current to admin current
     Transaction userCurrentToAdminCurrent = transactionService.makeTransaction(BigDecimal.valueOf(500), accountRepository.getAccountByIban("NL02INHO0000000002"), accountRepository.getAccountByIban("NL04INHO0000000004"), TransferType.TYPE_TRANSACTION);
