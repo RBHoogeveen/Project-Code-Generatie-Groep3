@@ -36,7 +36,7 @@ public interface UserApi {
     @ApiOperation(value = "Fetches users", nickname = "users", notes = "Fetches users", tags = {"user",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation")})
-    @RequestMapping(value = "",
+    @RequestMapping(value = "/users",
             method = RequestMethod.GET)
     ResponseEntity<?> getListUsers();
 

@@ -41,10 +41,6 @@ public class TransactionSteps {
     @Autowired
     private AccountRepository accountRepository;
 
-    @Given("That I am logged in as Bank")
-    public void thatIAmLoggedInAsBank() {
-    }
-
     @When("I request transaction history of TYPE_TRANSACTION")
     public void iRequestTransactionHistoryOfTYPE_TRANSACTION() throws URISyntaxException {
         String baseUrl = "http://localhost:8080/transaction/history";
@@ -53,16 +49,11 @@ public class TransactionSteps {
         responseEntity = template.getForEntity(uri, String.class);
     }
 
-    @Then("I get {int} transactions of TYPE_TRANSACTION")
+    @Then("I get {int} transaction of TYPE_TRANSACTION")
     public void iGetTransactionsOfTYPE_TRANSACTION(int expected) throws JSONException {
         String response = responseEntity.getBody();
         JSONArray actual = new JSONArray(response);
         Assert.assertEquals(expected, actual.length());
-    }
-
-    @Given("I have logged in")
-    public void iHaveLoggedIn() {
-
     }
 
     @When("I post a new transaction")
