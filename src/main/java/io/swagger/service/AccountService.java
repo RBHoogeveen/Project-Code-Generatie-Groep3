@@ -117,7 +117,6 @@ public class AccountService {
     accountRepository.save(newAccount);
   }
 
-
   public List<Account> getUserAccounts(String username) {
     List<Account> accounts = new ArrayList<>();
     if (accountRepository.getAccountByUserIdAndTypeIsFalse(userRepository.getUserIdByUsername(username)) != null) {

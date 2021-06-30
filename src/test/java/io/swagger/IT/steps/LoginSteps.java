@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 
 public class LoginSteps {
   private HttpHeaders headers = new HttpHeaders();
-  private String baseUrl = "http://localhost:8080/login/";
+  private String baseUrl = "http://localhost:8080/login";
   private RestTemplate template = new RestTemplate();
   private ResponseEntity<String> responseEntity;
 
