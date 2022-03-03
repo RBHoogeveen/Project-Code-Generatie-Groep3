@@ -34,7 +34,7 @@ public class TransactionApiController implements TransactionApi {
     @Autowired
     private TransactionService transactionService;
 
-    //@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<TransactionResponseDTO> transaction(@ApiParam(value = "Enter target iban and an amount", required = true) @Valid @RequestBody TransactionDTO body) {
         try {
             TransactionResponseDTO transactionResponseDTO = transactionService.performTransaction(body);

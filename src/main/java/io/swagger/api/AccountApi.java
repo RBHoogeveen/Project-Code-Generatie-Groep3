@@ -10,7 +10,10 @@ import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,11 +21,11 @@ import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
 @Validated
-@Api(value = "account", description = "the account API")
-@RequestMapping(value = "/api")
+@Api(value = "accounts", description = "the account API")
+@RequestMapping(value = "/accounts")
 public interface AccountApi {
 
-    @ApiOperation(value = "Create account", nickname = "createAccount", notes = "This can only be done by the logged in user.", tags = {"account",})
+    @ApiOperation(value = "Create account", nickname = "account", notes = "This can only be done by the logged in user.", tags = {"accounts",})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "successful operation")})
     @RequestMapping(value = "/account",
@@ -30,19 +33,19 @@ public interface AccountApi {
             method = RequestMethod.POST)
     ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object", required = true) @Valid @RequestBody CreateUpdateAccountDTO body);
 
-    @ApiOperation(value = "Updated account", nickname = "updateAccount", notes = "This can only be done by the logged in user.", tags = {"account",})
+    @ApiOperation(value = "Updated account", nickname = "iban", notes = "This can only be done by the logged in user.", tags = {"accounts",})
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Invalid iban supplied"),
             @ApiResponse(code = 404, message = "Account not found")})
-    @RequestMapping(value = "/transactions/{iban}",
+    @RequestMapping(value = "/{iban}",
             produces = {"application/xml", "application/json"},
             method = RequestMethod.PUT)
     ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of the account that needs to be updated.", required = true) @PathVariable("iban") String username, @ApiParam(value = "Updated account object", required = true) @Valid @RequestBody CreateUpdateAccountDTO body);
 
-    @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "Get the accounts of the given username", tags = {"account",})
+    @ApiOperation(value = "Get users account", nickname = "username", notes = "Get the accounts of the given username", tags = {"accounts",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation", response = Account.class, responseContainer = "List")})
-    @RequestMapping(value = "/transactions/{username}",
+    @RequestMapping(value = "/{username}",
             produces = {"application/xml", "application/json"},
             method = RequestMethod.GET)
     ResponseEntity<List<Account>> getUserAccount(@ApiParam(value = "The username", required = true) @PathVariable("username") String username);
