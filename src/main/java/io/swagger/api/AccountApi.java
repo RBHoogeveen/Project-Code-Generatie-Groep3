@@ -44,9 +44,8 @@ public interface AccountApi {
 
   @ApiOperation(value = "Get users account", nickname = "getUserAccount", notes = "Get the accounts of the given username", tags = {"account",})
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "successful operation", response = Account.class, responseContainer = "List")})
+      @ApiResponse(code = 200, message = "successful operation", response = Account.class)})
   @RequestMapping(value = "/{username}",
-      produces = {"application/xml", "application/json"},
       method = RequestMethod.GET)
   ResponseEntity<List<Account>> getUserAccount(@ApiParam(value = "The username", required = true) @PathVariable("username") String username);
 }

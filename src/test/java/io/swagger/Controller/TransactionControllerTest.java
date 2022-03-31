@@ -2,6 +2,7 @@ package io.swagger.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.model.DTO.TransactionDTO;
+import io.swagger.model.Transaction;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -83,7 +85,7 @@ public class TransactionControllerTest {
   @DisplayName("Checks if the admin can get its transaction history")
   public void getTransactionHistoryShouldReturnOK() throws Exception {
     this.mockMvc.perform(get("/transactions")
-        .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
+        .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenUser))
         .andExpect(status().isOk());
   }
 

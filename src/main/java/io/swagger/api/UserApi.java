@@ -46,7 +46,6 @@ public interface UserApi {
       @ApiResponse(code = 400, message = "Invalid username supplied"),
       @ApiResponse(code = 404, message = "User not found")})
   @RequestMapping(value = "/{searchterm}",
-      produces = {"application/xml", "application/json"},
       method = RequestMethod.GET)
   ResponseEntity<List<User>> getUserBySearchterm(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing.", required = true) @PathVariable("searchterm") String searchterm);
 

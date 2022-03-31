@@ -66,13 +66,9 @@ public class UserApiController implements UserApi {
     String accept = request.getHeader("Accept");
     try {
       List<User> user = userService.getUserBySearchterm(searchTerm);
-      if (user.isEmpty()) {
-        return ResponseEntity.status(404).build();
-      } else {
-        return ResponseEntity.status(200).body(user);
-      }
+      return ResponseEntity.status(200).body(user);
     } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      return ResponseEntity.status(404).build();
     }
   }
 

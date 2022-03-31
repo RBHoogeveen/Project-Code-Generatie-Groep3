@@ -31,11 +31,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
   //information for jwt token
   static final String TOKEN_PREFIX = "Bearer";
+
   static final String HEADER_STRING = "Authorization";
+
   //Admin information
   private String xAuthTokenAdmin;
+
   //User information
   private String xAuthTokenUser;
+
   @Autowired
   private MockMvc mockMvc;
 
@@ -82,7 +86,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("Checks if the admin can get the admin user")
-  public void getUserByUsernameShouldReturnOk() throws Exception {
+  public void getUserBySearchTermShouldReturnOk() throws Exception {
     this.mockMvc.perform(get("/users/Admin")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
         .andExpect(status().isOk());
@@ -114,7 +118,7 @@ public class UserControllerTest {
     createUser.setUsername("John");
     createUser.setPassword("Doe");
 
-    this.mockMvc.perform(post("/users")
+    this.mockMvc.perform(post("/users/user")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin)
         .content(asJsonString(createUser))
         .contentType(MediaType.APPLICATION_JSON)
