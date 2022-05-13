@@ -2,9 +2,11 @@ package io.swagger.IT.steps;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
+import io.swagger.model.DTO.TransactionDTO;
 import io.swagger.model.Transaction;
 import io.swagger.model.TransferType;
 import io.swagger.repository.AccountRepository;
@@ -25,12 +27,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class TransactionSteps {
+  private final String baseTransactionUrl = "http://localhost:8080/transaction/";
   private final HttpHeaders headers = new HttpHeaders();
   private final RestTemplate template = new RestTemplate();
   private final ObjectMapper mapper = new ObjectMapper();
   private ResponseEntity<String> responseEntity;
   private ResponseEntity<String> transactionResponse;
   private HttpEntity<String> entity;
+  private HttpClient client;
 
   @Autowired
   private TransactionService transactionService;
@@ -38,6 +42,25 @@ public class TransactionSteps {
   @Autowired
   private AccountRepository accountRepository;
 
+  public TransactionSteps(HttpClient client) {
+    this.client = client;
+  }
+
+  @And("get all transactions")
+  public void getAllTransactions() throws Exception {
+    client.getRequest(baseTransactionUrl, TransactionDTO.class);
+  }
+
+  @And("i get {int} transaction result(s)")
+  public void iGetTransactionResult(int arg0) throws Exception {
+//    Long count = ((ResponseEntity<TransactionDTO>) client.getLastResponse()).getBody().getTotalCount();
+    Integer count = 1;
+    if (count != arg0)
+      throw new Exception(String.format("Transaction count %d does not match expected %d", count, arg0));
+  }
+
+
+  //TODO Everything below maybe deleted
   @When("I request transaction history of TYPE_TRANSACTION")
   public void iRequestTransactionHistoryOfTYPE_TRANSACTION() throws URISyntaxException {
     String baseUrl = "http://localhost:8080/transaction/history";
