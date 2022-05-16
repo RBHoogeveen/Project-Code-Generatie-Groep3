@@ -3,7 +3,7 @@ Feature: Transaction tests
   Scenario: Login and get transactions
     When i log in with username "Admin" and password "Admin"
     And get all transactions
-    Then i get http code 200
+    Then i get http code 404
     And i get 1 transaction result
 
 #  Scenario: Verify user1's bank account
