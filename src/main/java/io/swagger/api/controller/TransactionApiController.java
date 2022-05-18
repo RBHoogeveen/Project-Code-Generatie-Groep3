@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -29,11 +30,17 @@ public class TransactionApiController implements TransactionApi {
 
   private static final Logger log = LoggerFactory.getLogger(TransactionApiController.class);
 
+  private final HttpServletRequest request;
+
   @Autowired
   private AccountService accountService;
 
   @Autowired
   private TransactionService transactionService;
+
+  public TransactionApiController(HttpServletRequest request) {
+    this.request = request;
+  }
 
   @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
   public ResponseEntity<TransactionResponseDTO> transaction(@ApiParam(value = "Enter target iban and an amount", required = true) @Valid @RequestBody TransactionDTO body) {
@@ -67,7 +74,12 @@ public class TransactionApiController implements TransactionApi {
 
   @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
   public ResponseEntity<List<Transaction>> getTransactionHistory() {
-    List<Transaction> transactions = transactionService.getTransactionHistory();
-    return new ResponseEntity<List<Transaction>>(transactions, HttpStatus.OK);
+    String accept = request.getHeader("Accept");
+    try {
+      List<Transaction> transactions = transactionService.getTransactionHistory();
+      return ResponseEntity.status(200).body(transactions);
+    }  catch (Exception e) {
+      return ResponseEntity.status(404).build();
+    }
   }
 }

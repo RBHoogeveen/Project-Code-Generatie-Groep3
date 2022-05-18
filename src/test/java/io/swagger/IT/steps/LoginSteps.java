@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.swagger.model.DTO.LoginDTO;
+import io.swagger.IT.steps.Models.LoginDTO;
+import io.swagger.IT.steps.Models.LoginResponseDTO;
 import org.junit.Assert;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,23 +21,21 @@ public class LoginSteps {
   private String baseUrl = "http://localhost:8080/login";
   private RestTemplate template = new RestTemplate();
   private ResponseEntity<String> responseEntity;
+  private HttpClient client;
 
-  @When("I successfully log in")
-  public void iSuccessfullyLogIn() throws URISyntaxException, JsonProcessingException {
-    ObjectMapper mapper = new ObjectMapper();
-    LoginDTO dto = new LoginDTO();
-    dto.setPassword("Admin");
-    dto.setUsername("Admin");
-
-    URI uri = new URI(baseUrl);
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(dto), headers);
-    responseEntity = template.postForEntity(uri, entity, String.class);
+  public LoginSteps(HttpClient client) {
+    this.client = client;
   }
 
-  @Then("I get http status {int} and a JWT token")
-  public void iGetHttpStatusAndAJWTToken(int expected) {
-    int response = responseEntity.getStatusCodeValue();
-    Assert.assertEquals(expected, response);
+  @When("i log in with username {string} and password {string}")
+  public void iLogInWithUsernameAndPassword(String arg0, String arg1) throws Exception {
+    HttpHeaders headers = new HttpHeaders();
+    LoginDTO login = new LoginDTO(arg0, arg1);
+
+    ResponseEntity<LoginResponseDTO> loginResponse = client.postRequest(baseUrl, LoginResponseDTO.class, login);
+
+    client.matchLastResponse(200);
+    headers.add("Authorization", "Bearer " + loginResponse.getBody().getToken());
+    client.setHeaders(headers);
   }
 }

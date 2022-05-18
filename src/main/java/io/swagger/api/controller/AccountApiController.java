@@ -68,7 +68,13 @@ public class AccountApiController implements AccountApi {
 
   @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
   public ResponseEntity<List<Account>> getUserAccount(@NotNull @ApiParam(value = "The username", required = true) @Valid @PathVariable(value = "username", required = true) String username) {
-    List<Account> userAccounts = accountService.getUserAccounts(username);
-    return new ResponseEntity<List<Account>>(userAccounts, HttpStatus.OK);
+    String accept = request.getHeader("Accept");
+    try {
+      List<Account> userAccounts = accountService.getUserAccounts(username);
+      return ResponseEntity.status(200).body(userAccounts);
+    }
+    catch (Exception e) {
+      return ResponseEntity.status(404).build();
+    }
   }
 }

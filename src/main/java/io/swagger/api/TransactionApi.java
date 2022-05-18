@@ -30,7 +30,7 @@ public interface TransactionApi {
 
   @ApiOperation(value = "A transaction between two current accounts.", nickname = "transaction", notes = "", tags = {"transaction",})
   @ApiResponses(value = {
-      @ApiResponse(code = 201, message = "successful operation")})
+          @ApiResponse(code = 201, message = "successful operation")})
   @RequestMapping(value = "/transaction",
       produces = {"application/xml", "application/json"},
       method = RequestMethod.POST)
@@ -47,9 +47,8 @@ public interface TransactionApi {
 
   @ApiOperation(value = "Transaction history", nickname = "getTransactionHistory", notes = "This can only be done by the logged in user.", tags = {"transaction",})
   @ApiResponses(value = {
-      @ApiResponse(code = 201, message = "successful operation")})
+      @ApiResponse(code = 200, message = "successful operation")})
   @RequestMapping(value = "",
-      produces = {"application/xml", "application/json"},
-      method = RequestMethod.GET)
-  ResponseEntity<List<Transaction>> getTransactionHistory();
+          method = RequestMethod.GET)
+  ResponseEntity<?> getTransactionHistory();
 }
