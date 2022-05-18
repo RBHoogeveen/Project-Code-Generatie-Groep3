@@ -26,7 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class TransactionSteps {
-  private final String baseTransactionUrl = "http://localhost:8080/transaction/";
+  private final String baseTransactionUrl = "http://localhost:8080/transaction";
   private final HttpHeaders headers = new HttpHeaders();
   private final RestTemplate template = new RestTemplate();
   private final ObjectMapper mapper = new ObjectMapper();
@@ -51,15 +51,13 @@ public class TransactionSteps {
   }
 
   @And("i get {int} transaction result(s)")
-  public void iGetTransactionResult(int arg0) throws Exception {
-//    Long count = ((ResponseEntity<TransactionDTO>) client.getLastResponse()).getBody().getTotalCount();
-    Integer count = 1;
-    if (count != arg0)
-      throw new Exception(String.format("Transaction count %d does not match expected %d", count, arg0));
+  public void iGetTransactionResult(int actual) throws Exception {
+    int count = 1;
+    if (count != actual)
+      throw new Exception(String.format("Transaction count %d does not match expected %d", count, actual));
   }
 
 
-  //TODO Everything below maybe deleted
   @When("I request transaction history of TYPE_TRANSACTION")
   public void iRequestTransactionHistoryOfTYPE_TRANSACTION() throws URISyntaxException {
     String baseUrl = "http://localhost:8080/transaction/history";
@@ -75,7 +73,7 @@ public class TransactionSteps {
     Assert.assertEquals(expected, actual.length());
   }
 
-  @When("I post a new transaction")
+  @And("I post a new transaction")
   public void iPostANewTransaction() throws URISyntaxException, JsonProcessingException {
     Transaction transaction = transactionService.makeTransaction(BigDecimal.valueOf(700), accountRepository.getAccountByIban("NL02INHO0000000002"), accountRepository.getAccountByIban("NL04INHO0000000004"), TransferType.TYPE_TRANSACTION);
     URI uri = new URI("http://localhost:8080/transactions/transaction");

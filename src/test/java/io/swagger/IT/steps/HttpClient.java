@@ -16,36 +16,9 @@ public class HttpClient {
     private ResponseEntity<?> lastResponse;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public HttpHeaders getHeaders() {
-        return headers;
-    }
 
     public void setHeaders(HttpHeaders headers) {
         this.headers = headers;
-    }
-
-    public int getLastResponseCode() {
-        return lastResponseCode;
-    }
-
-    public void setLastResponseCode(int lastResponseCode) {
-        this.lastResponseCode = lastResponseCode;
-    }
-
-    public ResponseEntity<?> getLastResponse() {
-        return lastResponse;
-    }
-
-    public void setLastResponse(ResponseEntity<?> lastResponse) {
-        this.lastResponse = lastResponse;
-    }
-
-    public String getLastResponseErrorMsg() {
-        return lastResponseErrorMsg;
-    }
-
-    public void setLastResponseErrorMsg(String lastResponseErrorMsg) {
-        this.lastResponseErrorMsg = lastResponseErrorMsg;
     }
 
     public void matchLastResponse(int code) throws Exception {

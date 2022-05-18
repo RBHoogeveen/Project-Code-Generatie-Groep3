@@ -11,8 +11,8 @@ public class HttpSteps {
     }
 
     @Then("i get http code {int}")
-    public void iGetHttpStatus(int arg0) throws Exception {
-        client.matchLastResponse(arg0);
+    public void iGetHttpStatus(int actual) throws Exception {
+        client.matchLastResponse(actual);
     }
 
     @And("Http message equals {string}")
