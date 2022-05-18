@@ -27,7 +27,7 @@ import java.util.Collections;
 public class UserSteps {
   private final ObjectMapper mapper = new ObjectMapper();
   private HttpHeaders headers = new HttpHeaders();
-  private String baseUrl = "http://localhost:8080/users/"; //andere url?
+  private String baseUrl = "http://localhost:8080/swagger-ui/#/users/";
   private RestTemplate template = new RestTemplate();
   private ResponseEntity<String> responseEntity;
   private ResponseEntity<User> userEntity;
@@ -36,9 +36,15 @@ public class UserSteps {
   @Autowired
   private UserService userService;
 
+  private HttpClient client;
+
+  public UserSteps(HttpClient client) {
+    this.client = client;
+  }
+
   @When("I retrieve all users")
   public void iRetrieveAllUsers() throws URISyntaxException {
-    URI uri = new URI(baseUrl + "users");
+    URI uri = new URI(baseUrl + "getListUsers");
     HttpEntity<String> entity = new HttpEntity<>(null, headers);
     responseEntity = template.getForEntity(uri, String.class);
   }
@@ -51,7 +57,7 @@ public class UserSteps {
 
   @When("I fetch all users")
   public void iFetchAllUsers() throws URISyntaxException {
-    URI uri = new URI(baseUrl + "users");
+    URI uri = new URI(baseUrl + "getListUsers");
     HttpEntity<String> entity = new HttpEntity<>(null, headers);
     responseEntity = template.getForEntity(uri, String.class);
   }
@@ -79,8 +85,8 @@ public class UserSteps {
 
   @When("I create a new user")
   public void iCreateANewUser() throws URISyntaxException, JsonProcessingException {
-    User user = userService.add(new CreateUpdateUserDTO("John", "John", "Doe", "John@Doe.nl", "06-12121221", "Yo", BigDecimal.valueOf(1000), BigDecimal.valueOf(500), Collections.singletonList(Role.ROLE_USER), true, false, false));
     URI uri = new URI(baseUrl + "user");
+    User user = userService.add(new CreateUpdateUserDTO("John2", "John", "Doe", "John@Doe.nl", "06-12121221", "Yo", BigDecimal.valueOf(1000), BigDecimal.valueOf(500), Collections.singletonList(Role.ROLE_USER), true, false, false));
     headers.setContentType(MediaType.APPLICATION_JSON);
     entity = new HttpEntity<>(mapper.writeValueAsString(user), headers);
     userEntity = template.postForEntity(uri, entity, User.class);
