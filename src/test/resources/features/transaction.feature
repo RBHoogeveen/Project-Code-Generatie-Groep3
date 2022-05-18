@@ -19,3 +19,4 @@ Feature: Transaction tests
     When i log in with username "Admin" and password "Admin"
     And I post a new withdrawal
     Then I get status 201
+    And i get 1 transaction result

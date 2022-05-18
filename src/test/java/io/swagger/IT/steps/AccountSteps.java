@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
 
 public class AccountSteps {
   private HttpHeaders headers = new HttpHeaders();
-  private String baseUrl = "http://localhost:8080/accounts/";
+  private String baseUrl = "http://localhost:8080/swagger-ui/#/accounts/";
   private RestTemplate template = new RestTemplate();
   private ResponseEntity<String> responseEntity;
 

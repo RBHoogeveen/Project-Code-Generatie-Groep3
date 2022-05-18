@@ -16,7 +16,6 @@ public class HttpClient {
     private ResponseEntity<?> lastResponse;
     private final RestTemplate restTemplate = new RestTemplate();
 
-
     public void setHeaders(HttpHeaders headers) {
         this.headers = headers;
     }

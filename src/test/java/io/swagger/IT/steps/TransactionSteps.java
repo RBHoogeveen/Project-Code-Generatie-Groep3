@@ -26,7 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class TransactionSteps {
-  private final String baseTransactionUrl = "http://localhost:8080/transaction";
+  private final String baseTransactionUrl = "http://localhost:8080/transaction/";
   private final HttpHeaders headers = new HttpHeaders();
   private final RestTemplate template = new RestTemplate();
   private final ObjectMapper mapper = new ObjectMapper();
@@ -56,7 +56,6 @@ public class TransactionSteps {
     if (count != actual)
       throw new Exception(String.format("Transaction count %d does not match expected %d", count, actual));
   }
-
 
   @When("I request transaction history of TYPE_TRANSACTION")
   public void iRequestTransactionHistoryOfTYPE_TRANSACTION() throws URISyntaxException {
