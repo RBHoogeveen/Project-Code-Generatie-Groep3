@@ -1,6 +1,5 @@
 package io.swagger.model;
 
-import io.cucumber.java.bs.A;
 import io.swagger.model.DTO.TransactionDTO;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.TransactionRepository;
