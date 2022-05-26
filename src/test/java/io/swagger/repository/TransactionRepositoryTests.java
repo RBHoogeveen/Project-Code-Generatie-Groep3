@@ -2,6 +2,8 @@ package io.swagger.repository;
 
 import io.swagger.model.Account;
 import io.swagger.model.Transaction;
+import io.swagger.model.User;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,14 +14,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class TransactionRepositoryTests {
+    private User performerUser;
+
+    private Account performerAccount;
+    private Account targetAccount;
+
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepo;
 
     @Autowired
     private TransactionRepository transactionRepo;
 
     @Autowired
     private AccountRepository accountRepo;
+
+    @Before
+    public void SetUp() {
+        performerAccount = new Account();
+        performerAccount.setBalance(new BigDecimal("500.00"));
+        performerAccount.setType(false);
+        performerAccount.setIban("NL19INHO0123456789");
+        accountRepo.save(performerAccount);
+
+        targetAccount = new Account();
+        targetAccount.setBalance(new BigDecimal("500.00"));
+        targetAccount.setType(false);
+        targetAccount.setIban("NL19INHO9876543210");
+        accountRepo.save(targetAccount);
+    }
 
     @Test
     public void PostTransaction_ShouldReturnTransaction() {
