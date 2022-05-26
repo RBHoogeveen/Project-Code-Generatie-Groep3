@@ -50,25 +50,6 @@ public class HttpClient {
         return exchangeRequest(uri, target, entity, HttpMethod.POST);
     }
 
-    public <T> ResponseEntity<T> putRequest(String uri, Class<T> target, Object o) throws Exception {
-        return putRequest(new URI(uri), target, o);
-    }
-
-    public <T> ResponseEntity<T> putRequest(URI uri, Class<T> target, Object o) throws Exception {
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Object> entity = new HttpEntity<>(o, headers);
-        return exchangeRequest(uri, target, entity, HttpMethod.PUT);
-    }
-
-    public <T> ResponseEntity<T> deleteRequest(String uri, Class<T> target, Object o) throws Exception {
-        return deleteRequest(new URI(uri), target, o);
-    }
-
-    public <T> ResponseEntity<T> deleteRequest(URI uri, Class<T> target, Object o) throws Exception {
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Object> entity = new HttpEntity<>(o, headers);
-        return exchangeRequest(uri, target, entity, HttpMethod.DELETE);
-    }
 
     private <T> ResponseEntity<T> exchangeRequest(URI uri, Class<T> target, HttpEntity<Object> entity, HttpMethod method) throws Exception {
         try {
