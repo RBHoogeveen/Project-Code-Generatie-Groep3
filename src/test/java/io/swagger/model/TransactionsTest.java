@@ -26,7 +26,6 @@ public class TransactionsTest {
         transaction.setAmount(new BigDecimal(1000));
         transaction.setPerformerIban("NL02INHO0000000002");
         transaction.setTargetIban("NL01INHO0000000001");
-        assertNotNull(transaction);
     }
 
     @Test
