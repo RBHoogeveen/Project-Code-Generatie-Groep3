@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,25 +23,25 @@ import java.util.regex.Pattern;
 public class UserService {
 
   @Autowired
-  AccountService accountService;
+  private AccountService accountService;
   @Autowired
-  AccountRepository accountRepository;
+  private AccountRepository accountRepository;
   @Autowired
-  JwtTokenProvider jwtTokenProvider;
+  private JwtTokenProvider jwtTokenProvider;
   @Autowired
-  AuthenticationManager authenticationManager;
+  private AuthenticationManager authenticationManager;
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
   @Autowired
   private UserRepository userRepository;
 
   public String login(String username, String password) {
     try {
       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
       User user = userRepository.findByUsername(username);
-      String token = jwtTokenProvider.createToken(username, user.getRoles());
-      return token;
-    } catch (AuthenticationException e) {
+      return jwtTokenProvider.createToken(username, user.getRoles());
+    } catch (AuthenticationException exception) {
       throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username/password invalid");
     }
   }
@@ -136,7 +137,12 @@ public class UserService {
   }
 
   public List<User> getUserBySearchterm(String searchterm) {
-    return userRepository.getUserBySearchterm(searchterm);
+    List<User> userList = userRepository.getUserBySearchterm(searchterm);
+    if (userList.isEmpty()){
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username not found");
+    } else{
+      return  userList;
+    }
   }
 }
 

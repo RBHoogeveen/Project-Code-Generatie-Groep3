@@ -3,14 +3,11 @@ package io.swagger.service;
 import io.swagger.model.Account;
 import io.swagger.model.DTO.CreateUpdateAccountDTO;
 import io.swagger.repository.AccountRepository;
-import io.swagger.repository.TransactionRepository;
 import io.swagger.repository.UserRepository;
 import org.iban4j.CountryCode;
 import org.iban4j.Iban;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,6 +17,7 @@ import java.util.List;
 
 @Service
 public class AccountService {
+
   @Autowired
   private AccountRepository accountRepository;
 
