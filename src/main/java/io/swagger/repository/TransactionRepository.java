@@ -21,4 +21,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
   @Query(value = "SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.date = CURRENT_DATE AND t.userPerforming.id = ?1")
   BigDecimal getTotalAmountOfTransactionsByUserId(Integer userId);
+
+  Transaction getTransactionById(Long id);
 }
