@@ -10,5 +10,5 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class DepositWithdrawalDTO {
-    private BigDecimal amount;
+  private BigDecimal amount;
 }

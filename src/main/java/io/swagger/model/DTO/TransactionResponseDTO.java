@@ -11,9 +11,9 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class TransactionResponseDTO {
-    private BigDecimal amount;
-    private String targetIban;
-    private Date performDate;
-    private String performingUser;
-    private String performingIban;
+  private BigDecimal amount;
+  private String targetIban;
+  private Date performDate;
+  private String performingUser;
+  private String performingIban;
 }

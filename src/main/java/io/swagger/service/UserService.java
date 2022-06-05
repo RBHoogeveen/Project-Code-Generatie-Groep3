@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,34 +22,29 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
   @Autowired
-  AccountService accountService;
-
+  private AccountService accountService;
   @Autowired
-  AccountRepository accountRepository;
-
+  private AccountRepository accountRepository;
   @Autowired
-  JwtTokenProvider jwtTokenProvider;
-
+  private JwtTokenProvider jwtTokenProvider;
   @Autowired
-  AuthenticationManager authenticationManager;
-
+  private AuthenticationManager authenticationManager;
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
+  @Autowired
+  private UserRepository userRepository;
 
-    public String login(String username, String password) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            User user = userRepository.findByUsername(username);
-            String token = jwtTokenProvider.createToken(username, user.getRoles());
-            return token;
-        } catch (AuthenticationException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username/password invalid");
-        }
+  public String login(String username, String password) {
+    try {
+      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
+      User user = userRepository.findByUsername(username);
+      return jwtTokenProvider.createToken(username, user.getRoles());
+    } catch (AuthenticationException exception) {
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username/password invalid");
     }
+  }
 
   public User add(CreateUpdateUserDTO createUpdateUser) {
     try {
@@ -96,63 +92,57 @@ public class UserService {
     }
   }
 
-    public User updateUser (CreateUpdateUserDTO createUpdateUser){
-      try {
-        User updatedUser = userRepository.findByUsername(createUpdateUser.getUsername());
-        if (!accountRepository.getAccountByUserIdAndTypeIsFalse(updatedUser.getId()).getIban().equals("NL01INHO0000000001")){
-          updatedUser.setUsername(createUpdateUser.getUsername());
-          if (Pattern.matches("[a-zA-Z]+", createUpdateUser.getFirstname())) {
-            updatedUser.setFirstname(createUpdateUser.getFirstname());
-          } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Firstname can only contain letters.");
-          }
-          if (Pattern.matches("[a-zA-Z]+", createUpdateUser.getLastname())) {
-            updatedUser.setLastname(createUpdateUser.getLastname());
-          } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Lastname can only contain letters.");
-          }
-          updatedUser.setEmail(createUpdateUser.getEmail());
-          updatedUser.setPhonenumber(createUpdateUser.getPhonenumber());
-          if (createUpdateUser.getDayLimit().compareTo(BigDecimal.ZERO) >= 0) {
-            updatedUser.setDayLimit(createUpdateUser.getDayLimit());
-          } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Day limit can't be lower than 0");
-          }
-          if (createUpdateUser.getTransactionLimit().compareTo(BigDecimal.ZERO) >= 0) {
-            updatedUser.setTransactionLimit(createUpdateUser.getTransactionLimit());
-          } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Transaction limit can't be lower than 0");
-          }
-          updatedUser.setRoles(createUpdateUser.getRoles());
-          updatedUser.setPassword(passwordEncoder.encode(createUpdateUser.getPassword()));
-          updatedUser.setIsActive(createUpdateUser.getIsActive());
-          userRepository.save(updatedUser);
-          return updatedUser;
+  public User updateUser(CreateUpdateUserDTO createUpdateUser) {
+    try {
+      User updatedUser = userRepository.findByUsername(createUpdateUser.getUsername());
+      if (!accountRepository.getAccountByUserIdAndTypeIsFalse(updatedUser.getId()).getIban().equals("NL01INHO0000000001")) {
+        updatedUser.setUsername(createUpdateUser.getUsername());
+        if (Pattern.matches("[a-zA-Z]+", createUpdateUser.getFirstname())) {
+          updatedUser.setFirstname(createUpdateUser.getFirstname());
+        } else {
+          throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Firstname can only contain letters.");
         }
-        else { throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not allowed to update Banks account.");}
-      } catch (ResponseStatusException e) {
-        throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+        if (Pattern.matches("[a-zA-Z]+", createUpdateUser.getLastname())) {
+          updatedUser.setLastname(createUpdateUser.getLastname());
+        } else {
+          throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Lastname can only contain letters.");
+        }
+        updatedUser.setEmail(createUpdateUser.getEmail());
+        updatedUser.setPhonenumber(createUpdateUser.getPhonenumber());
+        if (createUpdateUser.getDayLimit().compareTo(BigDecimal.ZERO) >= 0) {
+          updatedUser.setDayLimit(createUpdateUser.getDayLimit());
+        } else {
+          throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Day limit can't be lower than 0");
+        }
+        if (createUpdateUser.getTransactionLimit().compareTo(BigDecimal.ZERO) >= 0) {
+          updatedUser.setTransactionLimit(createUpdateUser.getTransactionLimit());
+        } else {
+          throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Transaction limit can't be lower than 0");
+        }
+        updatedUser.setRoles(createUpdateUser.getRoles());
+        updatedUser.setPassword(passwordEncoder.encode(createUpdateUser.getPassword()));
+        updatedUser.setIsActive(createUpdateUser.getIsActive());
+        userRepository.save(updatedUser);
+        return updatedUser;
+      } else {
+        throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not allowed to update Banks account.");
       }
+    } catch (ResponseStatusException e) {
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
     }
+  }
 
-    public User getUserById (Long userId){
-      return userRepository.getOne(userId);
-    }
+  public List<User> getUsers() {
+    return userRepository.findAll();
+  }
 
-    public List<User> findAllUsers() {
-      return userRepository.findAll();
+  public List<User> getUserBySearchterm(String searchterm) {
+    List<User> userList = userRepository.getUserBySearchterm(searchterm);
+    if (userList.isEmpty()){
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username not found");
+    } else{
+      return  userList;
     }
-  
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
-    public List<User> getUserBySearchterm(String searchterm) {
-        return userRepository.getUserBySearchterm(searchterm);
-    }
-
-  public User getUserByUsername(String username) {
-    return userRepository.findByUsername(username);
   }
 }
 

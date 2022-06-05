@@ -16,25 +16,25 @@ import java.io.IOException;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+  @Autowired
+  private JwtTokenProvider jwtTokenProvider;
 
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+  @Override
+  protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
-        String token = jwtTokenProvider.resolveToken(httpServletRequest);
+    String token = jwtTokenProvider.resolveToken(httpServletRequest);
 
-        try {
-            if (token != null && jwtTokenProvider.validateToken(token)) {
-                Authentication auth = jwtTokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
-        } catch (ResponseStatusException e) {
-            SecurityContextHolder.clearContext();
-            httpServletResponse.sendError(e.getRawStatusCode(), e.getMessage());
-            return;
-        }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+    try {
+      if (token != null && jwtTokenProvider.validateToken(token)) {
+        Authentication auth = jwtTokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+      }
+    } catch (ResponseStatusException e) {
+      SecurityContextHolder.clearContext();
+      httpServletResponse.sendError(e.getRawStatusCode(), e.getMessage());
+      return;
     }
+    filterChain.doFilter(httpServletRequest, httpServletResponse);
+  }
 }

@@ -29,52 +29,52 @@ import java.util.List;
 @RestController
 public class AccountApiController implements AccountApi {
 
-    private static final Logger log = LoggerFactory.getLogger(AccountApiController.class);
+  private static final Logger log = LoggerFactory.getLogger(AccountApiController.class);
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    private final HttpServletRequest request;
+  private final HttpServletRequest request;
 
-    @Autowired
-    private TransactionService transactionService;
+  @Autowired
+  private TransactionService transactionService;
 
-    @Autowired
-    private AccountService accountService;
+  @Autowired
+  private AccountService accountService;
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+  @Autowired
+  private JwtTokenProvider jwtTokenProvider;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    public AccountApiController(ObjectMapper objectMapper, HttpServletRequest request) {
-        this.objectMapper = objectMapper;
-        this.request = request;
+  @org.springframework.beans.factory.annotation.Autowired
+  public AccountApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    this.objectMapper = objectMapper;
+    this.request = request;
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of account that needs to bee updated", required = true) @PathVariable("iban") String iban, @ApiParam(value = "Updated user object", required = true) @Valid @RequestBody CreateUpdateAccountDTO body) {
+    Account updatedAccount = accountService.updateAccount(body);
+
+    return new ResponseEntity<Account>(updatedAccount, HttpStatus.OK);
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object", required = true) @Valid @RequestBody CreateUpdateAccountDTO body) {
+    Account createdAccount = accountService.add(body);
+    return new ResponseEntity<Account>(createdAccount, HttpStatus.OK);
+  }
+
+  @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+  public ResponseEntity<List<Account>> getUserAccount(@NotNull @ApiParam(value = "The username", required = true) @Valid @PathVariable(value = "username", required = true) String username) {
+    String accept = request.getHeader("Accept");
+    try {
+      List<Account> userAccounts = accountService.getUserAccounts(username);
+      return ResponseEntity.status(200).body(userAccounts);
     }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Account> updateAccount(@ApiParam(value = "Iban of account that needs to bee updated",required=true) @PathVariable("iban") String iban, @ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
-        Account updatedAccount = accountService.updateAccount(body);
-
-        return new ResponseEntity<Account>(updatedAccount, HttpStatus.OK);
+    catch (Exception e) {
+      return ResponseEntity.status(404).build();
     }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Account> createAccount(@ApiParam(value = "Created account object" ,required=true )  @Valid @RequestBody CreateUpdateAccountDTO body) {
-        Account createdAccount = accountService.add(body);
-        return new ResponseEntity<Account>(createdAccount, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<List<Account>> getUserAccount(@NotNull @ApiParam(value = "The username", required = true) @Valid @PathVariable(value = "username", required = true) String username) {
-        List<Account> userAccounts = accountService.getUserAccounts(username);
-        return new ResponseEntity<List<Account>>(userAccounts, HttpStatus.OK);
-    }
-
-//    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-//    public ResponseEntity<Account> getAccountByIban(@NotNull @ApiParam(value = "The username", required = true) @Valid @PathVariable(value = "iban", required = true) String iban) {
-//        Account account = accountService.getAccountByIban(iban);
-//        return new ResponseEntity<Account>(account, HttpStatus.OK);
-//    }
+  }
 }

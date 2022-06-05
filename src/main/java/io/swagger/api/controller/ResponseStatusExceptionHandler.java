@@ -16,14 +16,14 @@ public class ResponseStatusExceptionHandler extends ResponseEntityExceptionHandl
 
   @Order(1)
   @ExceptionHandler(value = {ResponseStatusException.class})
-  protected ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex, WebRequest request){
+  protected ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
     ExceptionDTO dto = new ExceptionDTO(ex.getReason());
     return handleExceptionInternal(ex, dto, new HttpHeaders(), ex.getStatus(), request);
   }
 
   @Order(2)
   @ExceptionHandler(value = {Exception.class})
-  protected ResponseEntity<Object> handleResponseException(Exception ex, WebRequest request){
+  protected ResponseEntity<Object> handleResponseException(Exception ex, WebRequest request) {
     ExceptionDTO dto = new ExceptionDTO(ex.getMessage());
     return handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }

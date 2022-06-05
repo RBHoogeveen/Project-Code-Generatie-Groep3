@@ -5,16 +5,15 @@
  */
 package io.swagger.api;
 
-import io.swagger.annotations.Api;
 import io.swagger.model.DTO.LoginDTO;
 import io.swagger.model.DTO.LoginResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,16 +26,16 @@ import javax.validation.Valid;
 @Validated
 public interface LoginApi {
 
-    @Operation(summary = "login user and return JWT", description = "", tags={ "authentication" })
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Logged in", content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))),
-        @ApiResponse(responseCode = "401", description = "unauthorized"),
-        @ApiResponse(responseCode = "422", description = "unprocessable entity") })
+  @Operation(summary = "login user and return JWT", description = "", tags = {"authentication"})
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Logged in", content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))),
+      @ApiResponse(responseCode = "401", description = "unauthorized"),
+      @ApiResponse(responseCode = "422", description = "unprocessable entity")})
 
-    @RequestMapping(value = "/login",
-        produces = { "application/json" },
-        consumes = { "application/json" },
-        method = RequestMethod.POST)
-    ResponseEntity<LoginResponseDTO> login(@Parameter(in = ParameterIn.DEFAULT, description = "Request body to login a user", required=true, schema=@Schema()) @Valid @RequestBody LoginDTO body);
+  @RequestMapping(value = "/login",
+      produces = {"application/json"},
+      consumes = {"application/json"},
+      method = RequestMethod.POST)
+  ResponseEntity<LoginResponseDTO> login(@Parameter(in = ParameterIn.DEFAULT, description = "Request body to login a user", required = true, schema = @Schema()) @Valid @RequestBody LoginDTO body);
 
 }

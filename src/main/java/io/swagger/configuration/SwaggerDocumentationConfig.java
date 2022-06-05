@@ -2,7 +2,6 @@ package io.swagger.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -20,48 +19,48 @@ import java.util.List;
 @Configuration
 public class SwaggerDocumentationConfig {
 
-    ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-            .title("Project Code Generation")
-            .description("2.4 project code generation group 3")
-            .license("")
-            .licenseUrl("http://unlicense.org")
-            .termsOfServiceUrl("")
-            .version("v1")
-            .contact(new Contact("","", ""))
-            .build();
-    }
+  ApiInfo apiInfo() {
+    return new ApiInfoBuilder()
+        .title("Project Code Generation")
+        .description("2.4 project code generation group 3")
+        .license("")
+        .licenseUrl("http://unlicense.org")
+        .termsOfServiceUrl("")
+        .version("v1")
+        .contact(new Contact("", "", ""))
+        .build();
+  }
 
-    @Bean
-    public Docket customImplementation(){
-        return new Docket(DocumentationType.SWAGGER_2)
-            .select()
-                .apis(RequestHandlerSelectors.basePackage("io.swagger.api"))
-                .build()
-            .directModelSubstitute(org.threeten.bp.LocalDate.class, java.sql.Date.class)
-            .directModelSubstitute(org.threeten.bp.OffsetDateTime.class, java.util.Date.class)
-            .apiInfo(apiInfo())
-            .securityContexts(Arrays.asList(securityContext()))
-            .securitySchemes(Arrays.asList(apiKey()))
-            .select()
-            .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
-            .paths(PathSelectors.any())
-            .build();
-    }
+  @Bean
+  public Docket customImplementation() {
+    return new Docket(DocumentationType.SWAGGER_2)
+        .select()
+        .apis(RequestHandlerSelectors.basePackage("io.swagger.api"))
+        .build()
+        .directModelSubstitute(org.threeten.bp.LocalDate.class, java.sql.Date.class)
+        .directModelSubstitute(org.threeten.bp.OffsetDateTime.class, java.util.Date.class)
+        .apiInfo(apiInfo())
+        .securityContexts(Arrays.asList(securityContext()))
+        .securitySchemes(Arrays.asList(apiKey()))
+        .select()
+        .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+        .paths(PathSelectors.any())
+        .build();
+  }
 
-    private ApiKey apiKey() {
-        return new ApiKey("Authorization", "Authorization", "header");
-    }
+  private ApiKey apiKey() {
+    return new ApiKey("Authorization", "Authorization", "header");
+  }
 
-    private SecurityContext securityContext() {
-        return SecurityContext.builder().securityReferences(defaultAuth()).build();
-    }
+  private SecurityContext securityContext() {
+    return SecurityContext.builder().securityReferences(defaultAuth()).build();
+  }
 
-    private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-        return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
-    }
+  private List<SecurityReference> defaultAuth() {
+    AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+    AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+    authorizationScopes[0] = authorizationScope;
+    return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
+  }
 
 }

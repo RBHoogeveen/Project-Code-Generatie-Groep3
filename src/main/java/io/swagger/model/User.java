@@ -1,17 +1,16 @@
 package io.swagger.model;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * User
@@ -20,7 +19,7 @@ import javax.validation.Valid;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-05-21T11:36:55.738Z")
 
 @Entity
-public class User   {
+public class User {
   @Id
   @GeneratedValue
   @JsonProperty("id")
@@ -72,8 +71,9 @@ public class User   {
 
   /**
    * Get id
+   *
    * @return id
-  **/
+   **/
   @ApiModelProperty(value = "")
 
 
@@ -92,8 +92,9 @@ public class User   {
 
   /**
    * Get username
+   *
    * @return username
-  **/
+   **/
   @ApiModelProperty(example = "test", value = "The username for this user")
 
   public String getUsername() {
@@ -111,8 +112,9 @@ public class User   {
 
   /**
    * Get firstname
+   *
    * @return firstname
-  **/
+   **/
   @ApiModelProperty(example = "John", value = "The users firstname")
 
   public String getFirstname() {
@@ -130,8 +132,9 @@ public class User   {
 
   /**
    * Get lastname
+   *
    * @return lastname
-  **/
+   **/
   @ApiModelProperty(example = "Doe", value = "The users lastname")
 
   public String getLastname() {
@@ -149,8 +152,9 @@ public class User   {
 
   /**
    * Get email
+   *
    * @return email
-  **/
+   **/
   @ApiModelProperty(example = "John@Doe.com", value = "The users email")
 
   public String getEmail() {
@@ -168,8 +172,9 @@ public class User   {
 
   /**
    * Get phonenumber
+   *
    * @return phonenumber
-  **/
+   **/
   @ApiModelProperty(example = "06 12345678", value = "The password for this user")
 
   public String getPhonenumber() {
@@ -187,8 +192,9 @@ public class User   {
 
   /**
    * The password for this user
+   *
    * @return password
-  **/
+   **/
   @ApiModelProperty(example = "MySecretPassword", value = "The password for this user")
 
   public String getPassword() {
@@ -201,6 +207,7 @@ public class User   {
 
   /**
    * Get dayLimit
+   *
    * @return dayLimit
    **/
   @ApiModelProperty(example = "1000", value = "The users daily spending limit")
@@ -223,6 +230,7 @@ public class User   {
 
   /**
    * Get isActive
+   *
    * @return isActive
    **/
   @ApiModelProperty(example = "true", value = "True if the user is active, false if not")
@@ -239,8 +247,9 @@ public class User   {
 
   /**
    * Get transactionLimit
+   *
    * @return transactionLimit
-  **/
+   **/
   @ApiModelProperty(example = "500", value = "Maximum amount that can be spend within one transaction")
 
   @Valid
@@ -291,7 +300,7 @@ public class User   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class User {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    firstname: ").append(toIndentedString(firstname)).append("\n");

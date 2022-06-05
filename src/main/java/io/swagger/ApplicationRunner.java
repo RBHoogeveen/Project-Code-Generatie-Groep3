@@ -24,8 +24,6 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
   @Autowired
   private AccountRepository accountRepository;
   @Autowired
-  private AccountService accountService;
-  @Autowired
   private UserRepository userRepository;
   @Autowired
   private UserService userService;
@@ -35,7 +33,7 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
   private TransactionService transactionService;
 
   @Override
-  public void run(ApplicationArguments args) throws Exception {
+  public void run(ApplicationArguments args) {
     //make bank + bank accounts
     CreateUpdateUserDTO bank = new CreateUpdateUserDTO();
     bank.setCreateCurrentAccount(false);
@@ -128,6 +126,22 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
     userSavingsAccount.setAbsoluteLimit(BigDecimal.ZERO);
     userSavingsAccount.setType(true);
     accountRepository.save(userSavingsAccount);
+
+    //make test user
+    CreateUpdateUserDTO testUser = new CreateUpdateUserDTO();
+    testUser.setCreateCurrentAccount(false);
+    testUser.setCreateSavingsAccount(false);
+    testUser.setIsActive(true);
+    testUser.setEmail("Test@Test.nl");
+    testUser.setFirstname("Test");
+    testUser.setLastname("Test");
+    testUser.setDayLimit(BigDecimal.valueOf(12345));
+    testUser.setPhonenumber("06-21435465");
+    testUser.setRoles(Collections.singletonList(Role.ROLE_USER));
+    testUser.setTransactionLimit(BigDecimal.valueOf(2500));
+    testUser.setUsername("Test");
+    testUser.setPassword("Test");
+    userService.add(testUser);
 
     //make transactions
     //user current to admin current

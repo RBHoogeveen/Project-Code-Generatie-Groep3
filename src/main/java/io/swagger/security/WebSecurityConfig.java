@@ -18,9 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired
-  private JwtTokenFilter jwtTokenFilter;
-
   private static final String[] AUTH_WHITELIST = {
       "/login",
       "/h2-console/**/**",
@@ -31,6 +28,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       "/api-docs",
       "webjars/**"
   };
+  @Autowired
+  private JwtTokenFilter jwtTokenFilter;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -48,12 +47,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   @Override
-  public AuthenticationManager authenticationManagerBean() throws Exception{
+  public AuthenticationManager authenticationManagerBean() throws Exception {
     return super.authenticationManagerBean();
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder(){
+  public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder(12);
   }
 }

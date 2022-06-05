@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class TransactionDTO {
-    private BigDecimal amount;
-    private String performerIban;
-    private String targetIban;
+  private BigDecimal amount;
+  private String performerIban;
+  private String targetIban;
 }
