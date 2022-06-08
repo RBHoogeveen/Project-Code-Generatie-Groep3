@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -25,27 +26,27 @@ public class AccountRepositoryTests {
 
   @Test
   public void getBalanceByIbanShouldReturnBigDecimal(){
-    assertEquals(BigDecimal.valueOf(999999999.00), accountRepo.getBalanceByIban("NL01INHO0000000001", false));
+    assertThat(accountRepo.getBalanceByIban("NL01INHO0000000001", false)).isEqualTo(new BigDecimal("999999999.00"));
   }
 
   @Test
   public void getAccountByIbanAndTypeShouldReturnAccount(){
-    assertEquals(Account.class ,accountRepo.getAccountByIbanAndType("NL01INHO0000000001", false));
+    assertThat(accountRepo.getAccountByIbanAndType("NL01INHO0000000001", false).getClass()).isEqualTo(Account.class);
   }
 
   @Test
   public void getAccountByUserIdAndTypeShouldReturnAccount(){
-    assertEquals(Account.class ,accountRepo.getAccountByUserIdAndType(3, false));
+    assertThat(accountRepo.getAccountByUserIdAndType(3, false).getClass()).isEqualTo(Account.class);
   }
 
   @Test
   public void getAccountByUserIdAndTypeIsFalseShouldReturnAccount(){
-    assertEquals(Account.class ,accountRepo.getAccountByUserIdAndTypeIsFalse(3));
+    assertThat(accountRepo.getAccountByUserIdAndTypeIsFalse(3).getClass()).isEqualTo(Account.class);
   }
 
   @Test
   public void getAccountByUserIdAndTypeIsTrueShouldReturnAccount(){
-    assertEquals(Account.class ,accountRepo.getAccountByUserIdAndTypeIsTrue(3));
+    assertThat(accountRepo.getAccountByUserIdAndTypeIsTrue(3).getClass()).isEqualTo(Account.class);
   }
 
 }
