@@ -88,8 +88,9 @@ public class AccountControllerTest {
   public void getAccountsByUsernameShouldReturnOk() throws Exception {
     this.mockMvc.perform(get("/accounts/Admin")
             .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
-            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$", hasSize(2)))
             .andExpect(jsonPath("$[0].iban").value("NL02INHO0000000002"))
+            .andExpect(jsonPath("$[1].iban").value("NL03INHO0000000003"))
             .andExpect(status().isOk());
   }
 
