@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest()
@@ -118,6 +119,7 @@ public class TransactionControllerTest {
         .content(asJsonString(deposit))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("amount").value(1000))
         .andExpect(status().isOk());
   }
 
@@ -126,14 +128,13 @@ public class TransactionControllerTest {
   public void postingAWithdrawalShouldReturnOK() throws Exception {
     TransactionDTO withdrawal = new TransactionDTO();
     withdrawal.setAmount(BigDecimal.valueOf(750));
-    withdrawal.setPerformerIban("NL03INHO0000000003");
-    withdrawal.setTargetIban("NL02INHO0000000002");
 
     this.mockMvc.perform(post("/transactions/withdrawal")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin)
         .content(asJsonString(withdrawal))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("amount").value(750))
         .andExpect(status().isOk());
   }
 }
