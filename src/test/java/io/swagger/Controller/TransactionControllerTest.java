@@ -2,7 +2,6 @@ package io.swagger.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.model.DTO.TransactionDTO;
-import io.swagger.model.Transaction;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -23,10 +22,7 @@ import java.math.BigDecimal;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest()
 @AutoConfigureMockMvc
