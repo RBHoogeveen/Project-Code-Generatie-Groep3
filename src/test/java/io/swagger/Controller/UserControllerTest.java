@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.math.BigDecimal;
 import java.util.Collections;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest()
@@ -86,17 +88,32 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("Checks if the admin can get the admin user")
-  public void getUserBySearchTermShouldReturnOk() throws Exception {
+  public void getAdminWithRoleAdminBySearchTermShouldReturnOk() throws Exception {
     this.mockMvc.perform(get("/users/Admin")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
+        .andExpect(jsonPath("$[0].id").value(2))
+        .andExpect(jsonPath("$[0].accounts[0].iban").value("NL02INHO0000000002"))
+        .andExpect(jsonPath("$[0].accounts[1].iban").value("NL03INHO0000000003"))
         .andExpect(status().isOk());
   }
+
+  @Test
+  @DisplayName("Checks if a user can get the admin user")
+  public void getAdminWithRoleUserBySearchTermShouldReturnError() throws Exception {
+    this.mockMvc.perform(get("/users/Admin")
+        .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenUser))
+        .andExpect(jsonPath("message").value("Access is denied"))
+        .andExpect(status().is(400));
+  }
+
 
   @Test
   @DisplayName("Checks if the admin can get all users")
   public void getUsersShouldReturnOk() throws Exception {
     this.mockMvc.perform(get("/users")
         .header(HEADER_STRING, TOKEN_PREFIX + " " + this.xAuthTokenAdmin))
+        .andExpect(jsonPath("$", hasSize(5)))
+        .andExpect(jsonPath("$[0].accounts[0].iban").value("NL01INHO0000000001"))
         .andExpect(status().isOk());
   }
 
@@ -115,7 +132,7 @@ public class UserControllerTest {
     createUser.setPhonenumber("06-34343434");
     createUser.setRoles(Collections.singletonList(Role.ROLE_USER));
     createUser.setTransactionLimit(BigDecimal.valueOf(3000));
-    createUser.setUsername("John");
+    createUser.setUsername("JohnDeer");
     createUser.setPassword("Doe");
 
     this.mockMvc.perform(post("/users/user")
@@ -123,6 +140,8 @@ public class UserControllerTest {
         .content(asJsonString(createUser))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("email").value("John@Doe.nl"))
+        .andExpect(jsonPath("username").value("JohnDeer"))
         .andExpect(status().isOk());
   }
 
@@ -149,6 +168,9 @@ public class UserControllerTest {
         .content(asJsonString(updateUser))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("email").value("Admin@Admin.nl"))
+        .andExpect(jsonPath("accounts[0].iban").value("NL02INHO0000000002"))
+        .andExpect(jsonPath("accounts[1].iban").value("NL03INHO0000000003"))
         .andExpect(status().isOk());
   }
 }
